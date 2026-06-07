@@ -30,17 +30,30 @@ def _map_stored_row(row: Any) -> Dict[str, Any]:
     }
 
 
+def _like_escape(value: str) -> str:
+    """Escape LIKE wildcards so a literal sid (with ``_``) is matched exactly."""
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
+
 async def search_stored_events(
     settings: Settings,
     *,
     sid: Optional[str] = None,
+    job_sid: Optional[str] = None,
     record_type: Optional[str] = None,
     row_index: Optional[int] = None,
     limit: int = 100,
     earliest: str = "-90d@d",
     order: str = "desc",
 ) -> List[Dict[str, Any]]:
-    """Read stored records from PostgreSQL by optional sid / record_type filters."""
+    """
+    Read stored records from PostgreSQL by optional sid / record_type filters.
+
+    ``job_sid`` matches every storage record for a Splunk job: the base sid plus all
+    per-row sids (``{base}``, ``{base}-1``, ``{base}-2``, …). Use it for investigation
+    grouping where multi-row analyses live under suffixed sids while the ingest summary
+    keeps the base sid.
+    """
     _ = earliest
     if not splunk_store_configured(settings):
         return []
@@ -57,6 +70,11 @@ async def search_stored_events(
         where.append("sid = ${0}".format(argn))
         args.append(sid)
         argn += 1
+    elif job_sid:
+        where.append("(sid = ${0} OR sid LIKE ${1} ESCAPE '\\')".format(argn, argn + 1))
+        args.append(job_sid)
+        args.append(_like_escape(job_sid) + "-%")
+        argn += 2
     if record_type:
         where.append("tsoc_record_type = ${0}".format(argn))
         args.append(record_type)

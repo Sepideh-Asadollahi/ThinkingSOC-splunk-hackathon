@@ -65,8 +65,10 @@ function OverviewMetadata({
           <NeonBadge className="border-orange-500/30 text-orange-300">
             {String(event.tsoc_record_type ?? payload.tsoc_record_type ?? "record")}
           </NeonBadge>
-          {event.row_index != null ? (
-            <NeonBadge className="border-white/15 text-slate-400">row {String(event.row_index)}</NeonBadge>
+          {event.row_index != null && Number.isFinite(Number(event.row_index)) ? (
+            <NeonBadge className="border-white/15 text-slate-400">
+              row {String(Number(event.row_index) + 1)}
+            </NeonBadge>
           ) : null}
         </div>
         <FieldGrid

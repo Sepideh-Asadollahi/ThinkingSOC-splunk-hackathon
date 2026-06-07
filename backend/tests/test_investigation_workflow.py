@@ -52,6 +52,25 @@ def test_filter_timeline_excludes_internal_shards_and_other_rows() -> None:
     assert out[1]["id"] == 10
 
 
+def test_filter_timeline_multi_row_keeps_job_ingest_and_only_this_row() -> None:
+    """Multi-row job: ingest (base sid) plus only the anchor row's suffixed sid records."""
+    anchor = {"id": 20, "sid": "job.1-2", "row_index": 1, "tsoc_record_type": "soc_analysis"}
+    rows = [
+        {"id": 1, "sid": "job.1", "row_index": 0, "tsoc_record_type": "splunk_ingest"},
+        {"id": 11, "sid": "job.1-1", "row_index": 0, "tsoc_record_type": "soc_analysis"},
+        {"id": 12, "sid": "job.1-1", "row_index": 0, "tsoc_record_type": "agentic_ops_analysis"},
+        {"id": 20, "sid": "job.1-2", "row_index": 1, "tsoc_record_type": "soc_analysis"},
+        {"id": 21, "sid": "job.1-2", "row_index": 1, "tsoc_record_type": "agentic_ops_analysis"},
+    ]
+    out = _filter_timeline_rows(rows, anchor, 20)
+    ids = sorted(r["id"] for r in out)
+    types = sorted(r["tsoc_record_type"] for r in out)
+    assert 1 in ids  # job-level ingest kept
+    assert 11 not in ids and 12 not in ids  # row 1 excluded
+    assert 20 in ids and 21 in ids  # row 2 kept
+    assert types == ["agentic_ops_analysis", "soc_analysis", "splunk_ingest"]
+
+
 def test_filter_timeline_dedupes_rerun_pipeline_steps() -> None:
     anchor = {
         "id": 582,

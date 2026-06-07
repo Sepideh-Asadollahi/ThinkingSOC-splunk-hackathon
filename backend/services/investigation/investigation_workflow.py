@@ -85,6 +85,27 @@ def _resolve_row_index(row: Dict[str, Any]) -> Optional[int]:
     return None
 
 
+def _same_alert_row(anchor: Dict[str, Any], row: Dict[str, Any]) -> bool:
+    """True when ``row`` belongs to the same Splunk result row as ``anchor``.
+
+    Multi-row jobs store each row under a suffixed sid (``{base}-1``, ``{base}-2``),
+    so a sid match is the strongest signal. Fall back to ``row_index`` for legacy
+    records that share the base sid.
+    """
+    anchor_sid = str(anchor.get("sid") or "").strip()
+    row_sid = str(row.get("sid") or "").strip()
+    if anchor_sid and row_sid and anchor_sid != row_sid:
+        # Different suffixed sids under the same job → different rows.
+        return False
+    # Same sid (or one missing): legacy records share the base sid, so disambiguate
+    # by row_index when both are known.
+    anchor_ri = _resolve_row_index(anchor)
+    row_ri = _resolve_row_index(row)
+    if anchor_ri is not None and row_ri is not None:
+        return anchor_ri == row_ri
+    return True
+
+
 def _is_timeline_pipeline_record(record_type: str) -> bool:
     if not record_type:
         return False
@@ -101,16 +122,14 @@ def _filter_timeline_rows(
     record_id: int,
 ) -> List[Dict[str, Any]]:
     """Keep pipeline steps for this alert row only (not all storage under sid)."""
-    anchor_ri = _resolve_row_index(anchor)
     filtered: List[Dict[str, Any]] = []
     for row in rows:
         rtype = str(row.get("tsoc_record_type") or "")
         if not _is_timeline_pipeline_record(rtype):
             continue
-        if anchor_ri is not None:
-            row_ri = _resolve_row_index(row)
-            if row_ri is not None and row_ri != anchor_ri:
-                continue
+        # The ingest summary is job-level (base sid, shared by every row) — always keep it.
+        if rtype != "splunk_ingest" and not _same_alert_row(anchor, row):
+            continue
         if rtype == ANALYST_ACTION_RECORD_TYPE:
             pl = row.get("payload") if isinstance(row.get("payload"), dict) else {}
             if pl.get("investigation_record_id") not in (record_id, str(record_id)):
@@ -336,13 +355,17 @@ async def build_investigation_timeline(
     if anchor is None:
         return {"record_id": record_id, "found": False, "steps": []}
 
+    from services.soc_analysis.analysis_audit import splunk_job_sid
+
     sid = anchor.get("sid")
     anchor_ri = _resolve_row_index(anchor)
     rows: List[Dict[str, Any]] = []
     if sid and splunk_store_configured(settings):
+        # Multi-row jobs store rows under suffixed sids ({base}-1, {base}-2) while the
+        # ingest summary keeps the base sid — fetch the whole job, then filter to this row.
         rows = await search_stored_events(
             settings,
-            sid=str(sid),
+            job_sid=splunk_job_sid(str(sid)) or str(sid),
             limit=limit,
             order="asc",
         )
