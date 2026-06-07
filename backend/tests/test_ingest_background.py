@@ -66,10 +66,44 @@ def test_run_post_ingest_calls_triage() -> None:
         handoff = SplunkAlertIngest(sid="s1", search_name="n1", normalized={"host": "x"})
         enriched = {"splunk_results_row_count": 1, "splunk_results": [{"host": "x"}]}
         with patch("services.alert.ingest_background.persist_splunk_ingest_summary", new_callable=AsyncMock):
-            with patch("services.alert.ingest_background.run_agent_triage", new_callable=AsyncMock) as triage:
+            with patch(
+                "services.alert.ingest_background.run_triage_for_ingest",
+                new_callable=AsyncMock,
+            ) as triage:
                 from services.alert.ingest_background import run_post_ingest
 
                 await run_post_ingest(settings, handoff, enriched, auto_analyze=True)
         triage.assert_awaited_once()
+
+
+def test_run_post_ingest_multi_row_uses_all_rows_triage() -> None:
+    async def _run() -> None:
+        settings = Settings(
+            tsoc_postgres_dsn="postgresql://tsoc:tsoc@127.0.0.1:5432/tsoc",
+            tsoc_ingest_auto_analyze_pipeline="triage",
+        )
+        handoff = SplunkAlertIngest(sid="1780870386.6468", search_name="New TesT", normalized={"host": "x"})
+        enriched = {
+            "splunk_results_row_count": 2,
+            "splunk_results": [
+                {"host": "we8105desk", "User": "bob"},
+                {"host": "we8105desk", "User": "bob", "_time": "2018-08-24 21:18:50"},
+            ],
+        }
+        with patch("services.alert.ingest_background.persist_splunk_ingest_summary", new_callable=AsyncMock):
+            with patch(
+                "services.alert.ingest_background.run_agent_triage_all_rows",
+                new_callable=AsyncMock,
+                return_value=[],
+            ) as triage:
+                from services.alert.ingest_background import run_post_ingest
+
+                await run_post_ingest(settings, handoff, enriched, auto_analyze=True)
+        triage.assert_awaited_once()
+        call_body = triage.await_args.args[1]
+        assert call_body.sid == "1780870386.6468"
+        assert len(call_body.splunk_results) == 2
+
+    asyncio.run(_run())
 
     asyncio.run(_run())

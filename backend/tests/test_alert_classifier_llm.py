@@ -125,5 +125,34 @@ def test_classify_hybrid_falls_back_on_llm_error() -> None:
         ):
             out = await classify_alert_hybrid(settings, {}, "alert", [])
         assert out.recommended_pipeline == "manual_review"
+        assert "invalid output" in out.reason.lower()
+
+    asyncio.run(_run())
+
+
+def test_classify_hybrid_falls_back_on_provider_connection_error() -> None:
+    async def _run() -> None:
+        from services.llm.litellm_service import LiteLLMProviderError
+
+        settings = Settings(
+            tsoc_classifier_llm=True,
+            litellm_model="nvidia_nim/openai/gpt-oss-120b",
+            litellm_api_key="sk-test",
+        )
+        provider_err = LiteLLMProviderError(
+            "LLM provider disconnected during the request. The upstream service may be overloaded "
+            "or restarting; retry in a moment.",
+            kind="connection",
+        )
+        with patch(
+            "services.alert.alert_classifier_llm.litellm_chat_completion",
+            new_callable=AsyncMock,
+            side_effect=provider_err,
+        ):
+            out = await classify_alert_hybrid(settings, {}, "alert", [])
+        assert out.recommended_pipeline == "manual_review"
+        assert out.needs_human_routing is True
+        assert "disconnected" in out.reason.lower()
+        assert "manual routing" in out.reason.lower()
 
     asyncio.run(_run())

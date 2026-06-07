@@ -265,6 +265,52 @@ async def test_run_analysis_batch_by_sid_unit(test_settings: Settings) -> None:
 
 
 @pytest.mark.asyncio
+async def test_run_analysis_batch_by_sid_uses_storage_sid_suffix(test_settings: Settings) -> None:
+    from models.analysis import AnalysisBatchBySidRequest
+    from services.soc_analysis.soc_analysis_batch import run_analysis_batch_by_sid
+
+    captured_sids: list[str] = []
+
+    async def _enrich(*args, **kwargs):
+        return {
+            "splunk_results": [
+                {"host": "web-prod-01", "user": "a"},
+                {"host": "web-prod-01", "user": "b"},
+            ],
+        }
+
+    async def _run_analysis(settings, body, **kwargs):
+        captured_sids.append(body.sid)
+        from services.soc_analysis.runner import build_fallback_soc_result
+        from services.soc_analysis.soc_analysis_risk import build_risk_context
+        from models.enrichment import EnrichmentResult
+        from services.alert.alert_identity import enrich_from_inventory
+
+        enrichment = enrich_from_inventory(body.normalized, _USERS, _ASSETS, _RELATIONSHIPS)
+        risk = build_risk_context(enrichment, None, None)
+        return build_fallback_soc_result(
+            enrichment, risk, body.normalized, body.search_name or "", body.splunk_results or []
+        )
+
+    body = AnalysisBatchBySidRequest(sid="test-sid-1", search_name="n", normalized={})
+    with (
+        patch("services.soc_analysis.soc_analysis_batch.enrich_alert_from_splunk", new_callable=AsyncMock) as m,
+        patch("services.soc_analysis.soc_analysis_batch.run_analysis", new_callable=AsyncMock) as run_m,
+    ):
+        m.side_effect = _enrich
+        run_m.side_effect = _run_analysis
+        await run_analysis_batch_by_sid(
+            test_settings,
+            body,
+            users=_USERS,
+            assets=_ASSETS,
+            relationships=_RELATIONSHIPS,
+        )
+
+    assert captured_sids == ["test-sid-1-1", "test-sid-1-2"]
+
+
+@pytest.mark.asyncio
 async def test_run_analysis_batch_respects_max_rows(test_settings: Settings) -> None:
     from models.analysis import AnalysisBatchBySidRequest
     from services.soc_analysis.soc_analysis_batch import run_analysis_batch_by_sid

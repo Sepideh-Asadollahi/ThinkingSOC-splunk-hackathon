@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
+import time
 from collections import OrderedDict
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -41,6 +43,10 @@ if __name__ == "__main__":
 
     try:
         settings = json.loads(sys.stdin.read())
+        sys.stderr.write(
+            "INFO Splunk alert action stdin top_level_keys=%s\n"
+            % sorted(str(k) for k in settings.keys())
+        )
         configuration = settings.get("configuration", {})
         url = configuration.get("url")
         body = OrderedDict(
@@ -55,6 +61,31 @@ if __name__ == "__main__":
         auth_token = (configuration.get("auth_token") or "").strip()
         if auth_token:
             headers["Authorization"] = "Bearer %s" % auth_token
+        result = settings.get("result")
+        result_fp = "-"
+        if isinstance(result, dict):
+            canonical = json.dumps(result, sort_keys=True, default=str)
+            result_fp = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
+            sys.stderr.write(
+                "INFO Splunk alert action invocation ts=%s sid=%s search_name=%s "
+                "result_fingerprint=%s result_keys=%s _time=%s ParentImage=%s\n"
+                % (
+                    time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    settings.get("sid"),
+                    settings.get("search_name"),
+                    result_fp,
+                    sorted(str(k) for k in result.keys()),
+                    result.get("_time"),
+                    result.get("ParentImage"),
+                )
+            )
+        payload = json.dumps(body, indent=2, default=str)
+        sys.stderr.write(
+            "INFO Outgoing ThinkingSOC webhook: ONE HTTP POST per Splunk alert action run "
+            "(Splunk calls this script once per triggered result row). "
+            "url=%s bytes=%d result_fingerprint=%s body=%s\n"
+            % (url, len(json.dumps(body)), result_fp, payload)
+        )
         if not send_webhook_request(url, json.dumps(body), headers):
             sys.exit(2)
     except Exception as exc:

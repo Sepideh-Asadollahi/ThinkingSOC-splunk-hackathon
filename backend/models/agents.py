@@ -19,6 +19,11 @@ class AgentTriageRequest(BaseModel):
     search_name: Optional[str] = None
     sid: Optional[str] = None
     row_index: Optional[int] = Field(default=None, ge=0)
+    job_row_count: Optional[int] = Field(
+        default=None,
+        ge=1,
+        description="Total Splunk job rows when splunk_results is a single-row slice.",
+    )
     splunk_results: List[Dict[str, Any]] = Field(default_factory=list)
     operator_goal: Optional[str] = None
 

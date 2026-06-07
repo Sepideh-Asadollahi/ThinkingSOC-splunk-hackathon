@@ -101,8 +101,56 @@ Post-ingest triage:
 | `TSOC_INGEST_AUTO_ANALYZE=true` | After enrich, run triage in background; HTTP `202` (**default** in `.env.example` and `install.sh`) |
 | `TSOC_INGEST_AUTO_ANALYZE=false` | Persist ingest summary only; HTTP `200` |
 | `TSOC_INGEST_AUTO_ANALYZE_PIPELINE` | `triage` \| `route` \| `none` when auto-analyze is on |
+| `TSOC_INGEST_AUTO_ANALYZE_MAX_ROWS` | Cap per-row triage after ingest (default `50`, max `500`) |
 
 Implementation: `backend/middleware/reject_config_query.py`.
+
+### Multi-row Splunk jobs (per-result-row analysis)
+
+When REST enrichment returns **more than one** result row for a single `sid`, background ingest runs **agent triage once per row**, **sequentially** (row 1 completes, then row 2, …). Each persisted analysis uses a **storage sid**:
+
+| Rows in job | Storage `sid` examples |
+|-------------|------------------------|
+| 1 | `1780870386.6468` (unchanged) |
+| 2+ | `1780870386.6468-1`, `1780870386.6468-2`, … (1-based row suffix) |
+
+- **`splunk_job_sid`** in `raw_alert` keeps the parent Splunk job id for REST re-fetch.
+- **`row_index`** in `tsoc_records` remains 0-based (per-row handoff uses a single-row `splunk_results` slice).
+- If one row fails, ingest continues with the next row unless `stop_on_first_error` is set on the internal helper (ingest uses continue-on-error).
+
+Helpers: `format_row_sid`, `splunk_job_sid` in `backend/services/soc_analysis/analysis_audit.py`. Detection + console log: `detect_splunk_result_row_shape` / `log_splunk_result_row_shape` in `backend/services/alert/ingest_row_shape.py` (stages `after_enrich`, `pre_triage`, `triage_dispatch`). Orchestration: `run_agent_triage_all_rows` in `backend/services/alert/agent_triage.py`.
+
+**Splunk delivery model:** The alert action runs **once per triggered result** and sends **one HTTP POST per row** (same `sid`, different `result` object). Each POST carries a single `result` — not a `results[]` array.
+
+Backend behavior:
+
+1. **Trace** each HTTP POST: `ingest_http_trace` (sequence per `sid`, fingerprint, `delivery_hint=per_row_http_request_same_sid_different_result`).
+2. **REST** still loads the full job (for row index + context).
+3. **Triage** runs **only for the `result` in this HTTP request** (`triage_mode=per_http_request_row`, storage sid `…-1`, `…-2`, …).
+
+When `SPLUNK_USERNAME` / `SPLUNK_PASSWORD` are set, REST fetch runs for job context; it does **not** mean all REST rows are analyzed on every HTTP POST.
+
+Debug logs (`TSOC_INGEST_LOG_RAW_WEBHOOK_BODY=true`, default on):
+
+```text
+INFO ingest_webhook_raw_json stage=webhook_received byte_len=... body={"sid":"...","search_name":"...","result":{...}}
+INFO ingest_webhook_raw_pretty stage=webhook_received
+{
+  "sid": "scheduler__admin__search__...",
+  "search_name": "New TesT",
+  "app": "ThinkingSOC_Hackathon",
+  "owner": "admin",
+  "results_link": "...",
+  "result": { "Computer": "...", "User": "...", "_time": "..." }
+}
+INFO ingest_webhook_payload stage=webhook_received has_result_object=True results_array_len=0 ...
+INFO ingest enrich sid=scheduler__... webhook_inline_rows=1 splunk_rest_rows=2 decision=use_splunk_rest
+INFO ingest_row_shape stage=after_enrich multi_row=true total_rows=2 ...
+```
+
+The Splunk alert action also prints the same JSON to **stderr** (`search.log` / alert executor): `Outgoing ThinkingSOC webhook JSON body:`.
+
+Manual batch APIs (`POST /analysis/run-by-sid`, `POST /observability/run-by-sid`) apply the same storage-sid suffix when persisting per-row results.
 
 ## Application → Splunk (data enrichment)
 

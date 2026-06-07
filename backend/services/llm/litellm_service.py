@@ -55,6 +55,8 @@ def _connection_indicators(text: str) -> bool:
         token in lower
         for token in (
             "connection error",
+            "cannot connect to host",
+            "connect call failed",
             "server disconnected",
             "connection refused",
             "connection reset",
@@ -164,6 +166,9 @@ async def litellm_chat_completion(
     # Lazy import so tests can patch `litellm.acompletion` without importing litellm at collection time.
     import litellm
 
+    # Avoid litellm printing "Give Feedback / Get Help" to stdout on provider errors.
+    litellm.suppress_debug_info = True
+
     mid = (model or settings.litellm_model or "").strip()
     if not mid:
         raise LiteLLMNotConfiguredError("LITELLM_MODEL is not set")
@@ -203,7 +208,7 @@ async def litellm_chat_completion(
             mapped.retryable,
             mapped,
         )
-        raise mapped from e
+        raise mapped
 
     choice = response.choices[0]
     message = choice.message

@@ -154,6 +154,8 @@ See [02-integration-boundaries.md](./02-integration-boundaries.md) for webhook a
 |----------|---------|-------------|
 | `TSOC_INGEST_AUTO_ANALYZE` | `true` | After webhook enrich, run triage in background (`202` response). Not overridable via URL. |
 | `TSOC_INGEST_AUTO_ANALYZE_PIPELINE` | `triage` | Pipeline when auto-analyze is on: `triage` \| `route` \| `none`. |
+| `TSOC_INGEST_AUTO_ANALYZE_MAX_ROWS` | `50` | Max Splunk result rows to analyze per ingest job (sequential per-row triage; 1–500). |
+| `TSOC_INGEST_LOG_RAW_WEBHOOK_BODY` | `true` | Log full Splunk webhook JSON (`ingest_webhook_raw_json` + pretty multiline) to backend console. |
 | `TSOC_INGEST_TOKEN` | *(empty)* | Optional shared secret for Bearer auth on ingest routes. See [TSOC_INGEST_TOKEN](#tsoc_ingest_token-optional-ingest-auth) below. |
 | `TSOC_ALERT_LOG_PATH` | — | Append each enriched payload as one JSON line per file. |
 | `TSOC_CLASSIFIER_LLM` | `true` | Classify alerts via LLM (full payload). |

@@ -7,13 +7,13 @@ from typing import Any, Dict, List, Optional
 from models.agentic_ops import AlertClassificationResult
 
 
-def classify_alert_unavailable() -> AlertClassificationResult:
+def classify_alert_unavailable(*, reason: str | None = None) -> AlertClassificationResult:
     """Return manual review when LiteLLM classification cannot run."""
     return AlertClassificationResult(
         track="unknown",
         recommended_pipeline="manual_review",
         confidence=0.0,
-        reason="LLM classifier unavailable; manual routing required.",
+        reason=reason or "LLM classifier unavailable; manual routing required.",
         signals=[],
         needs_human_routing=True,
         classification_source="rules",

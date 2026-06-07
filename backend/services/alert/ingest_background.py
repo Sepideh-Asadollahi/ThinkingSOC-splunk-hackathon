@@ -2,14 +2,19 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import traceback
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from config import Settings
 from models.agents import AgentTriageRequest
 from models.handoff import SplunkAlertIngest
-from services.alert.agent_triage import run_agent_triage
+from services.alert.agent_triage import run_agent_triage, run_agent_triage_all_rows
+from services.alert.ingest_request_trace import match_webhook_row_to_rest_index
+from services.alert.ingest_row_shape import detect_splunk_result_row_shape, log_splunk_result_row_shape
+from services.soc_analysis.analysis_audit import format_row_sid, splunk_job_sid
+from services.soc_analysis.soc_analysis_batch import merge_normalized_for_row
 from services.soc_rag.index_writer import schedule_alert_index
 from services.splunk_json_store import persist_splunk_ingest_summary, submit_hec_event
 
@@ -35,6 +40,106 @@ async def persist_ingest_background_error(
     )
 
 
+async def run_triage_for_ingest(
+    settings: Settings,
+    handoff: SplunkAlertIngest,
+    enriched: Dict[str, Any],
+    *,
+    ingest_trace: Optional[Dict[str, Any]] = None,
+) -> None:
+    """
+    Run triage for this ingest.
+
+    Splunk often sends **one HTTP POST per result row** (same ``sid``, different ``result``).
+    In that case we analyze **only the row in this request**, not every REST row again.
+    """
+    rest_rows: List[Dict[str, Any]] = list(enriched.get("splunk_results") or [])
+    webhook_rows: List[Dict[str, Any]] = [r for r in handoff.results if isinstance(r, dict)]
+    max_rows = int(getattr(settings, "tsoc_ingest_auto_analyze_max_rows", 50) or 50)
+    base_sid = splunk_job_sid(handoff.sid) or (handoff.sid or "")
+    trace = ingest_trace or {}
+
+    if len(webhook_rows) == 1:
+        webhook_row = webhook_rows[0]
+        idx, match_method = match_webhook_row_to_rest_index(webhook_row, rest_rows)
+        target_row = rest_rows[idx] if rest_rows and 0 <= idx < len(rest_rows) else webhook_row
+        job_row_count = max(len(rest_rows), 1)
+        storage_sid = format_row_sid(base_sid, idx, job_row_count)
+        merged = merge_normalized_for_row(handoff.normalized or {}, target_row)
+
+        shape = detect_splunk_result_row_shape(
+            sid=storage_sid,
+            total_rows=1,
+            max_rows=1,
+        )
+        log_splunk_result_row_shape(
+            stage="pre_triage_per_http_row",
+            search_name=handoff.search_name,
+            shape=shape,
+            log=logger,
+        )
+        logger.info(
+            "post_ingest triage_mode=per_http_request_row trace_id=%s delivery_hint=%s "
+            "request_seq_for_sid=%s storage_sid=%s rest_job_rows=%d rest_row_index=%d "
+            "row_match_method=%s webhook_fingerprint=%s analyzing_only_this_http_row=true",
+            trace.get("trace_id"),
+            trace.get("delivery_hint"),
+            trace.get("request_seq_for_sid"),
+            storage_sid,
+            len(rest_rows),
+            idx,
+            match_method,
+            trace.get("result_fingerprint"),
+        )
+        logger.info(
+            "post_ingest triage_row_payload trace_id=%s storage_sid=%s target_row=%s",
+            trace.get("trace_id"),
+            storage_sid,
+            json.dumps(target_row, ensure_ascii=False, default=str)[:4000],
+        )
+
+        body = AgentTriageRequest(
+            normalized=merged,
+            search_name=handoff.search_name,
+            sid=storage_sid,
+            splunk_results=[target_row],
+            row_index=idx,
+            job_row_count=job_row_count,
+        )
+        await run_agent_triage(settings, body)
+        return
+
+    row_shape = detect_splunk_result_row_shape(
+        sid=handoff.sid,
+        total_rows=len(rest_rows),
+        max_rows=max_rows,
+    )
+    log_splunk_result_row_shape(
+        stage="pre_triage_batch",
+        search_name=handoff.search_name,
+        shape=row_shape,
+        log=logger,
+    )
+    logger.info(
+        "post_ingest triage_mode=batch_all_rest_rows trace_id=%s delivery_hint=%s rest_rows=%d",
+        trace.get("trace_id"),
+        trace.get("delivery_hint"),
+        len(rest_rows),
+    )
+
+    norm = handoff.normalized or {}
+    if not norm and rest_rows:
+        norm = dict(rest_rows[0])
+
+    body = AgentTriageRequest(
+        normalized=norm,
+        search_name=handoff.search_name,
+        sid=handoff.sid,
+        splunk_results=rest_rows,
+    )
+    await run_agent_triage_all_rows(settings, body, max_rows=max_rows)
+
+
 async def run_post_ingest(
     settings: Settings,
     handoff: SplunkAlertIngest,
@@ -43,6 +148,16 @@ async def run_post_ingest(
     auto_analyze: bool,
 ) -> None:
     """Run after webhook enrich: persist ingest summary and optional triage pipeline."""
+    ingest_trace = enriched.get("_ingest_http_trace")
+    if isinstance(ingest_trace, dict):
+        logger.info(
+            "post_ingest start trace_id=%s sid=%s delivery_hint=%s request_seq_for_sid=%s",
+            ingest_trace.get("trace_id"),
+            handoff.sid,
+            ingest_trace.get("delivery_hint"),
+            ingest_trace.get("request_seq_for_sid"),
+        )
+
     try:
         await persist_splunk_ingest_summary(
             settings,
@@ -73,19 +188,14 @@ async def run_post_ingest(
         )
         return
 
-    rows = list(enriched.get("splunk_results") or [])
-    norm = handoff.normalized or {}
-    if not norm and rows:
-        norm = dict(rows[0])
-
-    body = AgentTriageRequest(
-        normalized=norm,
-        search_name=handoff.search_name,
-        sid=handoff.sid,
-        splunk_results=rows,
-    )
     try:
-        await run_agent_triage(settings, body)
+        trace_dict = ingest_trace if isinstance(ingest_trace, dict) else None
+        await run_triage_for_ingest(
+            settings,
+            handoff,
+            enriched,
+            ingest_trace=trace_dict,
+        )
     except Exception as e:
         tb = traceback.format_exc()
         logger.warning("post_ingest triage failed sid=%s: %s", handoff.sid, e, exc_info=True)

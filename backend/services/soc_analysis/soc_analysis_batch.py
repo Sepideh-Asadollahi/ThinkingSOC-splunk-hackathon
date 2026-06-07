@@ -16,6 +16,7 @@ from models.analysis import (
 from models.handoff import SplunkAlertIngest
 from services.alert.alert_pipeline import enrich_alert_from_splunk
 from services.soc_analysis import append_analysis_log, run_analysis
+from services.soc_analysis.analysis_audit import format_row_sid
 from services.splunk_json_store import persist_analysis_batch_summary_to_splunk
 
 logger = logging.getLogger(__name__)
@@ -76,10 +77,11 @@ async def run_analysis_batch_by_sid(
         t_row = time.perf_counter()
         try:
             merged = merge_normalized_for_row(base_norm, row)
+            storage_sid = format_row_sid(sid, i, total)
             req = AnalysisRunRequest(
                 normalized=merged,
                 search_name=body.search_name,
-                sid=sid,
+                sid=storage_sid,
                 splunk_results=[row],
             )
             result = await run_analysis(

@@ -67,7 +67,8 @@ CREATE TABLE IF NOT EXISTS tsoc_records (
 | `tsoc_record_type` | Discriminator — see record types below |
 | `sid` | Splunk search job ID (links all records for one alert) |
 | `search_name` | Splunk saved search / alert name |
-| `row_index` | Which result row in the Splunk job (multi-row alerts) |
+| `row_index` | Which result row in the Splunk job (0-based; per-row ingest uses `0` with a single-row slice) |
+| `sid` | Storage id; multi-row jobs use `{splunk_job_sid}-{n}` suffix (`n` 1-based) when analyzed per row |
 | `payload` | Full structured JSON — schema varies by record type |
 
 **Record types:**

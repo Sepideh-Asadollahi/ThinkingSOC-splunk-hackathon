@@ -177,6 +177,9 @@ routes/analysis.py (run or route)
 | Path | Covers |
 |------|--------|
 | `backend/tests/test_ingest_background.py` | Env-driven auto triage + rejected config query params |
+| `backend/tests/test_sid_row_format.py` | `format_row_sid` / `splunk_job_sid` / `raw_alert` storage sid |
+| `backend/tests/test_agent_triage_all_rows.py` | Sequential per-row ingest triage |
+| `backend/tests/test_ingest_row_shape.py` | Multi-row detection + `ingest_row_shape` console logs |
 | `backend/tests/test_reject_config_query.py` | Config query middleware |
 | `backend/tests/test_inventory_api.py` | Inventory REST |
 | `backend/tests/test_*mcp*` | MCP client behavior |

@@ -15,6 +15,7 @@ from models.observability import (
 )
 from services.alert.alert_pipeline import enrich_alert_from_splunk
 from services.observability_analysis import run_observability_analysis
+from services.soc_analysis.analysis_audit import format_row_sid
 
 logger = logging.getLogger(__name__)
 
@@ -57,10 +58,11 @@ async def run_observability_batch_by_sid(
     for i, row in enumerate(slice_rows):
         try:
             merged = merge_normalized_for_row(base_norm, row)
+            storage_sid = format_row_sid(sid, i, total)
             req = ObservabilityRunRequest(
                 normalized=merged,
                 search_name=body.search_name,
-                sid=sid,
+                sid=storage_sid,
                 splunk_results=[row],
             )
             result = await run_observability_analysis(

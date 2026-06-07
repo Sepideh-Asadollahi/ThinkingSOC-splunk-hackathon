@@ -338,6 +338,8 @@ Combines in one response:
 
 Used by **background ingest** when `TSOC_INGEST_AUTO_ANALYZE_PIPELINE=triage`.
 
+**Multi-row ingest:** `run_agent_triage_all_rows` (`backend/services/alert/agent_triage.py`) runs triage **sequentially** for each Splunk result row (up to `TSOC_INGEST_AUTO_ANALYZE_MAX_ROWS`). Storage sid becomes `{job_sid}-1`, `{job_sid}-2`, … when the job has multiple rows; single-row jobs keep the original sid. See [02-integration-boundaries.md](./02-integration-boundaries.md) § Multi-row Splunk jobs.
+
 ## AI technology stack
 
 | Layer | Technology | Location |
@@ -373,6 +375,7 @@ Query via `GET /api/v1/storage/events?sid=...&record_type=...`.
 | `TSOC_CLASSIFIER_LLM` | LLM-only alert router (full payload) |
 | `TSOC_INGEST_AUTO_ANALYZE` | Webhook background triage (`true` default; `.env` only) |
 | `TSOC_INGEST_AUTO_ANALYZE_PIPELINE` | `triage` / `route` / `none` |
+| `TSOC_INGEST_AUTO_ANALYZE_MAX_ROWS` | Per-ingest cap on sequential per-row triage (default 50) |
 
 ## Related documents
 

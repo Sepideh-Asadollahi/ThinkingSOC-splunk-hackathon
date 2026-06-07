@@ -117,6 +117,17 @@ Backend normalizes into `SplunkAlertIngest`. Optional bearer: `Authorization: Be
 | `200 OK` | `TSOC_INGEST_AUTO_ANALYZE=false` — ingest summary persisted only |
 | `400 Bad Request` | Request includes config-style query parameters |
 
+### Multi-row jobs
+
+Splunk may return multiple statistics/events for one search (e.g. `| stats … | head 2`). After enrich:
+
+1. `run_post_ingest` → `run_agent_triage_all_rows` loops rows **in order** (await per row).
+2. Each row gets a full Security or Observability pipeline + triage + PostgreSQL records.
+3. Storage `sid` = `{job_sid}-{n}` when `n > 1` rows exist (`n` is 1-based); single-row jobs keep `sid` as-is.
+4. Cap: `TSOC_INGEST_AUTO_ANALYZE_MAX_ROWS` (default 50).
+
+`raw_alert.splunk_job_sid` preserves the Splunk REST job id; strip row suffix before `GET .../jobs/{sid}/results`.
+
 ## 5. Analysis output contracts
 
 ### Security (`soc_analysis`)

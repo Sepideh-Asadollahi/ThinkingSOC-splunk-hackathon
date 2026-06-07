@@ -40,6 +40,9 @@ class Settings(BaseSettings):
     # Ingest: optional background triage after webhook enrich.
     tsoc_ingest_auto_analyze: bool = True
     tsoc_ingest_auto_analyze_pipeline: Literal["triage", "route", "none"] = "triage"
+    tsoc_ingest_auto_analyze_max_rows: int = Field(default=50, ge=1, le=500)
+    # Log complete Splunk webhook JSON to console (ingest_webhook_raw_json / _raw_pretty).
+    tsoc_ingest_log_raw_webhook_body: bool = True
 
     # Alert router: LLM-only classification (manual_review fallback when LLM unavailable).
     tsoc_classifier_llm: bool = True

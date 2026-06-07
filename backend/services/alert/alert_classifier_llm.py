@@ -12,7 +12,11 @@ from config import Settings
 from models.agentic_ops import AlertClassificationResult
 from models.mcp import McpAlertContext
 from services.alert.alert_classifier import classify_alert_unavailable
-from services.llm.litellm_service import LiteLLMNotConfiguredError, litellm_chat_completion
+from services.llm.litellm_service import (
+    LiteLLMNotConfiguredError,
+    LiteLLMProviderError,
+    litellm_chat_completion,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -235,9 +239,25 @@ async def classify_alert_hybrid(
 
     try:
         return ensure_exclusive_classification(await _classify_with_llm(settings, payload))
-    except (LiteLLMNotConfiguredError, json.JSONDecodeError, ValueError) as e:
-        logger.warning("classifier_llm fallback to manual_review: %s", e)
-        return classify_alert_unavailable()
+    except LiteLLMNotConfiguredError as e:
+        logger.warning("classifier_llm not configured, fallback to manual_review: %s", e)
+        return classify_alert_unavailable(reason=str(e))
+    except LiteLLMProviderError as e:
+        logger.warning(
+            "classifier_llm provider error (%s) fallback to manual_review: %s",
+            e.kind,
+            e,
+        )
+        return classify_alert_unavailable(
+            reason="{0} Manual routing required.".format(e),
+        )
+    except (json.JSONDecodeError, ValueError) as e:
+        logger.warning("classifier_llm invalid LLM output, fallback to manual_review: %s", e)
+        return classify_alert_unavailable(
+            reason="LLM classifier returned invalid output; manual routing required.",
+        )
     except Exception as e:
-        logger.warning("classifier_llm error fallback to manual_review: %s", e, exc_info=True)
-        return classify_alert_unavailable()
+        logger.warning("classifier_llm unexpected error fallback to manual_review: %s", e)
+        return classify_alert_unavailable(
+            reason="LLM classifier failed unexpectedly; manual routing required.",
+        )

@@ -16,6 +16,16 @@ from services.correlation_integration import upsert_webhook_alert_to_graph
 from models.handoff import SplunkAlertIngest, normalize_splunk_ingest_payload
 from services.alert.alert_pipeline import enrich_alert_from_splunk
 from services.alert.ingest_background import run_post_ingest
+from services.alert.ingest_row_shape import detect_splunk_result_row_shape, log_splunk_result_row_shape
+from services.alert.ingest_request_trace import (
+    build_rest_row_match_debug,
+    log_ingest_delivery_summary,
+    log_ingest_http_trace,
+    match_webhook_row_to_rest_index,
+    record_ingest_http_trace,
+)
+from services.alert.ingest_webhook_payload import log_ingest_webhook_payload
+from services.soc_analysis.analysis_audit import format_row_sid, splunk_job_sid
 from services.soc_rag.index_writer import schedule_alert_index
 from services.splunk_json_store import persist_splunk_ingest_summary
 
@@ -34,7 +44,33 @@ async def splunk_ingest(
     background_tasks: BackgroundTasks,
     settings: Settings = Depends(get_settings),
 ):
+    trace_id = http_rid(request) or str(uuid.uuid4())
+    client_host = request.client.host if request.client else "-"
+    content_length = request.headers.get("content-length", "-")
+    user_agent = request.headers.get("user-agent", "-")
     handoff = normalize_splunk_ingest_payload(body)
+    logger.info(
+        "ingest_http_request_received trace_id=%s method=POST path=/alerts/splunk-ingest "
+        "client=%s content_length=%s user_agent=%s",
+        trace_id,
+        client_host,
+        content_length,
+        user_agent,
+    )
+    ingest_trace = record_ingest_http_trace(
+        trace_id=trace_id,
+        client_host=client_host,
+        raw_body=body,
+        handoff=handoff,
+    )
+    log_ingest_http_trace(ingest_trace, log=logger)
+    log_ingest_webhook_payload(
+        stage="webhook_received",
+        raw_body=body,
+        handoff=handoff,
+        log=logger,
+        log_full_raw_body=bool(getattr(settings, "tsoc_ingest_log_raw_webhook_body", True)),
+    )
     t0 = time.perf_counter()
     do_analyze = bool(settings.tsoc_ingest_auto_analyze)
 
@@ -62,6 +98,78 @@ async def splunk_ingest(
         )
         raise map_exception(e, context="splunk ingest") from e
 
+    row_count = int(enriched.get("splunk_results_row_count") or 0)
+    enriched["_ingest_http_trace"] = ingest_trace
+    webhook_rows = [r for r in handoff.results if isinstance(r, dict)]
+    rest_rows = list(enriched.get("splunk_results") or [])
+    this_request_analyze = 1
+    planned_this_request: list[str] = []
+    match_debug: dict | None = None
+    triage_mode = "batch"
+    if len(webhook_rows) == 1:
+        base_sid = splunk_job_sid(handoff.sid) or handoff.sid
+        match_debug = build_rest_row_match_debug(webhook_rows[0], rest_rows)
+        idx = int(match_debug.get("matched_rest_index") or 0)
+        job_n = max(len(rest_rows), 1)
+        planned_this_request = [format_row_sid(base_sid, idx, job_n)]
+        this_request_analyze = 1
+        triage_mode = "per_http_request_row"
+        row_shape = detect_splunk_result_row_shape(
+            sid=planned_this_request[0],
+            total_rows=1,
+            max_rows=1,
+        )
+        logger.info(
+            "ingest_triage_plan trace_id=%s triage_mode=per_http_request_row "
+            "webhook_rows_in_body=1 rest_job_rows=%d matched_rest_index=%d "
+            "row_match_method=%s planned_storage_sid=%s delivery_hint=%s",
+            trace_id,
+            len(rest_rows),
+            idx,
+            match_debug.get("match_method"),
+            planned_this_request[0],
+            ingest_trace.get("delivery_hint"),
+        )
+    else:
+        row_shape = detect_splunk_result_row_shape(
+            sid=handoff.sid,
+            total_rows=row_count,
+            max_rows=int(getattr(settings, "tsoc_ingest_auto_analyze_max_rows", 50) or 50),
+        )
+        this_request_analyze = int(row_shape.get("rows_to_analyze") or 0)
+        planned_this_request = list(row_shape.get("planned_storage_sids") or [])
+        triage_mode = "batch"
+        logger.info(
+            "ingest_triage_plan trace_id=%s triage_mode=batch webhook_rows_in_body=%d "
+            "rest_job_rows=%d rows_to_analyze=%d planned_storage_sids=%s",
+            trace_id,
+            len(webhook_rows),
+            len(rest_rows),
+            this_request_analyze,
+            planned_this_request,
+        )
+    log_ingest_delivery_summary(
+        ingest_trace,
+        match_debug=match_debug,
+        planned_storage_sid=planned_this_request[0] if planned_this_request else None,
+        triage_mode=triage_mode,
+        log=logger,
+    )
+    log_ingest_webhook_payload(
+        stage="after_enrich",
+        raw_body=body,
+        handoff=handoff,
+        log=logger,
+        enrichment_source=str(enriched.get("enrichment_source") or ""),
+        rest_row_count=row_count,
+    )
+    log_splunk_result_row_shape(
+        stage="after_enrich",
+        search_name=handoff.search_name,
+        shape=row_shape,
+        log=logger,
+    )
+
     try:
         await upsert_webhook_alert_to_graph(body)
     except Exception as exc:
@@ -85,7 +193,14 @@ async def splunk_ingest(
                 "job_id": job_id,
                 "sid": handoff.sid,
                 "search_name": handoff.search_name,
-                "splunk_results_row_count": enriched.get("splunk_results_row_count"),
+                "splunk_results_row_count": row_count,
+                "multi_row": row_shape["multi_row"],
+                "rows_to_analyze": this_request_analyze,
+                "planned_storage_sids": planned_this_request,
+                "splunk_job_row_count": row_count,
+                "ingest_http_trace": ingest_trace,
+                "triage_mode": triage_mode,
+                "rest_row_match": match_debug,
                 "auto_analyze": True,
             },
         )

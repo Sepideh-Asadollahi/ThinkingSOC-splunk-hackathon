@@ -18,7 +18,7 @@ After installing/reloading the app, configure each alert:
 2. **Backend URL:** `http://127.0.0.1:9876/api/v1/alerts/splunk-ingest` (or your backend host)
 3. **Bearer token:** see [Ingest token](#ingest-token-tsoc_ingest_token) below
 
-Webhook payload from Splunk includes `sid` and first result row under `result`; backend normalizes this payload and fetches full rows from Splunk REST by `sid`.
+Webhook payload from Splunk includes `sid` and **only the first** result row under `result` (see `bin/thinkingsoc_hackathon.py`). The backend logs that object (`ingest_webhook_payload`) and, when `SPLUNK_USERNAME` / `SPLUNK_PASSWORD` are set in `backend/.env`, **fetches all job rows via Splunk REST** by `sid` — required for multi-row searches (e.g. `| head 2`).
 
 ## Auto ingestion (default)
 

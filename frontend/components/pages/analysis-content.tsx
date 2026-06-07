@@ -223,6 +223,18 @@ export function AnalysisContent() {
         cell: (row) => String(row.search_name ?? "—"),
       },
       {
+        id: "row",
+        header: "Row",
+        sortable: true,
+        sortValue: (row) => Number(row.row_index ?? -1),
+        cell: (row) => {
+          const ri = row.row_index
+          if (ri == null || ri === "") return "—"
+          const n = Number(ri)
+          return Number.isFinite(n) ? String(n + 1) : "—"
+        },
+      },
+      {
         id: "sid",
         header: "SID",
         sortable: true,

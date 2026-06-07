@@ -112,6 +112,15 @@ async def submit_hec_event(settings, event: Dict) -> bool
 
 Each persist helper (e.g., `persist_soc_analysis_to_splunk`) assembles the `event` dict with the appropriate `tsoc_record_type` and structured payload, then calls `submit_hec_event`.
 
+### Multi-row storage `sid`
+
+When one Splunk search job produces multiple result rows and each row is analyzed separately, the **`sid` column** (and payload `sid` field) uses a row suffix:
+
+- One row: `scheduler__admin__search__foo_at_1715000000.1`
+- Multiple rows: `…1715000000.1-1`, `…1715000000.1-2`, … (1-based)
+
+`raw_alert.splunk_job_sid` in audit payloads holds the parent job id for Splunk REST. Query timeline by storage `sid` or filter `row_index` on the parent job via storage API.
+
 ---
 
 ## 4. Read path
