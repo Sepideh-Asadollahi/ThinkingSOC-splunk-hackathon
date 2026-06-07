@@ -1,0 +1,20 @@
+{
+  "sid": "scheduler_admin_search_W2_at_14232356_132",
+  "search_name": "Brute Force - Failed Logins",
+  "owner": "admin",
+  "app": "search",
+  "results_link": "http://127.0.0.1:8000/en-US/app/search/@go?sid=scheduler_admin_search_W2_at_14232356_132",
+  "result": {
+    "_time": "2026-05-16T10:15:00.000Z",
+    "host": "dc-01",
+    "src": "8.8.8.8",
+    "src_ip": "8.8.8.8",
+    "dest": "dc-01",
+    "domain": "www.google.com",
+    "user": "svc_backup",
+    "severity": "high",
+    "signature": "Possible brute force",
+    "signature_id": "T1110",
+    "count": "47"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "sid": "scheduler__admin__search__t8372_phish_at_1727841600.1",
+  "search_name": "Proofpoint: Malicious URL Click (t8372)",
+  "app": "search",
+  "owner": "admin",
+  "server_uri": "https://127.0.0.1:8089",
+  "results_link": "http://127.0.0.1:8000/en-US/app/search/@go?sid=scheduler__admin__search__t8372_phish_at_1727841600.1",
+  "result": {
+    "_time": "2024-10-02T04:00:00Z",
+    "index": "proofpoint",
+    "sourcetype": "proofpoint:tap",
+    "host": "DESKTOP-BRUCE",
+    "user": "WAYNECORPINC\\bwayne",
+    "url": "https://secure-document-portal.com/shared/view?id=jkl982hda",
+    "domain": "secure-document-portal.com",
+    "src_ip": "203.0.113.111",
+    "src": "203.0.113.111",
+    "severity": "high",
+    "signature": "Proofpoint TAP — user clicked malicious URL",
+    "signature_id": "T1566"
+  }
+}

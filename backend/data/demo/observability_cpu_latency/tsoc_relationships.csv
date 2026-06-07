@@ -1,0 +1,2 @@
+relationship_id,user_id,asset_id,description
+rel-obs-web-prod-01,platform-ops,obs-web-prod-01,Primary ops owner — payment-api on web-prod-01

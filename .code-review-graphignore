@@ -1,0 +1,13 @@
+# Exclude vendored and generated trees (no git — full filesystem scan)
+**/.venv/**
+**/node_modules/**
+**/.pytest_cache/**
+**/__pycache__/**
+**/.next/**
+frontend/**
+submission/**
+project-engineering/**
+scripts/**
+.tools/**
+*.pyc
+*.pyo

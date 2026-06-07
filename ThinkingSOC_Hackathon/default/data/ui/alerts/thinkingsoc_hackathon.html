@@ -1,0 +1,24 @@
+<form class="form-horizontal form-complex">
+    <div class="control-group">
+        <label class="control-label" for="thinkingsoc_hackathon_url">Backend URL <span class="required">*</span></label>
+        <div class="controls">
+            <input type="text" class="input-xlarge" name="action.thinkingsoc_hackathon.param.url"
+                   id="thinkingsoc_hackathon_url"
+                   placeholder="http://127.0.0.1:9876/api/v1/alerts/splunk-ingest" />
+            <span class="help-block">
+                ThinkingSOC backend ingest endpoint. Same machine: <code>http://127.0.0.1:9876/api/v1/alerts/splunk-ingest</code>
+            </span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="thinkingsoc_hackathon_auth_token">Bearer token</label>
+        <div class="controls">
+            <input type="password" class="input-xlarge" name="action.thinkingsoc_hackathon.param.auth_token"
+                   id="thinkingsoc_hackathon_auth_token"
+                   placeholder="Optional — only when TSOC_INGEST_TOKEN is set" />
+            <span class="help-block">
+                Optional. Set when backend <code>TSOC_INGEST_TOKEN</code> is configured.
+            </span>
+        </div>
+    </div>
+</form>

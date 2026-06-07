@@ -1,0 +1,9 @@
+{
+  "search_name": "Host CPU spike with latency",
+  "normalized": {
+    "host": "web-prod-01",
+    "service": "payment-api",
+    "cpu": 95,
+    "latency_ms": 1800
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "sid": "REPLACE_WITH_SPLUNK_JOB_SID",
+  "search_name": "Host CPU spike with latency - payment-api (web-prod-01)",
+  "app": "search",
+  "owner": "admin",
+  "results_link": "http://127.0.0.1:8000/en-US/app/search/@go?sid=REPLACE_WITH_SPLUNK_JOB_SID",
+  "result": {
+    "_time": "2026-05-22T14:32:00.000Z",
+    "index": "main",
+    "source": "metrics:payment-api",
+    "sourcetype": "tsoc:service_metrics",
+    "host": "web-prod-01",
+    "service": "payment-api",
+    "cpu": 97.4,
+    "cpu_pct": 97.4,
+    "memory": 88.2,
+    "memory_pct": 88.2,
+    "latency_ms": 2200,
+    "p95_latency_ms": 2200,
+    "error_rate": 0.12,
+    "status_code": 503,
+    "timeout": 30,
+    "throughput_rps": 42,
+    "availability": "degraded",
+    "dependency": "postgres-primary",
+    "queue_depth": 1840,
+    "severity": "high",
+    "alert_type": "cpu_latency_threshold",
+    "orig_search": "index=main sourcetype=tsoc:service_metrics service=payment-api (cpu_pct>90 OR p95_latency_ms>1500) | stats avg(cpu_pct) as cpu avg(p95_latency_ms) as latency_ms avg(error_rate) as error_rate max(queue_depth) as queue_depth by host, service"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "demo_mode": "full",
+  "record_limit": null,
+  "correlation_limit": null,
+  "snapshot_at": "2026-06-07T19:27:20.918592+00:00",
+  "tables": [
+    {
+      "name": "tsoc_users",
+      "rows": 7,
+      "file": "tsoc_users.json"
+    },
+    {
+      "name": "tsoc_assets",
+      "rows": 7,
+      "file": "tsoc_assets.json"
+    },
+    {
+      "name": "tsoc_relationships",
+      "rows": 10,
+      "file": "tsoc_relationships.json"
+    },
+    {
+      "name": "tsoc_identity_rules",
+      "rows": 3,
+      "file": "tsoc_identity_rules.json"
+    },
+    {
+      "name": "tsoc_records",
+      "rows": 82,
+      "file": "tsoc_records.json"
+    },
+    {
+      "name": "tsoc_rag_documents",
+      "rows": 39,
+      "file": "tsoc_rag_documents.json"
+    },
+    {
+      "name": "graph_findings",
+      "rows": 1,
+      "file": "graph_findings.json"
+    }
+  ]
+}

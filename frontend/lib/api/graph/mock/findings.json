@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": "7fda487b-c5fe-4b88-b153-0958d74e4aec",
+      "display_id": "GF-0007",
+      "finding_type": "smart_attack_discovery",
+      "title": "Phishing-Driven RDP and PsExec Lateral Movement on SERVER01",
+      "summary": "User jdoe clicked a malicious email link, later logged into SERVER01, opened an RDP session, and used PsExec to move laterally.",
+      "risk_score": 67,
+      "created_at": "2026-06-07T19:36:08.029624+00:00",
+      "ticket_status": "open",
+      "owner": "unassigned",
+      "updated_at": "2026-06-07T19:36:08.029624+00:00"
+    }
+  ],
+  "total": 1,
+  "limit": 20,
+  "offset": 0
+}

@@ -1,0 +1,6 @@
+{
+  "tool_name": "splunk_run_query",
+  "arguments": {
+    "search_query": "search index=main host=web-prod-01 user=jdoe action=failure | stats count by src, dest"
+  }
+}

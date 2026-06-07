@@ -1,0 +1,92 @@
+{
+  "id": "7fda487b-c5fe-4b88-b153-0958d74e4aec",
+  "display_id": "GF-0007",
+  "finding_type": "smart_attack_discovery",
+  "title": "Phishing-Driven RDP and PsExec Lateral Movement on SERVER01",
+  "summary": "User jdoe clicked a malicious email link, later logged into SERVER01, opened an RDP session, and used PsExec to move laterally.",
+  "risk_score": 67,
+  "created_at": "2026-06-07T19:36:08.029624+00:00",
+  "ticket_status": "open",
+  "owner": "unassigned",
+  "updated_at": "2026-06-07T19:36:08.029624+00:00",
+  "details": {
+    "incident_id": "incident-b0dfa536",
+    "incident_title": "Phishing-Driven RDP and PsExec Lateral Movement on SERVER01",
+    "executive_summary": "On 2026-06-02, jdoe@corp.local clicked a malicious link in an email, establishing initial foothold. Over the following days the account performed an unusual login to SERVER01, initiated a suspicious RDP session, and finally leveraged PsExec over SMB to execute commands on the server, illustrating a multi‑stage lateral movement campaign targeting a critical host.",
+    "attack_analysis_steps": [
+      {
+        "phase_label": "Initial Access",
+        "description": "User jdoe@corp.local clicked a malicious link in an email, triggering the Suspicious email link detection.",
+        "mitre_tactic_name": "Initial Access",
+        "mitre_technique_id": "T1566",
+        "mitre_technique_name": "Phishing"
+      },
+      {
+        "phase_label": "Lateral Movement",
+        "description": "jdoe@corp.local logged into SERVER01 from an unusual location, raising an Unusual login alert.",
+        "mitre_tactic_name": "Lateral Movement",
+        "mitre_technique_id": "T1078",
+        "mitre_technique_name": "Valid Accounts"
+      },
+      {
+        "phase_label": "Lateral Movement",
+        "description": "jdoe@corp.local initiated an RDP session to SERVER01, which was flagged as Suspicious RDP.",
+        "mitre_tactic_name": "Lateral Movement",
+        "mitre_technique_id": "T1021.001",
+        "mitre_technique_name": "Remote Services: RDP"
+      },
+      {
+        "phase_label": "Lateral Movement",
+        "description": "jdoe@corp.local used PsExec over SMB to execute commands on SERVER01, indicating lateral movement via Windows admin shares.",
+        "mitre_tactic_name": "Lateral Movement",
+        "mitre_technique_id": "T1021.002",
+        "mitre_technique_name": "Remote Services: SMB/Windows Admin Shares"
+      }
+    ],
+    "attack_timeline_trees": [],
+    "key_entities": {
+      "identities": ["username:jdoe@corp.local"],
+      "assets": ["hostname:SERVER01"],
+      "iocs": ["ipv4:203.0.113.50"]
+    },
+    "contributing_alerts": [
+      {
+        "alert_row_id": "ALERT-090",
+        "alert_name": "Suspicious email link",
+        "timestamp": "2026-06-02T19:33:18.910000000+00:00",
+        "threat_status": "closed",
+        "risk_score": 55
+      },
+      {
+        "alert_row_id": "ALERT-099",
+        "alert_name": "Unusual login",
+        "timestamp": "2026-06-05T19:33:18.942000000+00:00",
+        "threat_status": "open",
+        "risk_score": 60
+      },
+      {
+        "alert_row_id": "ALERT-101",
+        "alert_name": "Suspicious RDP",
+        "timestamp": "2026-06-06T19:33:18.947000000+00:00",
+        "threat_status": "open",
+        "risk_score": 75
+      },
+      {
+        "alert_row_id": "ALERT-102",
+        "alert_name": "PsExec lateral movement",
+        "timestamp": "2026-06-06T23:33:18.951000000+00:00",
+        "threat_status": "open",
+        "risk_score": 78
+      }
+    ],
+    "framework_mappings": [],
+    "historical_related_incidents": [
+      { "incident_id": "INC-OLD-001", "shared_entity_count": 2 }
+    ],
+    "recommended_next_steps": ["Review correlated alerts", "Validate entity overlap"],
+    "smart_hunt_queries": [],
+    "aggregated_mitre_techniques": [],
+    "raw_analysis": {},
+    "raw_paths": []
+  }
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "user_id": "NT AUTHORITY\\SYSTEM",
+    "display_name": "NT AUTHORITY\\SYSTEM",
+    "email": null,
+    "department": "Infrastructure",
+    "risk_score": 1,
+    "description": "Windows built-in SYSTEM — matches alert User field",
+    "updated_at": "2026-05-23T18:07:55.448048+00:00"
+  },
+  {
+    "user_id": "SYSTEM",
+    "display_name": "Local SYSTEM (NT AUTHORITY)",
+    "email": null,
+    "department": "Infrastructure",
+    "risk_score": 1,
+    "description": "Service account — Sysmon process context on we8105desk (osk.exe EID 1)",
+    "updated_at": "2026-05-23T18:07:55.437879+00:00"
+  },
+  {
+    "user_id": "WAYNECORPINC\\bwayne",
+    "display_name": "Bruce Wayne",
+    "email": "bruce.wayne@waynecorpinc.local",
+    "department": "Executive",
+    "risk_score": 9,
+    "description": "Primary user on DESKTOP-BRUCE — ATTACKS t8372 campaign",
+    "updated_at": "2026-05-23T18:05:58.507854+00:00"
+  },
+  {
+    "user_id": "asmith",
+    "display_name": "Alice Smith",
+    "email": "asmith@example.com",
+    "department": "Finance",
+    "risk_score": 2,
+    "description": "Sample user",
+    "updated_at": "2026-05-16T14:13:48.186667+00:00"
+  },
+  {
+    "user_id": "jdoe",
+    "display_name": "Jane Doe",
+    "email": "jdoe@example.com",
+    "department": "IT",
+    "risk_score": 3,
+    "description": "Sample user",
+    "updated_at": "2026-05-16T14:13:48.179942+00:00"
+  },
+  {
+    "user_id": "leonard",
+    "display_name": "Leonard Pitt",
+    "email": "leonard.pitt@botsv1.local",
+    "department": "Engineering",
+    "risk_score": 7,
+    "description": "Primary interactive user on we8105desk; elevated after LOLBAS (T1218) activity",
+    "updated_at": "2026-05-23T18:07:55.456895+00:00"
+  },
+  {
+    "user_id": "platform-ops",
+    "display_name": "Platform Ops on-call",
+    "email": "ops@corp.local",
+    "department": "Infrastructure",
+    "risk_score": 2,
+    "description": "SRE owner for web-prod-01 / payment-api",
+    "updated_at": "2026-05-22T17:43:49.292783+00:00"
+  }
+]

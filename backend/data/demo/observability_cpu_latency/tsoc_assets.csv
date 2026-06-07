@@ -1,0 +1,2 @@
+asset_id,asset_type,hostname,fqdn,ip,owner,criticality,risk_score,description
+obs-web-prod-01,server,web-prod-01,web-prod-01.corp.local,10.0.0.5,platform-ops,high,4,Payment API host — matches scripts/samples/splunk-webhook-observability-cpu-latency.json

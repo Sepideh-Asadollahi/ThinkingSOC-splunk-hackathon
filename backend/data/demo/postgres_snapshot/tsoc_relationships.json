@@ -1,0 +1,72 @@
+[
+  {
+    "relationship_id": "rel-asmith-srv-db-01",
+    "user_id": "asmith",
+    "asset_id": "srv-db-01",
+    "description": "Auto-linked from inventory (asset owner: dba)",
+    "updated_at": "2026-05-18T15:02:26.075381+00:00"
+  },
+  {
+    "relationship_id": "rel-botsv1-leonard-desk",
+    "user_id": "leonard",
+    "asset_id": "botsv1-we8105desk",
+    "description": "Primary user on we8105desk",
+    "updated_at": "2026-05-20T22:42:17.551235+00:00"
+  },
+  {
+    "relationship_id": "rel-botsv1-ntsystem-desk",
+    "user_id": "NT AUTHORITY\\SYSTEM",
+    "asset_id": "botsv1-we8105desk",
+    "description": "Matches alert User=NT AUTHORITY\\SYSTEM on same host",
+    "updated_at": "2026-05-20T22:44:02.643630+00:00"
+  },
+  {
+    "relationship_id": "rel-botsv1-system-desk",
+    "user_id": "SYSTEM",
+    "asset_id": "botsv1-we8105desk",
+    "description": "Process context on endpoint (Sysmon EID 1)",
+    "updated_at": "2026-05-20T22:42:17.556243+00:00"
+  },
+  {
+    "relationship_id": "rel-jdoe-asset-dup-a",
+    "user_id": "jdoe",
+    "asset_id": "asset-dup-a",
+    "description": "Auto-linked from inventory (asset owner: ops)",
+    "updated_at": "2026-05-18T15:02:26.067654+00:00"
+  },
+  {
+    "relationship_id": "rel-jdoe-asset-dup-b",
+    "user_id": "jdoe",
+    "asset_id": "asset-dup-b",
+    "description": "Auto-linked from inventory (asset owner: ops)",
+    "updated_at": "2026-05-18T15:02:26.072596+00:00"
+  },
+  {
+    "relationship_id": "rel-jdoe-srv-web-01",
+    "user_id": "jdoe",
+    "asset_id": "srv-web-01",
+    "description": "Auto-linked from inventory (asset owner: ops)",
+    "updated_at": "2026-05-18T15:02:26.077825+00:00"
+  },
+  {
+    "relationship_id": "rel-obs-web-prod-01",
+    "user_id": "platform-ops",
+    "asset_id": "obs-web-prod-01",
+    "description": "Primary ops owner — payment-api on web-prod-01",
+    "updated_at": "2026-05-22T17:43:49.304352+00:00"
+  },
+  {
+    "relationship_id": "rel-t8372-bwayne-bruce",
+    "user_id": "WAYNECORPINC\\bwayne",
+    "asset_id": "t8372-desktop-bruce",
+    "description": "Primary owner — executive workstation",
+    "updated_at": "2026-05-23T17:38:58.510188+00:00"
+  },
+  {
+    "relationship_id": "rel-t8372-system-bruce",
+    "user_id": "NT AUTHORITY\\SYSTEM",
+    "asset_id": "t8372-desktop-bruce",
+    "description": "SYSTEM context on same host (persistence)",
+    "updated_at": "2026-05-23T17:38:58.515778+00:00"
+  }
+]

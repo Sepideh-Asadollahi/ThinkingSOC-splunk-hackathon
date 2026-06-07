@@ -1,0 +1,28 @@
+{
+  "title": "Operation Shadow Login — Automated Cluster",
+  "summary": "Multiple alerts on SERVER01 and jdoe correlate to prior phishing incident.",
+  "attack_analysis_steps": [
+    {
+      "phase_label": "Initial Access",
+      "description": "Phishing email observed for jdoe; malicious link clicked.",
+      "mitre_tactic_name": "Initial Access",
+      "mitre_technique_id": "T1566",
+      "mitre_technique_name": "Phishing"
+    },
+    {
+      "phase_label": "Lateral Movement",
+      "description": "Suspicious RDP session to SERVER01 from jdoe's workstation.",
+      "mitre_tactic_name": "Lateral Movement",
+      "mitre_technique_id": "T1021",
+      "mitre_technique_name": "Remote Services"
+    },
+    {
+      "phase_label": "Execution",
+      "description": "PsExec-style remote execution detected on SERVER01.",
+      "mitre_tactic_name": "Execution",
+      "mitre_technique_id": "T1569",
+      "mitre_technique_name": "System Services"
+    }
+  ],
+  "executive_summary": "Phishing against jdoe was followed within minutes by RDP and PsExec activity on SERVER01, indicating lateral movement on a high-value asset."
+}

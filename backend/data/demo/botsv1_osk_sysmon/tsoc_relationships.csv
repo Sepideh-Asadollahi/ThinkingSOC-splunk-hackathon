@@ -1,0 +1,4 @@
+relationship_id,user_id,asset_id,description
+rel-botsv1-leonard-desk,leonard,botsv1-we8105desk,Primary owner — Engineering workstation we8105desk
+rel-botsv1-system-desk,SYSTEM,botsv1-we8105desk,Process execution context (Sysmon EID 1 user=SYSTEM)
+rel-botsv1-ntsystem-desk,NT AUTHORITY\SYSTEM,botsv1-we8105desk,Matches alert User=NT AUTHORITY\SYSTEM on same host

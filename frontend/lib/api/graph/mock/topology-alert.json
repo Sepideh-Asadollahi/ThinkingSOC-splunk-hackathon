@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "alert-101",
+      "label": "Suspicious RDP",
+      "group": ["Alert"],
+      "properties": {
+        "alert_row_id": "ALERT-101",
+        "risk_score": 75,
+        "timestamp": "2026-05-20T10:00:00Z"
+      }
+    },
+    {
+      "id": "alert-102",
+      "label": "PsExec lateral movement",
+      "group": ["Alert"],
+      "properties": {
+        "alert_row_id": "ALERT-102",
+        "risk_score": 78,
+        "timestamp": "2026-05-20T10:15:00Z"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "seq_alert-101_alert-102",
+      "from": "alert-101",
+      "to": "alert-102",
+      "label": "CAUSED",
+      "properties": {
+        "time_delta_seconds": 900,
+        "confidence": "chronological_sequence",
+        "narrative": "Sequential Step (+15m)"
+      }
+    }
+  ],
+  "highlight_info": { "node_ids": [], "edge_ids": [] },
+  "message": "Success."
+}

@@ -1,0 +1,40 @@
+# ThinkingSOC Splunk Hackathon — backend dependencies (local venv + Docker)
+# Install: pip install -r backend/requirements.txt
+
+# Web API
+fastapi
+uvicorn[standard]
+
+# Config / validation
+pydantic
+pydantic-settings
+python-dotenv
+
+# HTTP (Splunk REST, MCP, VirusTotal, devtools SDK)
+httpx
+
+# LLM (services/litellm_service.py)
+litellm
+
+# SOC analysis graph (services/soc_analysis_graph/)
+langgraph
+
+# PostgreSQL persistence (services/splunk_json_store.py)
+asyncpg
+
+# Correlation demo service (correlation/ — Neo4j graph)
+neo4j>=5.26.0,<6
+
+# Vector RAG — Qdrant + local embeddings (services/soc_rag/)
+qdrant-client>=1.18.0,<1.19.0
+fastembed>=0.4.0
+
+# Splunk Python SDK (HEC / SDK integrations; REST client uses httpx)
+splunk-sdk
+
+# Host metrics (services/system_resources.py)
+psutil
+
+# Tests (backend/tests/)
+pytest
+pytest-asyncio

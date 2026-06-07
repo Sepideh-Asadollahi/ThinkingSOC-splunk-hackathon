@@ -1,0 +1,4 @@
+user_id,display_name,email,department,risk_score,description
+SYSTEM,Local SYSTEM (NT AUTHORITY),,Infrastructure,1,Service account — Sysmon process context on we8105desk (osk.exe EID 1)
+NT AUTHORITY\SYSTEM,NT AUTHORITY\SYSTEM,,Infrastructure,1,Windows built-in SYSTEM — matches alert User field
+leonard,Leonard Pitt,leonard.pitt@botsv1.local,Engineering,7,Primary interactive user on we8105desk; elevated after LOLBAS (T1218) activity

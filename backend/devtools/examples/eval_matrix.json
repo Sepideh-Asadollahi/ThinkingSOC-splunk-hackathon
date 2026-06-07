@@ -1,0 +1,97 @@
+{
+  "scenarios": [
+    {
+      "name": "security_failed_login",
+      "expected_track": "security",
+      "search_name": "Suspicious auth failed login alert",
+      "operator_goal": "confirm lateral movement path",
+      "normalized": {
+        "host": "web-prod-01",
+        "user": "jdoe",
+        "src": "1.2.3.4",
+        "dest": "10.0.0.10"
+      },
+      "users": [
+        {
+          "user_id": "jdoe",
+          "risk_score": "3",
+          "department": "IT"
+        }
+      ],
+      "assets": [
+        {
+          "asset_id": "srv-web-01",
+          "hostname": "web-prod-01",
+          "ip": "10.0.0.5",
+          "criticality": "high",
+          "risk_score": "4"
+        }
+      ],
+      "identity_rules": [
+        {
+          "rule_id": "r-host",
+          "priority": "10",
+          "enabled": "1",
+          "entity_type": "asset",
+          "alert_field": "host",
+          "inventory_lookup": "tsoc_assets",
+          "inventory_field": "hostname",
+          "match_type": "exact",
+          "on_multiple_matches": "highest_criticality"
+        },
+        {
+          "rule_id": "r-user",
+          "priority": "20",
+          "enabled": "1",
+          "entity_type": "user",
+          "alert_field": "user",
+          "inventory_lookup": "tsoc_users",
+          "inventory_field": "user_id",
+          "match_type": "exact",
+          "on_multiple_matches": "first"
+        }
+      ]
+    },
+    {
+      "name": "observability_cpu_latency",
+      "expected_track": "observability",
+      "search_name": "Host CPU spike with latency",
+      "operator_goal": "identify service bottleneck",
+      "normalized": {
+        "host": "web-prod-01",
+        "service": "payment-api",
+        "cpu": 95,
+        "latency_ms": 1800
+      },
+      "users": [
+        {
+          "user_id": "jdoe",
+          "risk_score": "3",
+          "department": "IT"
+        }
+      ],
+      "assets": [
+        {
+          "asset_id": "srv-web-01",
+          "hostname": "web-prod-01",
+          "ip": "10.0.0.5",
+          "criticality": "high",
+          "risk_score": "4"
+        }
+      ],
+      "identity_rules": [
+        {
+          "rule_id": "r-host",
+          "priority": "10",
+          "enabled": "1",
+          "entity_type": "asset",
+          "alert_field": "host",
+          "inventory_lookup": "tsoc_assets",
+          "inventory_field": "hostname",
+          "match_type": "exact",
+          "on_multiple_matches": "highest_criticality"
+        }
+      ]
+    }
+  ]
+}

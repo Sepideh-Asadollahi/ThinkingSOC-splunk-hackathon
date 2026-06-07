@@ -1,0 +1,3 @@
+relationship_id,user_id,asset_id,description
+rel-jdoe-web,jdoe,srv-web-01,Jane owns web tier
+rel-asmith-db,asmith,srv-db-01,Finance user on DB host

@@ -1,0 +1,16 @@
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "tools": [
+      { "name": "splunk_get_info", "description": "Splunk instance info" },
+      { "name": "splunk_get_metadata", "description": "Metadata" },
+      { "name": "splunk_get_indexes", "description": "List indexes" },
+      { "name": "saia_generate_spl", "description": "Generate SPL" },
+      { "name": "saia_optimize_spl", "description": "Optimize SPL" },
+      { "name": "saia_explain_spl", "description": "Explain SPL" },
+      { "name": "saia_ask_splunk_question", "description": "Ask Splunk question" },
+      { "name": "splunk_run_query", "description": "Run SPL" }
+    ]
+  }
+}

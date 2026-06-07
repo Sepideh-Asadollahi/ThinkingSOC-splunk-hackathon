@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"spl\": \"search index=main user=\\\"jdoe\\\" action=failure | stats count\", \"explanation\": \"Failed logins for user on host\"}"
+      }
+    ]
+  }
+}

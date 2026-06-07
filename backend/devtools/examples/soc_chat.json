@@ -1,0 +1,8 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "What are the most critical security findings in the last 24 hours? Focus on failed login alerts and any lateral movement indicators."
+    }
+  ]
+}

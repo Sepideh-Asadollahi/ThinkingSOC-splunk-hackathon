@@ -1,0 +1,24 @@
+{
+  "sid": "1716800000.12345",
+  "search_name": "Suspicious auth failed login alert",
+  "normalized": {
+    "host": "web-prod-01",
+    "user": "jdoe"
+  },
+  "users": [
+    {
+      "user_id": "jdoe",
+      "risk_score": "3",
+      "department": "IT"
+    }
+  ],
+  "assets": [
+    {
+      "asset_id": "srv-web-01",
+      "hostname": "web-prod-01",
+      "ip": "10.0.0.5",
+      "criticality": "high",
+      "risk_score": "4"
+    }
+  ]
+}

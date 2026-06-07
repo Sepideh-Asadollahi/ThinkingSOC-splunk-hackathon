@@ -1,0 +1,81 @@
+# TSOC local stack — FastAPI backend runs on the host: python run.py
+#
+# Stable names: container_name + volume `name:` match setup_tool/docker.py and install/modules/docker_stack.sh
+name: tsoc
+#
+# Compatible with docker-compose v1 and `docker compose` v2.
+#   cd backend && docker compose up -d
+# docker-compose v1.29.2: NEVER use --force-recreate (KeyError: ContainerConfig).
+#   bash scripts/compose-up-safe.sh
+#   bash scripts/recreate-postgres.sh
+# Manual: docker rm -f tsoc-postgres && docker-compose up -d postgres
+#
+# Services: postgres (5432), qdrant (6333), neo4j (7474/7687). Embeddings: FastEmbed on host.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tsoc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tsoc
+      POSTGRES_USER: tsoc
+      POSTGRES_PASSWORD: tsoc
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - tsoc_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tsoc -d tsoc"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  qdrant:
+    image: qdrant/qdrant:v1.18.0
+    container_name: tsoc-qdrant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6333:6333"
+      - "127.0.0.1:6334:6334"
+    volumes:
+      - tsoc_qdrant_data:/qdrant/storage
+    environment:
+      QDRANT__SERVICE__HTTP_PORT: 6333
+      QDRANT__SERVICE__GRPC_PORT: 6334
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
+  neo4j:
+    image: neo4j:5.26-community
+    container_name: tsoc-neo4j
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    environment:
+      # Browser / Bolt: neo4j / tsoc-tsoc (Neo4j 5 requires password length >= 8)
+      NEO4J_AUTH: neo4j/tsoc-tsoc
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 512m
+    volumes:
+      - tsoc_neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+volumes:
+  tsoc_pgdata:
+    name: tsoc_pgdata
+  tsoc_qdrant_data:
+    name: tsoc_qdrant_data
+  tsoc_neo4j_data:
+    name: tsoc_neo4j_data

@@ -1,0 +1,29 @@
+[]
+access = read : [ * ], write : [ admin, power ]
+
+[alert_actions]
+export = system
+
+[alerts]
+export = system
+
+[indexes/thinking_soc]
+export = system
+
+[lookups/tsoc_users.csv]
+export = system
+
+[lookups/tsoc_assets.csv]
+export = system
+
+[lookups/tsoc_identity_rules.csv]
+export = system
+
+[transforms/tsoc_users]
+export = system
+
+[transforms/tsoc_assets]
+export = system
+
+[transforms/tsoc_identity_rules]
+export = system

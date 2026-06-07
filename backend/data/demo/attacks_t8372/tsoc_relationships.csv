@@ -1,0 +1,3 @@
+relationship_id,user_id,asset_id,description
+rel-t8372-bwayne-bruce,WAYNECORPINC\bwayne,t8372-desktop-bruce,Primary owner — executive workstation
+rel-t8372-system-bruce,NT AUTHORITY\SYSTEM,t8372-desktop-bruce,SYSTEM context on same host (persistence)

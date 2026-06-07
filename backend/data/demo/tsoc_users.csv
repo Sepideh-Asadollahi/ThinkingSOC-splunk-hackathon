@@ -1,0 +1,3 @@
+user_id,display_name,email,department,risk_score,description
+jdoe,Jane Doe,jdoe@example.com,IT,3,Sample user
+asmith,Alice Smith,asmith@example.com,Finance,2,Sample user

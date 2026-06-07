@@ -1,0 +1,66 @@
+{
+  "sid": "REPLACE_WITH_SPLUNK_JOB_SID",
+  "search_name": "Suspicious Process - osk.exe Sysmon EID 1 (botsv1)",
+  "app": "search",
+  "owner": "admin",
+  "results_link": "http://127.0.0.1:8000/en-US/app/search/@go?sid=REPLACE_WITH_SPLUNK_JOB_SID",
+  "result": {
+    "_time": "2018-08-20T21:09:41.000-07:00",
+    "index": "botsv1",
+    "source": "WinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "host": "we8105desk",
+    "Computer": "we8105desk",
+    "EventCode": "1",
+    "User": "NT AUTHORITY\\SYSTEM",
+    "user": "SYSTEM",
+    "Image": "C:\\Windows\\System32\\osk.exe",
+    "ParentImage": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "ParentCommandLine": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Public\\invoke.ps1",
+    "CommandLine": "C:\\Windows\\System32\\osk.exe",
+    "domain": "pastebin.com",
+    "severity": "high",
+    "signature": "On-Screen Keyboard (osk.exe) launched — possible LOLBAS / credential access",
+    "signature_id": "T1218",
+    "tag": [
+      "endpoint",
+      "process",
+      "sysmon"
+    ],
+    "orig_search": "index=botsv1 source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=we8105desk EventCode=1 Image=*osk.exe | stats values(CommandLine) by Computer,User, Image, ParentImage ParentCommandLine"
+  },
+  "normalized": {
+    "_time": "2018-08-20T21:09:41.000-07:00",
+    "host": "we8105desk",
+    "user": "SYSTEM",
+    "severity": "high",
+    "signature": "On-Screen Keyboard (osk.exe) launched — possible LOLBAS / credential access",
+    "signature_id": "T1218",
+    "index": "botsv1",
+    "source": "WinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "Computer": "we8105desk",
+    "EventCode": "1",
+    "User": "NT AUTHORITY\\SYSTEM",
+    "Image": "C:\\Windows\\System32\\osk.exe",
+    "ParentImage": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "ParentCommandLine": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Public\\invoke.ps1",
+    "CommandLine": "C:\\Windows\\System32\\osk.exe",
+    "domain": "pastebin.com",
+    "tag": [
+      "endpoint",
+      "process",
+      "sysmon"
+    ],
+    "orig_search": "index=botsv1 source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=we8105desk EventCode=1 Image=*osk.exe | stats values(CommandLine) by Computer,User, Image, ParentImage ParentCommandLine"
+  },
+  "enrichment": {
+    "resolved_asset_id": "botsv1-we8105desk",
+    "resolved_user_id": "SYSTEM",
+    "confidence": "high",
+    "notes": "Matched asset via alert.host → hostname; Matched user via alert.user → user_id; Linked via relationship(s): rel-botsv1-system-desk",
+    "matched_relationship_ids": [
+      "rel-botsv1-system-desk"
+    ]
+  }
+}

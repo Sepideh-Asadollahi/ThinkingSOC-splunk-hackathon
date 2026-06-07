@@ -1,0 +1,2 @@
+asset_id,asset_type,hostname,fqdn,ip,owner,criticality,risk_score,description
+botsv1-we8105desk,endpoint,we8105desk,we8105desk.botsv1.local,10.0.2.81,leonard,critical,8,BOTS v1 workstation — osk.exe LOLBAS / invoke.ps1 (T1218); matches scripts/samples/splunk-webhook-botsv1-osk-sysmon.json

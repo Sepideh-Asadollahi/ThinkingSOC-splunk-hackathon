@@ -1,0 +1,86 @@
+[
+  {
+    "asset_id": "asset-dup-a",
+    "asset_type": "server",
+    "hostname": "dup-a",
+    "fqdn": null,
+    "ip": "10.0.0.99",
+    "owner": "ops",
+    "criticality": "low",
+    "risk_score": 2,
+    "description": "Duplicate IP demo row A",
+    "updated_at": "2026-05-16T14:13:48.199622+00:00"
+  },
+  {
+    "asset_id": "asset-dup-b",
+    "asset_type": "server",
+    "hostname": "dup-b",
+    "fqdn": null,
+    "ip": "10.0.0.99",
+    "owner": "ops",
+    "criticality": "high",
+    "risk_score": 3,
+    "description": "Duplicate IP demo row B",
+    "updated_at": "2026-05-16T14:13:48.203033+00:00"
+  },
+  {
+    "asset_id": "botsv1-we8105desk",
+    "asset_type": "endpoint",
+    "hostname": "we8105desk",
+    "fqdn": "we8105desk.botsv1.local",
+    "ip": "10.0.2.81",
+    "owner": "leonard",
+    "criticality": "critical",
+    "risk_score": 8,
+    "description": "BOTS v1 workstation — osk.exe LOLBAS / invoke.ps1 (T1218); matches scripts/samples/splunk-webhook-botsv1-osk-sysmon.json",
+    "updated_at": "2026-05-23T18:07:55.467637+00:00"
+  },
+  {
+    "asset_id": "obs-web-prod-01",
+    "asset_type": "server",
+    "hostname": "web-prod-01",
+    "fqdn": "web-prod-01.corp.local",
+    "ip": "10.0.0.5",
+    "owner": "platform-ops",
+    "criticality": "high",
+    "risk_score": 4,
+    "description": "Payment API host — matches scripts/samples/splunk-webhook-observability-cpu-latency.json",
+    "updated_at": "2026-05-22T17:43:49.299488+00:00"
+  },
+  {
+    "asset_id": "srv-db-01",
+    "asset_type": "server",
+    "hostname": "db-prod-01",
+    "fqdn": "db-prod-01.example.com",
+    "ip": "10.0.0.10",
+    "owner": "dba",
+    "criticality": "critical",
+    "risk_score": 5,
+    "description": "Database",
+    "updated_at": "2026-05-16T14:13:48.196137+00:00"
+  },
+  {
+    "asset_id": "srv-web-01",
+    "asset_type": "server",
+    "hostname": "web-prod-01",
+    "fqdn": "web-prod-01.example.com",
+    "ip": "10.0.0.5",
+    "owner": "ops",
+    "criticality": "high",
+    "risk_score": 4,
+    "description": "Web tier",
+    "updated_at": "2026-05-16T14:13:48.190626+00:00"
+  },
+  {
+    "asset_id": "t8372-desktop-bruce",
+    "asset_type": "endpoint",
+    "hostname": "DESKTOP-BRUCE",
+    "fqdn": "DESKTOP-BRUCE.waynecorpinc.local",
+    "ip": "10.1.1.15",
+    "owner": "bwayne",
+    "criticality": "critical",
+    "risk_score": 9,
+    "description": "Bruce Wayne workstation — ATTACKS t8372 kill chain",
+    "updated_at": "2026-05-23T18:05:58.523037+00:00"
+  }
+]

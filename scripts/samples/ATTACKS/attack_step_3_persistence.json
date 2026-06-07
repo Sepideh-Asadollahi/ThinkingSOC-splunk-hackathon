@@ -1,0 +1,26 @@
+{
+  "sid": "scheduler__admin__search__t8372_schtasks_at_1727841720.1",
+  "search_name": "Sysmon: Suspicious Scheduled Task Creation (t8372)",
+  "app": "search",
+  "owner": "admin",
+  "server_uri": "https://127.0.0.1:8089",
+  "results_link": "http://127.0.0.1:8000/en-US/app/search/@go?sid=scheduler__admin__search__t8372_schtasks_at_1727841720.1",
+  "result": {
+    "_time": "2024-10-02T04:02:00Z",
+    "index": "wineventlog",
+    "source": "WinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "host": "DESKTOP-BRUCE",
+    "Computer": "DESKTOP-BRUCE",
+    "User": "NT AUTHORITY\\SYSTEM",
+    "user": "NT AUTHORITY\\SYSTEM",
+    "EventCode": "1",
+    "Image": "C:\\Windows\\System32\\schtasks.exe",
+    "ParentImage": "C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe",
+    "CommandLine": "schtasks.exe /Create /TN \"MicrosoftEdgeUpdate\" /TR \"C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe\" /SC ONLOGON",
+    "sha256": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+    "severity": "high",
+    "signature": "Suspicious scheduled task for persistence",
+    "signature_id": "T1053.005"
+  }
+}

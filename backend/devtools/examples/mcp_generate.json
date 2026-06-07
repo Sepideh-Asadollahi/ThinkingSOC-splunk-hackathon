@@ -1,0 +1,5 @@
+{
+  "query": "Show failed login attempts for user jdoe in the last 24 hours",
+  "index": "main",
+  "context": "Investigating suspicious authentication activity on web-prod-01"
+}

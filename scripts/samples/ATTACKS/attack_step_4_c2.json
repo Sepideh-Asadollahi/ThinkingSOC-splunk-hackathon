@@ -1,0 +1,26 @@
+{
+  "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+  "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+  "app": "search",
+  "owner": "admin",
+  "server_uri": "https://127.0.0.1:8089",
+  "results_link": "http://127.0.0.1:8000/en-US/app/search/@go?sid=scheduler__admin__search__t8372_c2_at_1727841780.1",
+  "result": {
+    "_time": "2024-10-02T04:03:00Z",
+    "index": "firewall",
+    "sourcetype": "pan:traffic",
+    "host": "DESKTOP-BRUCE",
+    "user": "WAYNECORPINC\\bwayne",
+    "src_ip": "10.1.1.15",
+    "dest_ip": "198.51.100.10",
+    "domain": "c2.beacon-sync.net",
+    "remote_ip": "1.1.1.1",
+    "related_src_ip": "203.0.113.111",
+    "src": "10.1.1.15",
+    "dest": "198.51.100.10",
+    "Image": "C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe",
+    "severity": "critical",
+    "signature": "Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure",
+    "signature_id": "T1071.001"
+  }
+}

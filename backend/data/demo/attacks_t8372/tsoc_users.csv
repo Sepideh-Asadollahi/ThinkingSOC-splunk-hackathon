@@ -1,0 +1,3 @@
+user_id,display_name,email,department,risk_score,description
+WAYNECORPINC\bwayne,Bruce Wayne,bruce.wayne@waynecorpinc.local,Executive,9,Primary user on DESKTOP-BRUCE — ATTACKS t8372 campaign
+NT AUTHORITY\SYSTEM,NT AUTHORITY\SYSTEM,,Infrastructure,1,Local SYSTEM — schtasks persistence step (attack_step_3)

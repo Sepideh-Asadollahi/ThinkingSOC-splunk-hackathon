@@ -1,0 +1,9 @@
+{
+  "search_name": "Suspicious auth activity",
+  "objective": "collect root cause timeline",
+  "normalized": {
+    "host": "web-prod-01",
+    "user": "jdoe",
+    "src": "1.2.3.4"
+  }
+}

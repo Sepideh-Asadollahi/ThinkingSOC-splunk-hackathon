@@ -1,0 +1,1041 @@
+[
+  {
+    "doc_id": "corr-alert:ALERT-090",
+    "doc_type": "correlation_alert",
+    "sid": null,
+    "search_name": "Suspicious email link",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-02T19:45:08.096000000+00:00",
+      "status": "closed",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-090"
+    },
+    "summary_line": "Alert Suspicious email link (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-090 name=Suspicious email link sid=- search_name=Suspicious email link\nrisk_score=55 status=closed timestamp=2026-06-02T19:45:08.096000000+00:00\nRelated entities: ipv4:203.0.113.50, username:jdoe@corp.local",
+    "metadata": {
+      "alert_row_id": "ALERT-090"
+    },
+    "created_at": "2026-06-07T19:30:07.231750+00:00",
+    "updated_at": "2026-06-07T19:46:30.011572+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-091",
+    "doc_type": "correlation_alert",
+    "sid": null,
+    "search_name": "Outbound C2 beacon",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-02T20:10:08.099000000+00:00",
+      "status": "closed",
+      "risk_score": 65,
+      "alert_row_id": "ALERT-091"
+    },
+    "summary_line": "Alert Outbound C2 beacon (risk 65)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-091 name=Outbound C2 beacon sid=- search_name=Outbound C2 beacon\nrisk_score=65 status=closed timestamp=2026-06-02T20:10:08.099000000+00:00\nRelated entities: ipv4:203.0.113.50",
+    "metadata": {
+      "alert_row_id": "ALERT-091"
+    },
+    "created_at": "2026-06-07T19:30:06.963495+00:00",
+    "updated_at": "2026-06-07T19:46:29.915240+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-099",
+    "doc_type": "correlation_alert",
+    "sid": null,
+    "search_name": "Unusual login",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-05T19:45:08.116000000+00:00",
+      "status": "open",
+      "risk_score": 60,
+      "alert_row_id": "ALERT-099"
+    },
+    "summary_line": "Alert Unusual login (risk 60)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-099 name=Unusual login sid=- search_name=Unusual login\nrisk_score=60 status=open timestamp=2026-06-05T19:45:08.116000000+00:00\nRelated entities: hostname:SERVER01, username:jdoe@corp.local",
+    "metadata": {
+      "alert_row_id": "ALERT-099"
+    },
+    "created_at": "2026-06-07T19:30:06.727548+00:00",
+    "updated_at": "2026-06-07T19:46:29.838087+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-101",
+    "doc_type": "correlation_alert",
+    "sid": null,
+    "search_name": "Suspicious RDP",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-06T19:45:08.119000000+00:00",
+      "status": "open",
+      "risk_score": 75,
+      "alert_row_id": "ALERT-101"
+    },
+    "summary_line": "Alert Suspicious RDP (risk 75)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-101 name=Suspicious RDP sid=- search_name=Suspicious RDP\nrisk_score=75 status=open timestamp=2026-06-06T19:45:08.119000000+00:00\nRelated entities: username:jdoe@corp.local, hostname:SERVER01",
+    "metadata": {
+      "alert_row_id": "ALERT-101"
+    },
+    "created_at": "2026-06-07T19:30:06.515319+00:00",
+    "updated_at": "2026-06-07T19:46:29.763772+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-102",
+    "doc_type": "correlation_alert",
+    "sid": null,
+    "search_name": "PsExec lateral movement",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-06T23:45:08.122000000+00:00",
+      "status": "open",
+      "risk_score": 78,
+      "alert_row_id": "ALERT-102"
+    },
+    "summary_line": "Alert PsExec lateral movement (risk 78)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-102 name=PsExec lateral movement sid=- search_name=PsExec lateral movement\nrisk_score=78 status=open timestamp=2026-06-06T23:45:08.122000000+00:00\nRelated entities: username:jdoe@corp.local, hostname:SERVER01",
+    "metadata": {
+      "alert_row_id": "ALERT-102"
+    },
+    "created_at": "2026-06-07T19:30:06.273540+00:00",
+    "updated_at": "2026-06-07T19:46:29.682525+00:00"
+  },
+  {
+    "doc_id": "corr-finding:7fda487b-c5fe-4b88-b153-0958d74e4aec",
+    "doc_type": "correlation_finding",
+    "sid": "incident-b0dfa536",
+    "search_name": "GF-0007",
+    "row_index": 0,
+    "essential": {
+      "finding_id": "7fda487b-c5fe-4b88-b153-0958d74e4aec",
+      "risk_score": 67,
+      "alert_count": 4,
+      "finding_type": "smart_attack_discovery",
+      "ticket_status": "in_progress"
+    },
+    "summary_line": "Phishing-Driven RDP and PsExec Lateral Movement on SERVER01 (risk 67, 4 alerts)",
+    "chunk_text": "Graph correlation finding (smart_attack_discovery)\nFinding id=7fda487b-c5fe-4b88-b153-0958d74e4aec display_id=GF-0007 risk_score=67 ticket=in_progress owner=unassigned\nTitle: Phishing-Driven RDP and PsExec Lateral Movement on SERVER01\nSummary: User jdoe clicked a malicious email link, later logged into SERVER01, opened an RDP session, and used PsExec to move laterally.\nIncident: incident-b0dfa536\nExecutive summary: On 2026-06-02, jdoe@corp.local clicked a malicious link in an email, establishing initial foothold. Over the following days the account performed an unusual login to SERVER01, initiated a suspicious RDP session, and finally leveraged PsExec over SMB to execute commands on the server, illustrating a multi‑stage lateral movement campaign targeting a critical host.\nContributing alerts (4):\n- Suspicious email link id=ALERT-090 sid=- risk=55 status=closed time=2026-06-02T19:33:18.910000000+00:00\n- Unusual login id=ALERT-099 sid=- risk=60 status=open time=2026-06-05T19:33:18.942000000+00:00\n- Suspicious RDP id=ALERT-101 sid=- risk=75 status=open time=2026-06-06T19:33:18.947000000+00:00\n- PsExec lateral movement id=ALERT-102 sid=- risk=78 status=open time=2026-06-06T23:33:18.951000000+00:00\nKey entities:\nidentities: username:jdoe@corp.local\nassets: hostname:SERVER01\niocs: ipv4:203.0.113.50\nAttack narrative (numbered steps):\nStep 1: [Initial Access] User jdoe@corp.local clicked a malicious link in an email, triggering the Suspicious email link detection.\nStep 2: [Lateral Movement] jdoe@corp.local logged into SERVER01 from an unusual location, raising an Unusual login alert.\nStep 3: [Lateral Movement] jdoe@corp.local initiated an RDP session to SERVER01, which was flagged as Suspicious RDP.\nStep 4: [Lateral Movement] jdoe@corp.local used PsExec over SMB to execute commands on SERVER01, indicating lateral movement via Windows admin shares.\nHistorical related incidents: [{\"incident_id\": \"INC-OLD-001\", \"shared_entity_count\": 2}]\nRecommended next steps: Review correlated alerts; Validate entity overlap",
+    "metadata": {
+      "display_id": "GF-0007",
+      "finding_id": "7fda487b-c5fe-4b88-b153-0958d74e4aec",
+      "incident_id": "incident-b0dfa536",
+      "finding_type": "smart_attack_discovery"
+    },
+    "created_at": "2026-06-07T19:39:14.470759+00:00",
+    "updated_at": "2026-06-07T19:46:29.296632+00:00"
+  },
+  {
+    "doc_id": "corr-path:ALERT-090->ALERT-099",
+    "doc_type": "correlation_attack_path",
+    "sid": null,
+    "search_name": "ALERT-090",
+    "row_index": 0,
+    "essential": {
+      "to_alert_row_id": "ALERT-099",
+      "from_alert_row_id": "ALERT-090",
+      "time_delta_seconds": 0
+    },
+    "summary_line": "Attack path ALERT-090 → ALERT-099",
+    "chunk_text": "Graph correlation attack path (CAUSED edge)\nfrom_alert=ALERT-090 to_alert=ALERT-099\ntime_delta_seconds=0\nnarrative: Correlated sequence",
+    "metadata": {
+      "to_alert_row_id": "ALERT-099",
+      "from_alert_row_id": "ALERT-090"
+    },
+    "created_at": "2026-06-07T19:43:33.572719+00:00",
+    "updated_at": "2026-06-07T19:46:30.101148+00:00"
+  },
+  {
+    "doc_id": "corr-path:ALERT-099->ALERT-101",
+    "doc_type": "correlation_attack_path",
+    "sid": null,
+    "search_name": "ALERT-099",
+    "row_index": 0,
+    "essential": {
+      "to_alert_row_id": "ALERT-101",
+      "from_alert_row_id": "ALERT-099",
+      "time_delta_seconds": 0
+    },
+    "summary_line": "Attack path ALERT-099 → ALERT-101",
+    "chunk_text": "Graph correlation attack path (CAUSED edge)\nfrom_alert=ALERT-099 to_alert=ALERT-101\ntime_delta_seconds=0\nnarrative: Correlated sequence",
+    "metadata": {
+      "to_alert_row_id": "ALERT-101",
+      "from_alert_row_id": "ALERT-099"
+    },
+    "created_at": "2026-06-07T19:43:33.616234+00:00",
+    "updated_at": "2026-06-07T19:46:30.158525+00:00"
+  },
+  {
+    "doc_id": "corr-path:ALERT-101->ALERT-102",
+    "doc_type": "correlation_attack_path",
+    "sid": null,
+    "search_name": "ALERT-101",
+    "row_index": 0,
+    "essential": {
+      "to_alert_row_id": "ALERT-102",
+      "from_alert_row_id": "ALERT-101",
+      "time_delta_seconds": 14400
+    },
+    "summary_line": "Attack path ALERT-101 → ALERT-102",
+    "chunk_text": "Graph correlation attack path (CAUSED edge)\nfrom_alert=ALERT-101 to_alert=ALERT-102\ntime_delta_seconds=14400\nnarrative: Correlated sequence",
+    "metadata": {
+      "to_alert_row_id": "ALERT-102",
+      "from_alert_row_id": "ALERT-101"
+    },
+    "created_at": "2026-06-07T19:30:07.453953+00:00",
+    "updated_at": "2026-06-07T19:46:30.213092+00:00"
+  },
+  {
+    "doc_id": "inventory_asset::asset-dup-a::0",
+    "doc_type": "inventory_asset",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "ip": "10.0.0.99",
+      "fqdn": "",
+      "owner": "ops",
+      "asset_id": "asset-dup-a",
+      "hostname": "dup-a",
+      "asset_type": "server",
+      "risk_score": "2",
+      "criticality": "low"
+    },
+    "summary_line": "Asset asset-dup-a host=dup-a ip=10.0.0.99 criticality=low",
+    "chunk_text": "Inventory asset: asset-dup-a\nFields: asset_id=asset-dup-a asset_type=server hostname=dup-a ip=10.0.0.99 owner=ops criticality=low risk_score=2\nInventory asset record\nDescription: Duplicate IP demo row A",
+    "metadata": {
+      "ip": "10.0.0.99",
+      "fqdn": "",
+      "owner": "ops",
+      "asset_id": "asset-dup-a",
+      "doc_type": "inventory_asset",
+      "hostname": "dup-a",
+      "asset_type": "server",
+      "risk_score": "2",
+      "criticality": "low"
+    },
+    "created_at": "2026-06-04T15:01:23.370815+00:00",
+    "updated_at": "2026-06-07T19:46:27.854153+00:00"
+  },
+  {
+    "doc_id": "inventory_asset::asset-dup-b::0",
+    "doc_type": "inventory_asset",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "ip": "10.0.0.99",
+      "fqdn": "",
+      "owner": "ops",
+      "asset_id": "asset-dup-b",
+      "hostname": "dup-b",
+      "asset_type": "server",
+      "risk_score": "3",
+      "criticality": "high"
+    },
+    "summary_line": "Asset asset-dup-b host=dup-b ip=10.0.0.99 criticality=high",
+    "chunk_text": "Inventory asset: asset-dup-b\nFields: asset_id=asset-dup-b asset_type=server hostname=dup-b ip=10.0.0.99 owner=ops criticality=high risk_score=3\nInventory asset record\nDescription: Duplicate IP demo row B",
+    "metadata": {
+      "ip": "10.0.0.99",
+      "fqdn": "",
+      "owner": "ops",
+      "asset_id": "asset-dup-b",
+      "doc_type": "inventory_asset",
+      "hostname": "dup-b",
+      "asset_type": "server",
+      "risk_score": "3",
+      "criticality": "high"
+    },
+    "created_at": "2026-06-04T15:01:23.483332+00:00",
+    "updated_at": "2026-06-07T19:46:27.907304+00:00"
+  },
+  {
+    "doc_id": "inventory_asset::botsv1-we8105desk::0",
+    "doc_type": "inventory_asset",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "ip": "10.0.2.81",
+      "fqdn": "we8105desk.botsv1.local",
+      "owner": "leonard",
+      "asset_id": "botsv1-we8105desk",
+      "hostname": "we8105desk",
+      "asset_type": "endpoint",
+      "risk_score": "8",
+      "criticality": "critical"
+    },
+    "summary_line": "Asset botsv1-we8105desk host=we8105desk ip=10.0.2.81 criticality=critical",
+    "chunk_text": "Inventory asset: botsv1-we8105desk\nFields: asset_id=botsv1-we8105desk asset_type=endpoint hostname=we8105desk fqdn=we8105desk.botsv1.local ip=10.0.2.81 owner=leonard criticality=critical risk_score=8\nInventory asset record\nDescription: BOTS v1 workstation — osk.exe LOLBAS / invoke.ps1 (T1218); matches scripts/samples/splunk-webhook-botsv1-osk-sysmon.json",
+    "metadata": {
+      "ip": "10.0.2.81",
+      "fqdn": "we8105desk.botsv1.local",
+      "owner": "leonard",
+      "asset_id": "botsv1-we8105desk",
+      "doc_type": "inventory_asset",
+      "hostname": "we8105desk",
+      "asset_type": "endpoint",
+      "risk_score": "8",
+      "criticality": "critical"
+    },
+    "created_at": "2026-06-04T15:01:23.575217+00:00",
+    "updated_at": "2026-06-07T19:46:27.958186+00:00"
+  },
+  {
+    "doc_id": "inventory_asset::obs-web-prod-01::0",
+    "doc_type": "inventory_asset",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "ip": "10.0.0.5",
+      "fqdn": "web-prod-01.corp.local",
+      "owner": "platform-ops",
+      "asset_id": "obs-web-prod-01",
+      "hostname": "web-prod-01",
+      "asset_type": "server",
+      "risk_score": "4",
+      "criticality": "high"
+    },
+    "summary_line": "Asset obs-web-prod-01 host=web-prod-01 ip=10.0.0.5 criticality=high",
+    "chunk_text": "Inventory asset: obs-web-prod-01\nFields: asset_id=obs-web-prod-01 asset_type=server hostname=web-prod-01 fqdn=web-prod-01.corp.local ip=10.0.0.5 owner=platform-ops criticality=high risk_score=4\nInventory asset record\nDescription: Payment API host — matches scripts/samples/splunk-webhook-observability-cpu-latency.json",
+    "metadata": {
+      "ip": "10.0.0.5",
+      "fqdn": "web-prod-01.corp.local",
+      "owner": "platform-ops",
+      "asset_id": "obs-web-prod-01",
+      "doc_type": "inventory_asset",
+      "hostname": "web-prod-01",
+      "asset_type": "server",
+      "risk_score": "4",
+      "criticality": "high"
+    },
+    "created_at": "2026-06-04T15:01:23.720273+00:00",
+    "updated_at": "2026-06-07T19:46:28.068108+00:00"
+  },
+  {
+    "doc_id": "inventory_asset::srv-db-01::0",
+    "doc_type": "inventory_asset",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "ip": "10.0.0.10",
+      "fqdn": "db-prod-01.example.com",
+      "owner": "dba",
+      "asset_id": "srv-db-01",
+      "hostname": "db-prod-01",
+      "asset_type": "server",
+      "risk_score": "5",
+      "criticality": "critical"
+    },
+    "summary_line": "Asset srv-db-01 host=db-prod-01 ip=10.0.0.10 criticality=critical",
+    "chunk_text": "Inventory asset: srv-db-01\nFields: asset_id=srv-db-01 asset_type=server hostname=db-prod-01 fqdn=db-prod-01.example.com ip=10.0.0.10 owner=dba criticality=critical risk_score=5\nInventory asset record\nDescription: Database",
+    "metadata": {
+      "ip": "10.0.0.10",
+      "fqdn": "db-prod-01.example.com",
+      "owner": "dba",
+      "asset_id": "srv-db-01",
+      "doc_type": "inventory_asset",
+      "hostname": "db-prod-01",
+      "asset_type": "server",
+      "risk_score": "5",
+      "criticality": "critical"
+    },
+    "created_at": "2026-06-04T15:01:23.881715+00:00",
+    "updated_at": "2026-06-07T19:46:28.138537+00:00"
+  },
+  {
+    "doc_id": "inventory_asset::srv-web-01::0",
+    "doc_type": "inventory_asset",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "ip": "10.0.0.5",
+      "fqdn": "web-prod-01.example.com",
+      "owner": "ops",
+      "asset_id": "srv-web-01",
+      "hostname": "web-prod-01",
+      "asset_type": "server",
+      "risk_score": "4",
+      "criticality": "high"
+    },
+    "summary_line": "Asset srv-web-01 host=web-prod-01 ip=10.0.0.5 criticality=high",
+    "chunk_text": "Inventory asset: srv-web-01\nFields: asset_id=srv-web-01 asset_type=server hostname=web-prod-01 fqdn=web-prod-01.example.com ip=10.0.0.5 owner=ops criticality=high risk_score=4\nInventory asset record\nDescription: Web tier",
+    "metadata": {
+      "ip": "10.0.0.5",
+      "fqdn": "web-prod-01.example.com",
+      "owner": "ops",
+      "asset_id": "srv-web-01",
+      "doc_type": "inventory_asset",
+      "hostname": "web-prod-01",
+      "asset_type": "server",
+      "risk_score": "4",
+      "criticality": "high"
+    },
+    "created_at": "2026-06-04T15:01:23.986334+00:00",
+    "updated_at": "2026-06-07T19:46:28.198838+00:00"
+  },
+  {
+    "doc_id": "inventory_asset::t8372-desktop-bruce::0",
+    "doc_type": "inventory_asset",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "ip": "10.1.1.15",
+      "fqdn": "DESKTOP-BRUCE.waynecorpinc.local",
+      "owner": "bwayne",
+      "asset_id": "t8372-desktop-bruce",
+      "hostname": "DESKTOP-BRUCE",
+      "asset_type": "endpoint",
+      "risk_score": "9",
+      "criticality": "critical"
+    },
+    "summary_line": "Asset t8372-desktop-bruce host=DESKTOP-BRUCE ip=10.1.1.15 criticality=critical",
+    "chunk_text": "Inventory asset: t8372-desktop-bruce\nFields: asset_id=t8372-desktop-bruce asset_type=endpoint hostname=DESKTOP-BRUCE fqdn=DESKTOP-BRUCE.waynecorpinc.local ip=10.1.1.15 owner=bwayne criticality=critical risk_score=9\nInventory asset record\nDescription: Bruce Wayne workstation — ATTACKS t8372 kill chain",
+    "metadata": {
+      "ip": "10.1.1.15",
+      "fqdn": "DESKTOP-BRUCE.waynecorpinc.local",
+      "owner": "bwayne",
+      "asset_id": "t8372-desktop-bruce",
+      "doc_type": "inventory_asset",
+      "hostname": "DESKTOP-BRUCE",
+      "asset_type": "endpoint",
+      "risk_score": "9",
+      "criticality": "critical"
+    },
+    "created_at": "2026-06-04T15:01:24.091499+00:00",
+    "updated_at": "2026-06-07T19:46:28.257526+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-asmith-srv-db-01::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "asmith",
+      "asset_id": "srv-db-01",
+      "relationship_id": "rel-asmith-srv-db-01"
+    },
+    "summary_line": "Relationship user=asmith asset=srv-db-01",
+    "chunk_text": "Inventory relationship: user=asmith asset=srv-db-01\nFields: relationship_id=rel-asmith-srv-db-01 user_id=asmith asset_id=srv-db-01\nInventory user-asset relationship\nDescription: Auto-linked from inventory (asset owner: dba)",
+    "metadata": {
+      "user_id": "asmith",
+      "asset_id": "srv-db-01",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-asmith-srv-db-01"
+    },
+    "created_at": "2026-06-04T15:01:24.735718+00:00",
+    "updated_at": "2026-06-07T19:46:28.698678+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-botsv1-leonard-desk::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "leonard",
+      "asset_id": "botsv1-we8105desk",
+      "relationship_id": "rel-botsv1-leonard-desk"
+    },
+    "summary_line": "Relationship user=leonard asset=botsv1-we8105desk",
+    "chunk_text": "Inventory relationship: user=leonard asset=botsv1-we8105desk\nFields: relationship_id=rel-botsv1-leonard-desk user_id=leonard asset_id=botsv1-we8105desk\nInventory user-asset relationship\nDescription: Primary user on we8105desk",
+    "metadata": {
+      "user_id": "leonard",
+      "asset_id": "botsv1-we8105desk",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-botsv1-leonard-desk"
+    },
+    "created_at": "2026-06-04T15:01:25.185834+00:00",
+    "updated_at": "2026-06-07T19:46:29.052063+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-botsv1-ntsystem-desk::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "NT AUTHORITY\\SYSTEM",
+      "asset_id": "botsv1-we8105desk",
+      "relationship_id": "rel-botsv1-ntsystem-desk"
+    },
+    "summary_line": "Relationship user=NT AUTHORITY\\SYSTEM asset=botsv1-we8105desk",
+    "chunk_text": "Inventory relationship: user=NT AUTHORITY\\SYSTEM asset=botsv1-we8105desk\nFields: relationship_id=rel-botsv1-ntsystem-desk user_id=NT AUTHORITY\\SYSTEM asset_id=botsv1-we8105desk\nInventory user-asset relationship\nDescription: Matches alert User=NT AUTHORITY\\SYSTEM on same host",
+    "metadata": {
+      "user_id": "NT AUTHORITY\\SYSTEM",
+      "asset_id": "botsv1-we8105desk",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-botsv1-ntsystem-desk"
+    },
+    "created_at": "2026-06-04T15:01:24.201547+00:00",
+    "updated_at": "2026-06-07T19:46:28.321350+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-botsv1-system-desk::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "SYSTEM",
+      "asset_id": "botsv1-we8105desk",
+      "relationship_id": "rel-botsv1-system-desk"
+    },
+    "summary_line": "Relationship user=SYSTEM asset=botsv1-we8105desk",
+    "chunk_text": "Inventory relationship: user=SYSTEM asset=botsv1-we8105desk\nFields: relationship_id=rel-botsv1-system-desk user_id=SYSTEM asset_id=botsv1-we8105desk\nInventory user-asset relationship\nDescription: Process context on endpoint (Sysmon EID 1)",
+    "metadata": {
+      "user_id": "SYSTEM",
+      "asset_id": "botsv1-we8105desk",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-botsv1-system-desk"
+    },
+    "created_at": "2026-06-04T15:01:24.494747+00:00",
+    "updated_at": "2026-06-07T19:46:28.529332+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-jdoe-asset-dup-a::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "jdoe",
+      "asset_id": "asset-dup-a",
+      "relationship_id": "rel-jdoe-asset-dup-a"
+    },
+    "summary_line": "Relationship user=jdoe asset=asset-dup-a",
+    "chunk_text": "Inventory relationship: user=jdoe asset=asset-dup-a\nFields: relationship_id=rel-jdoe-asset-dup-a user_id=jdoe asset_id=asset-dup-a\nInventory user-asset relationship\nDescription: Auto-linked from inventory (asset owner: ops)",
+    "metadata": {
+      "user_id": "jdoe",
+      "asset_id": "asset-dup-a",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-jdoe-asset-dup-a"
+    },
+    "created_at": "2026-06-04T15:01:24.827350+00:00",
+    "updated_at": "2026-06-07T19:46:28.779228+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-jdoe-asset-dup-b::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "jdoe",
+      "asset_id": "asset-dup-b",
+      "relationship_id": "rel-jdoe-asset-dup-b"
+    },
+    "summary_line": "Relationship user=jdoe asset=asset-dup-b",
+    "chunk_text": "Inventory relationship: user=jdoe asset=asset-dup-b\nFields: relationship_id=rel-jdoe-asset-dup-b user_id=jdoe asset_id=asset-dup-b\nInventory user-asset relationship\nDescription: Auto-linked from inventory (asset owner: ops)",
+    "metadata": {
+      "user_id": "jdoe",
+      "asset_id": "asset-dup-b",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-jdoe-asset-dup-b"
+    },
+    "created_at": "2026-06-04T15:01:24.910281+00:00",
+    "updated_at": "2026-06-07T19:46:28.863087+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-jdoe-srv-web-01::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "jdoe",
+      "asset_id": "srv-web-01",
+      "relationship_id": "rel-jdoe-srv-web-01"
+    },
+    "summary_line": "Relationship user=jdoe asset=srv-web-01",
+    "chunk_text": "Inventory relationship: user=jdoe asset=srv-web-01\nFields: relationship_id=rel-jdoe-srv-web-01 user_id=jdoe asset_id=srv-web-01\nInventory user-asset relationship\nDescription: Auto-linked from inventory (asset owner: ops)",
+    "metadata": {
+      "user_id": "jdoe",
+      "asset_id": "srv-web-01",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-jdoe-srv-web-01"
+    },
+    "created_at": "2026-06-04T15:01:25.084650+00:00",
+    "updated_at": "2026-06-07T19:46:28.932105+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-obs-web-prod-01::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "platform-ops",
+      "asset_id": "obs-web-prod-01",
+      "relationship_id": "rel-obs-web-prod-01"
+    },
+    "summary_line": "Relationship user=platform-ops asset=obs-web-prod-01",
+    "chunk_text": "Inventory relationship: user=platform-ops asset=obs-web-prod-01\nFields: relationship_id=rel-obs-web-prod-01 user_id=platform-ops asset_id=obs-web-prod-01\nInventory user-asset relationship\nDescription: Primary ops owner — payment-api on web-prod-01",
+    "metadata": {
+      "user_id": "platform-ops",
+      "asset_id": "obs-web-prod-01",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-obs-web-prod-01"
+    },
+    "created_at": "2026-06-04T15:01:25.258832+00:00",
+    "updated_at": "2026-06-07T19:46:29.128629+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-t8372-bwayne-bruce::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "WAYNECORPINC\\bwayne",
+      "asset_id": "t8372-desktop-bruce",
+      "relationship_id": "rel-t8372-bwayne-bruce"
+    },
+    "summary_line": "Relationship user=WAYNECORPINC\\bwayne asset=t8372-desktop-bruce",
+    "chunk_text": "Inventory relationship: user=WAYNECORPINC\\bwayne asset=t8372-desktop-bruce\nFields: relationship_id=rel-t8372-bwayne-bruce user_id=WAYNECORPINC\\bwayne asset_id=t8372-desktop-bruce\nInventory user-asset relationship\nDescription: Primary owner — executive workstation",
+    "metadata": {
+      "user_id": "WAYNECORPINC\\bwayne",
+      "asset_id": "t8372-desktop-bruce",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-t8372-bwayne-bruce"
+    },
+    "created_at": "2026-06-04T15:01:24.607690+00:00",
+    "updated_at": "2026-06-07T19:46:28.615740+00:00"
+  },
+  {
+    "doc_id": "inventory_relationship::rel-t8372-system-bruce::0",
+    "doc_type": "inventory_relationship",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "user_id": "NT AUTHORITY\\SYSTEM",
+      "asset_id": "t8372-desktop-bruce",
+      "relationship_id": "rel-t8372-system-bruce"
+    },
+    "summary_line": "Relationship user=NT AUTHORITY\\SYSTEM asset=t8372-desktop-bruce",
+    "chunk_text": "Inventory relationship: user=NT AUTHORITY\\SYSTEM asset=t8372-desktop-bruce\nFields: relationship_id=rel-t8372-system-bruce user_id=NT AUTHORITY\\SYSTEM asset_id=t8372-desktop-bruce\nInventory user-asset relationship\nDescription: SYSTEM context on same host (persistence)",
+    "metadata": {
+      "user_id": "NT AUTHORITY\\SYSTEM",
+      "asset_id": "t8372-desktop-bruce",
+      "doc_type": "inventory_relationship",
+      "relationship_id": "rel-t8372-system-bruce"
+    },
+    "created_at": "2026-06-04T15:01:24.385533+00:00",
+    "updated_at": "2026-06-07T19:46:28.408263+00:00"
+  },
+  {
+    "doc_id": "inventory_user::NT_AUTHORITY_SYSTEM::0",
+    "doc_type": "inventory_user",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "email": "",
+      "user_id": "NT AUTHORITY\\SYSTEM",
+      "department": "Infrastructure",
+      "risk_score": "1",
+      "display_name": "NT AUTHORITY\\SYSTEM"
+    },
+    "summary_line": "User NT AUTHORITY\\SYSTEM (NT AUTHORITY\\SYSTEM) dept=Infrastructure risk=1",
+    "chunk_text": "Inventory user: NT AUTHORITY\\SYSTEM\nFields: user_id=NT AUTHORITY\\SYSTEM display_name=NT AUTHORITY\\SYSTEM department=Infrastructure risk_score=1\nInventory user record\nDescription: Windows built-in SYSTEM — matches alert User field",
+    "metadata": {
+      "email": "",
+      "user_id": "NT AUTHORITY\\SYSTEM",
+      "doc_type": "inventory_user",
+      "department": "Infrastructure",
+      "risk_score": "1",
+      "display_name": "NT AUTHORITY\\SYSTEM"
+    },
+    "created_at": "2026-06-04T15:01:22.710177+00:00",
+    "updated_at": "2026-06-07T19:46:27.259879+00:00"
+  },
+  {
+    "doc_id": "inventory_user::SYSTEM::0",
+    "doc_type": "inventory_user",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "email": "",
+      "user_id": "SYSTEM",
+      "department": "Infrastructure",
+      "risk_score": "1",
+      "display_name": "Local SYSTEM (NT AUTHORITY)"
+    },
+    "summary_line": "User SYSTEM (Local SYSTEM (NT AUTHORITY)) dept=Infrastructure risk=1",
+    "chunk_text": "Inventory user: SYSTEM\nFields: user_id=SYSTEM display_name=Local SYSTEM (NT AUTHORITY) department=Infrastructure risk_score=1\nInventory user record\nDescription: Service account — Sysmon process context on we8105desk (osk.exe EID 1)",
+    "metadata": {
+      "email": "",
+      "user_id": "SYSTEM",
+      "doc_type": "inventory_user",
+      "department": "Infrastructure",
+      "risk_score": "1",
+      "display_name": "Local SYSTEM (NT AUTHORITY)"
+    },
+    "created_at": "2026-06-04T15:01:22.805776+00:00",
+    "updated_at": "2026-06-07T19:46:27.322338+00:00"
+  },
+  {
+    "doc_id": "inventory_user::WAYNECORPINC_bwayne::0",
+    "doc_type": "inventory_user",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "email": "bruce.wayne@waynecorpinc.local",
+      "user_id": "WAYNECORPINC\\bwayne",
+      "department": "Executive",
+      "risk_score": "9",
+      "display_name": "Bruce Wayne"
+    },
+    "summary_line": "User WAYNECORPINC\\bwayne (Bruce Wayne) dept=Executive risk=9",
+    "chunk_text": "Inventory user: WAYNECORPINC\\bwayne\nFields: user_id=WAYNECORPINC\\bwayne display_name=Bruce Wayne email=bruce.wayne@waynecorpinc.local department=Executive risk_score=9\nInventory user record\nDescription: Primary user on DESKTOP-BRUCE — ATTACKS t8372 campaign",
+    "metadata": {
+      "email": "bruce.wayne@waynecorpinc.local",
+      "user_id": "WAYNECORPINC\\bwayne",
+      "doc_type": "inventory_user",
+      "department": "Executive",
+      "risk_score": "9",
+      "display_name": "Bruce Wayne"
+    },
+    "created_at": "2026-06-04T15:01:22.937703+00:00",
+    "updated_at": "2026-06-07T19:46:27.381883+00:00"
+  },
+  {
+    "doc_id": "inventory_user::asmith::0",
+    "doc_type": "inventory_user",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "email": "asmith@example.com",
+      "user_id": "asmith",
+      "department": "Finance",
+      "risk_score": "2",
+      "display_name": "Alice Smith"
+    },
+    "summary_line": "User asmith (Alice Smith) dept=Finance risk=2",
+    "chunk_text": "Inventory user: asmith\nFields: user_id=asmith display_name=Alice Smith email=asmith@example.com department=Finance risk_score=2\nInventory user record\nDescription: Sample user",
+    "metadata": {
+      "email": "asmith@example.com",
+      "user_id": "asmith",
+      "doc_type": "inventory_user",
+      "department": "Finance",
+      "risk_score": "2",
+      "display_name": "Alice Smith"
+    },
+    "created_at": "2026-06-04T15:01:23.024630+00:00",
+    "updated_at": "2026-06-07T19:46:27.438085+00:00"
+  },
+  {
+    "doc_id": "inventory_user::jdoe::0",
+    "doc_type": "inventory_user",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "email": "jdoe@example.com",
+      "user_id": "jdoe",
+      "department": "IT",
+      "risk_score": "3",
+      "display_name": "Jane Doe"
+    },
+    "summary_line": "User jdoe (Jane Doe) dept=IT risk=3",
+    "chunk_text": "Inventory user: jdoe\nFields: user_id=jdoe display_name=Jane Doe email=jdoe@example.com department=IT risk_score=3\nInventory user record\nDescription: Sample user",
+    "metadata": {
+      "email": "jdoe@example.com",
+      "user_id": "jdoe",
+      "doc_type": "inventory_user",
+      "department": "IT",
+      "risk_score": "3",
+      "display_name": "Jane Doe"
+    },
+    "created_at": "2026-06-04T15:01:23.092690+00:00",
+    "updated_at": "2026-06-07T19:46:27.663583+00:00"
+  },
+  {
+    "doc_id": "inventory_user::leonard::0",
+    "doc_type": "inventory_user",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "email": "leonard.pitt@botsv1.local",
+      "user_id": "leonard",
+      "department": "Engineering",
+      "risk_score": "7",
+      "display_name": "Leonard Pitt"
+    },
+    "summary_line": "User leonard (Leonard Pitt) dept=Engineering risk=7",
+    "chunk_text": "Inventory user: leonard\nFields: user_id=leonard display_name=Leonard Pitt email=leonard.pitt@botsv1.local department=Engineering risk_score=7\nInventory user record\nDescription: Primary interactive user on we8105desk; elevated after LOLBAS (T1218) activity",
+    "metadata": {
+      "email": "leonard.pitt@botsv1.local",
+      "user_id": "leonard",
+      "doc_type": "inventory_user",
+      "department": "Engineering",
+      "risk_score": "7",
+      "display_name": "Leonard Pitt"
+    },
+    "created_at": "2026-06-04T15:01:23.184153+00:00",
+    "updated_at": "2026-06-07T19:46:27.733319+00:00"
+  },
+  {
+    "doc_id": "inventory_user::platform-ops::0",
+    "doc_type": "inventory_user",
+    "sid": null,
+    "search_name": null,
+    "row_index": 0,
+    "essential": {
+      "email": "ops@corp.local",
+      "user_id": "platform-ops",
+      "department": "Infrastructure",
+      "risk_score": "2",
+      "display_name": "Platform Ops on-call"
+    },
+    "summary_line": "User platform-ops (Platform Ops on-call) dept=Infrastructure risk=2",
+    "chunk_text": "Inventory user: platform-ops\nFields: user_id=platform-ops display_name=Platform Ops on-call email=ops@corp.local department=Infrastructure risk_score=2\nInventory user record\nDescription: SRE owner for web-prod-01 / payment-api",
+    "metadata": {
+      "email": "ops@corp.local",
+      "user_id": "platform-ops",
+      "doc_type": "inventory_user",
+      "department": "Infrastructure",
+      "risk_score": "2",
+      "display_name": "Platform Ops on-call"
+    },
+    "created_at": "2026-06-04T15:01:23.269634+00:00",
+    "updated_at": "2026-06-07T19:46:27.795095+00:00"
+  },
+  {
+    "doc_id": "observability_analysis::REPLACE_WITH_SPLUNK_JOB_SID::0",
+    "doc_type": "observability_analysis",
+    "sid": "REPLACE_WITH_SPLUNK_JOB_SID",
+    "search_name": "Host CPU spike with latency - payment-api (web-prod-01)",
+    "row_index": 0,
+    "essential": {
+      "cpu": "97.4",
+      "host": "web-prod-01",
+      "_time": "2026-05-22T14:32:00.000Z",
+      "track": "observability",
+      "memory": "88.2",
+      "service": "payment-api",
+      "verdict": "probable_resource_saturation",
+      "priority": "critical",
+      "severity": "high",
+      "error_rate": "0.12",
+      "latency_ms": "2200",
+      "status_code": "503"
+    },
+    "summary_line": "2026-05-22T14:32:00 | Host CPU spike with latency - payment-api (web-prod-01) | host=web-prod-01 | severity=high | Operational alert analyzed with impact level critical: probable_resource_saturation",
+    "chunk_text": "Observability analysis: Host CPU spike with latency - payment-api (web-prod-01)\nsid: REPLACE_WITH_SPLUNK_JOB_SID\nTime: 2026-05-22T14:32:00.000Z\nEntities: host=web-prod-01\nSeverity: high\nTrack: observability\nSummary: Operational alert analyzed with impact level critical: probable_resource_saturation\nRoot cause hypothesis: Insufficient evidence for a strong operational root-cause claim.\nRecommended actions: SSH into web-prod-01 and run a real‑time system monitor (e.g., top/htop) to confirm current CPU and memory usage and identify the top CPU‑consuming processes., Collect the last 15‑30 minutes of application logs for payment‑api (e.g., via journalctl or log aggregation) and search for error patterns, stack traces, or signs of thread blockage., Query the host’s process list for any recently started o\nOps verdict: probable_resource_saturation priority=critical\nOps next: Immediately SSH into web-prod-01, run a real‑time monitor (top/htop) to verify sustained >90% CPU and identify the top CPU‑consuming process(es). Collect the last 15‑30 minutes of payment‑api logs and check deployment history for recent changes. If a single process is hogging CPU and can be safely r\nEntity: {\"resolved_host\": \"web-prod-01\", \"resolved_service\": \"payment-api\", \"resolved_asset_id\": \"obs-web-prod-01\", \"confidence\": \"medium\", \"notes\": \"Resolved via inventory enrichment.\"}\nImpact: {\"impact_level\": \"critical\", \"affected_entities\": [\"web-prod-01\", \"payment-api\"], \"customer_impact\": \"Possible service degradation is affecting end-user requests.\", \"business_criticality\": \"high\", \"time_window\": \"around alert window\"}\nTriage score: 88",
+    "metadata": {
+      "cpu": "97.4",
+      "sid": "REPLACE_WITH_SPLUNK_JOB_SID",
+      "host": "web-prod-01",
+      "_time": "2026-05-22T14:32:00.000Z",
+      "track": "observability",
+      "memory": "88.2",
+      "service": "payment-api",
+      "verdict": "probable_resource_saturation",
+      "doc_type": "observability_analysis",
+      "priority": "critical",
+      "severity": "high",
+      "row_index": 0,
+      "error_rate": "0.12",
+      "latency_ms": "2200",
+      "search_name": "Host CPU spike with latency - payment-api (web-prod-01)",
+      "status_code": "503"
+    },
+    "created_at": "2026-06-07T18:23:27.419049+00:00",
+    "updated_at": "2026-06-07T19:46:26.998533+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::REPLACE_WITH_SPLUNK_JOB_SID::0",
+    "doc_type": "soc_analysis",
+    "sid": "REPLACE_WITH_SPLUNK_JOB_SID",
+    "search_name": "Suspicious Process - osk.exe Sysmon EID 1 (botsv1)",
+    "row_index": 0,
+    "essential": {
+      "host": "we8105desk",
+      "user": "SYSTEM",
+      "_time": "2018-08-20T21:09:41.000-07:00",
+      "verdict": "needs_investigation",
+      "priority": "high",
+      "severity": "high",
+      "signature": "On-Screen Keyboard (osk.exe) launched — possible LOLBAS / credential access",
+      "signature_id": "T1218"
+    },
+    "summary_line": "2018-08-20T21:09:41 | Suspicious Process - osk.exe Sysmon EID 1 (botsv1) | user=SYSTEM host=we8105desk | On-Screen Keyboard (osk.exe) launched — possible LOLBAS / credential access | severity=high | Critical workstation we8105desk showed a single osk.exe launch (LOLBAS) under SYSTEM via PowerShell invoking a public script; threat intel is clean but the combination of high severity signature and S",
+    "chunk_text": "SOC analysis: Suspicious Process - osk.exe Sysmon EID 1 (botsv1)\nsid: REPLACE_WITH_SPLUNK_JOB_SID\nTime: 2018-08-20T21:09:41.000-07:00\nEntities: user=SYSTEM host=we8105desk\nSignal: On-Screen Keyboard (osk.exe) launched — possible LOLBAS / credential access\nSeverity: high\nVerdict: needs_investigation\nPriority: high\nNext step: Query the host for any scheduled task or change‑management entry that launched the PowerShell command (including full ParentCommandLine) and compute the hash of C:\\Users\\Public\\invoke.ps1 to compare against approved baselines.\nJudge rationale: Risk_context flags the asset as critical (risk_score=8) and the alert as high severity (T1218). Defender points out the single event, harmless pastebin.com, and suggests legitimate admin automation; Hunter highlights the LOLBAS usage, SYSTEM account, and public script as suspicious. Mixed live evidence (only 2 SYSTEM events, no child processes) does not confirm either view. The decisive factor is\nAnalysis summary: Critical workstation we8105desk showed a single osk.exe launch (LOLBAS) under SYSTEM via PowerShell invoking a public script; threat intel is clean but the combination of high severity signature and SYSTEM context raises suspicion, while lack of follow‑up activity and benign IOC suggest possible legit admin task.\nDefender: - Alternate: osk.exe is a built‑in accessibility binary; it can be invoked by legitimate admin scripts (e.g., UI automation, remote assistance) and often runs under SYSTEM via scheduled tasks.\n- Contextual benign cue: Parent PowerShell command uses `-ExecutionPolicy Bypass` and points to a script in `C:\\Users\\Public\\invoke.ps1`. Public folder scripts are commonly used for internal deployment or maintenance tooling.\n- Weak signal: Only a single Sysmon EventID 1 is observed. No subsequent process tree, network connections, credential‑dumping activity, or repeated launches on the host.\n- Minimal\nHunter: The alert shows osk.exe (a known LOLBAS) launched by a PowerShell process that executed a script from C:\\Users\\Public\\invoke.ps1. It ran under the SYSTEM account on a critical workstation (we8105desk) at 2018-08-20 21:09:41. Although VirusTotal marks the referenced domain (pastebin.com) as harmless, the combination of a high‑severity signature (T1218), SYSTEM context, and a public‑folder script is suspicious. Live query evidence shows the host has many successful network‑share actions (Administrator) and 53 SYSTEM‑originating events, but no direct follow‑up activity is yet visible. To determin\nHunter SPL ideas: search index=* sourcetype=\"XmlWinEventLog:Microsoft-Windows-Sysmon/Operational\" EventCode=1 Image=\"*\\\\osk.exe\" | stats count by host, _time, ParentImage, ParentCommandLine; search index=* sourcetype=\"XmlWinEventLog:Microsoft-Windows-Sysmon/Operational\" Image=\"*\\\\powershell.exe\" CommandLine=\"*invoke.ps1*\" | stats count by host, user, _time, ParentImage, ParentCommandLine; search index=* sourcetype=\nRisk context: Asset botsv1-we8105desk: criticality=critical, risk_score=8. User SYSTEM: risk_score=1, department=Infrastructure.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=81 review=NEEDS_HUMAN_REVIEW priority=critical\nMITRE T1218: Signed Binary Proxy Execution high\nMITRE KC-4: Exploitation low\nThreat intel: {\"iocs\": [{\"ioc\": \"pastebin.com\", \"link\": \"https://www.virustotal.com/api/v3/domains/pastebin.com\", \"vt_id\": \"pastebin.com\", \"verdict\": \"harmless\", \"vt_type\": \"domain\", \"ioc_type\": \"domain\", \"reputation\": -43, \"total_votes\": {\"harmless\": 18, \"malicious\": 13}, \"last_analysis_date\": 1780848159, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 61, \"malicious\": 0, \"suspicious\": 0, \"undetected\": 30}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 notable) included in analysis context.\", \"source\": \"virustota\nInvestigation Q: What is the file hash for C:\\Users\\Public\\invoke.ps1 on host=we8105desk? | SPL: search index=botsv1 source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=we8105desk (EventCode=11 OR EventCode=1) (Image=\"*invoke.ps1*\" OR TargetFilename=\"*invoke.ps1*\") | eval file_hash=coa\nInvestigation Q: Are there any scheduled task events (EventCode=106) that reference Image=\"C:\\Windows\\System32\\osk.exe\" or ParentCommandLine=\"*invoke.ps1*\" on host=we8105desk? | SPL: search index=botsv1 source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=we8105desk EventCode=106 (Image=\"*osk.exe*\" OR CommandLine=\"*invoke.ps1*\") | stats count as events by _time host Imag\nInvestigation Q: What child processes (EventCode=1) have ParentImage=\"C:\\Windows\\System32\\osk.exe\" on host=we8105desk? | SPL: search index=botsv1 source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" EventCode=1 host=we8105desk ParentImage=\"*/osk.exe\" | stats count by _time Image ProcessId ParentProcessId CommandLine Use\nInvestigation Q: What DNS query events for domain=pastebin.com exist on host=we8105desk? | SPL: search index=botsv1 source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=we8105desk EventCode=22 QueryName=\"*pastebin.com*\" | table _time host Computer QueryName QueryResults User\nAdmin org gap Q: Is the execution of osk.exe via the PowerShell command that runs C:\\Users\\Public\\invoke.ps1 on host we8105desk an approved/authorized activity (e.g., part of a scheduled task or change‑management ticket)?",
+    "metadata": {
+      "sid": "REPLACE_WITH_SPLUNK_JOB_SID",
+      "host": "we8105desk",
+      "user": "SYSTEM",
+      "_time": "2018-08-20T21:09:41.000-07:00",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "severity": "high",
+      "row_index": 0,
+      "signature": "On-Screen Keyboard (osk.exe) launched — possible LOLBAS / credential access",
+      "search_name": "Suspicious Process - osk.exe Sysmon EID 1 (botsv1)",
+      "signature_id": "T1218"
+    },
+    "created_at": "2026-06-07T18:35:47.250017+00:00",
+    "updated_at": "2026-06-07T19:46:26.797409+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__t8372_c2_at_1727841780.1::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "src": "10.1.1.15",
+      "dest": "198.51.100.10",
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:03:00Z",
+      "verdict": "insufficient_data",
+      "priority": "high",
+      "severity": "critical",
+      "signature": "Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure",
+      "signature_id": "T1071.001"
+    },
+    "summary_line": "2024-10-02T04:03:00 | PaloAlto: Outbound Connection to Known C2 (t8372) | user=WAYNECORPINC\\bwayne src=10.1.1.15 dest=198.51.100.10 host=DESKTOP-BRUCE | Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure | severity=critical | Critical executive workstation DESKTOP-BRUCE (user bwayne) made a single outbound connection to c2.beacon-sync.net via a Temp folder updater.exe; threat intel shows no malicious reputation, and no cor",
+    "chunk_text": "SOC analysis: PaloAlto: Outbound Connection to Known C2 (t8372)\nsid: scheduler__admin__search__t8372_c2_at_1727841780.1\nTime: 2024-10-02T04:03:00Z\nEntities: user=WAYNECORPINC\\bwayne src=10.1.1.15 dest=198.51.100.10 host=DESKTOP-BRUCE\nSignal: Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure\nSeverity: critical\nVerdict: insufficient_data\nPriority: high\nNext step: Collect and analyze the process creation event for C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe on DESKTOP-BRUCE, including its hash, code‑signing status, and parent process, and cross‑reference with change‑management tickets or scheduled tasks.\nJudge rationale: Risk_context flags the asset and user as critical (risk_score=9) requiring swift attention. Threat_intel findings are benign/undetected, providing no malicious indicator. Defender argues the event could be a legitimate update but lacks hash/CM verification; Hunter urges deeper hunting for stealthy activity. Since no additional network, DNS, or endpoint evidence was found (zero rows in hunt queries\nAnalysis summary: Critical executive workstation DESKTOP-BRUCE (user bwayne) made a single outbound connection to c2.beacon-sync.net via a Temp folder updater.exe; threat intel shows no malicious reputation, and no corroborating endpoint logs were found, but the asset and user carry high risk scores, prompting further verification before any containment.\nDefender: - Alternate: `updater.exe` in a user Temp folder is a common name for legitimate software installers or IT‑managed update agents; could be a vendor‑signed updater invoked by an approved script.\n- Weak signal: only a single firewall connection record; no accompanying endpoint logs (process creation, DLL load, credential use) and no repeat connections observed.\n- Minimal checks: (1) hash the `updater.exe` and compare to the approved software inventory; (2) query the change‑management system for any deployment ticket or scheduled task that references this path on DESKTOP‑BRUCE; (3) resolve `c2.be\nHunter: The alert documents a critical outbound connection from the high‑value endpoint DESKTOP-BRUCE (user WAYNECORPINC\\bwayne) to the domain c2.beacon-sync.net and IP 198.51.100.10, initiated by C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe.  Although VirusTotal marks the external IP 1.1.1.1 as harmless and the domain as undetected, the combination of a known C2 indicator, a suspicious temporary‑folder executable, and a critical asset/user warrants deeper verification.  Initial Splunk queries for other events tied to this host/user returned zero results, suggesting this may be an isolated outbound\nHunter SPL ideas: search index=firewall (dest=\"198.51.100.10\" OR dest_ip=\"198.51.100.10\" OR domain=\"c2.beacon-sync.net\") (src_ip=\"10.1.1.15\" OR host=\"DESKTOP-BRUCE\") | stats count by _time, src_ip, dest_ip, domain, host; search index=endpoint sourcetype=wineventlog:security EventCode=4688 Image=\"*\\\\updater.exe\" | stats count by host, user, _time, Image, ProcessId, CommandLine; search index=dns (query=\"c2.beacon-syn\nRisk context: Asset t8372-desktop-bruce: criticality=critical, risk_score=9. User WAYNECORPINC\\bwayne: risk_score=9, department=Executive.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=82 review=NEEDS_HUMAN_REVIEW priority=critical\nMITRE T1071.001: Application Layer Protocol: Web Protocols medium\nMITRE KC-6: Command and Control medium\nThreat intel: {\"iocs\": [{\"ioc\": \"1.1.1.1\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/1.1.1.1\", \"tags\": [\"suspicious-udp\"], \"vt_id\": \"1.1.1.1\", \"verdict\": \"harmless\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 85, \"total_votes\": {\"harmless\": 144, \"malicious\": 39}, \"last_analysis_date\": 1780858333, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 59, \"malicious\": 0, \"suspicious\": 0, \"undetected\": 32}}, {\"ioc\": \"c2.beacon-sync.net\", \"link\": \"https://www.virustotal.com/api/v3/domains/\nInvestigation Q: What is ParentImage and CommandLine for host=DESKTOP-BRUCE Image=\"C:\\\\Users\\\\bwayne\\\\AppData\\\\Local\\\\Temp\\\\updater.exe\"? | SPL: search index=* host=\"DESKTOP-BRUCE\" Image=\"C:/Users/bwayne/AppData/Local/Temp/updater.exe\" | table ParentImage CommandLine\nInvestigation Q: What are the SHA256 hash and signing status for host=DESKTOP-BRUCE Image=\"C:\\\\Users\\\\bwayne\\\\AppData\\\\Local\\\\Temp\\\\updater.exe\"? | SPL: search index=* Image=\"C:/Users/bwayne/AppData/Local/Temp/updater.exe\" host=\"DESKTOP-BRUCE\" | dedup sha256 signing_status | table sha256 signing_status\nInvestigation Q: Are there any scheduled tasks with ImagePath=\"*\\\\updater.exe\" on host=DESKTOP-BRUCE? | SPL: search index=* host=DESKTOP-BRUCE ImagePath=\"*/updater.exe\" | table _time host ImagePath TaskName\nInvestigation Q: What DNS query events show query=\"c2.beacon-sync.net\" from host=DESKTOP-BRUCE? | SPL: search index=* sourcetype=\"*dns*\" (host=\"DESKTOP-BRUCE\" OR src=\"10.1.1.15\" OR src_ip=\"10.1.1.15\") query=\"c2.beacon-sync.net\" | stats count as events by _time src_ip dest_ip query | sort -_time | head\nAdmin org gap Q: Is the execution of C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe and outbound traffic to c2.beacon-sync.net an authorized, documented update process for executive endpoints, or does it require a specific policy exception?",
+    "metadata": {
+      "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+      "src": "10.1.1.15",
+      "dest": "198.51.100.10",
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:03:00Z",
+      "track": "security",
+      "verdict": "insufficient_data",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "severity": "critical",
+      "row_index": 0,
+      "signature": "Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure",
+      "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+      "signature_id": "T1071.001"
+    },
+    "created_at": "2026-06-07T19:27:20.527481+00:00",
+    "updated_at": "2026-06-07T19:46:25.683946+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__t8372_phish_at_1727841600.1::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__t8372_phish_at_1727841600.1",
+    "search_name": "Proofpoint: Malicious URL Click (t8372)",
+    "row_index": 0,
+    "essential": {
+      "src": "203.0.113.111",
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:00:00Z",
+      "verdict": "needs_investigation",
+      "priority": "high",
+      "severity": "high",
+      "signature": "Proofpoint TAP — user clicked malicious URL",
+      "signature_id": "T1566"
+    },
+    "summary_line": "2024-10-02T04:00:00 | Proofpoint: Malicious URL Click (t8372) | user=WAYNECORPINC\\bwayne src=203.0.113.111 host=DESKTOP-BRUCE | Proofpoint TAP — user clicked malicious URL | severity=high | Executive user clicked a high‑severity URL on a critical workstation; threat intel shows no malicious reputation, but a later C2 alert from the same host raises concern. No immediate follow‑up activit",
+    "chunk_text": "SOC analysis: Proofpoint: Malicious URL Click (t8372)\nsid: scheduler__admin__search__t8372_phish_at_1727841600.1\nTime: 2024-10-02T04:00:00Z\nEntities: user=WAYNECORPINC\\bwayne src=203.0.113.111 host=DESKTOP-BRUCE\nSignal: Proofpoint TAP — user clicked malicious URL\nSeverity: high\nVerdict: needs_investigation\nPriority: high\nNext step: Execute a focused investigation on DESKTOP-BRUCE for the period surrounding 2024-10-02T04:00Z, including proxy/web‑gateway logs for the clicked URL, DNS resolution, endpoint process trees (browser child processes), and netflow/firewall data to detect any outbound connections to the later C2 IP (198.\nJudge rationale: Risk_context marks the asset (critical) and user (executive) with high risk scores (9). Defender notes the domain is undetected/harmless and the click alone is a weak signal, recommending verification of business use. Hunter highlights a subsequent critical C2 alert from the same host, suggesting the click could be an initial foothold. Hunt queries returned no observable activity, and verification\nAnalysis summary: Executive user clicked a high‑severity URL on a critical workstation; threat intel shows no malicious reputation, but a later C2 alert from the same host raises concern. No immediate follow‑up activity is observed, so further focused investigation is required.\nDefender: - Alternate: The URL points to \"secure-document-portal.com\", a domain that may be a sanctioned third‑party document‑sharing service used by WayneCorp; click could be a routine business activity.\n- Alternate: Proofpoint TAP can flag clicks on links that were rewritten for scanning (e.g., safe‑link wrappers) which sometimes generate false positives when the original URL is benign.\n- Weak signal: The alert is a single click event with no follow‑up activity (no download, no process creation, no outbound traffic) reported in the current window.\n- Weak signal: Threat‑intel look‑ups returned \"undetec\nHunter: The alert shows a high‑severity click on a URL (https://secure-document-portal.com/shared/view?id=jkl982hda) by executive user bwayne from the critical endpoint DESKTOP-BRUCE. No follow‑up activity was seen in generic host searches, but a later similar alert indicates outbound C2 traffic from the same host to 198.51.100.10. To confirm whether the click led to malicious behavior, hunt for (1) any proxy/DNS resolution of the domain, (2) process creation events on the workstation that stem from the browser, and (3) subsequent outbound network connections from the host, especially to the C2 IP. Co\nHunter SPL ideas: search index=proxy host=DESKTOP-BRUCE url=\"https://secure-document-portal.com/shared/view?id=jkl982hda\" | stats count by src_ip, dest_ip, http_method, user, _time; search index=dns sourcetype=dnslookup query=\"secure-document-portal.com\" | stats count by src, _time; search index=wineventlog host=DESKTOP-BRUCE EventCode=4688 (ParentImage=\"*chrome.exe*\" OR ParentImage=\"*msedge.exe*\" OR ParentImage=\"*\nRisk context: Asset t8372-desktop-bruce: criticality=critical, risk_score=9. User WAYNECORPINC\\bwayne: risk_score=9, department=Executive.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=82 review=NEEDS_HUMAN_REVIEW priority=critical\nMITRE T1566: Phishing medium\nMITRE T1071.001: Web Protocols low\nMITRE KC-3: Delivery low\nMITRE KC-6: Command and Control low\nThreat intel: {\"iocs\": [{\"ioc\": \"secure-document-portal.com\", \"link\": \"https://www.virustotal.com/api/v3/domains/secure-document-portal.com\", \"vt_id\": \"secure-document-portal.com\", \"verdict\": \"undetected\", \"vt_type\": \"domain\", \"ioc_type\": \"domain\", \"reputation\": 0, \"total_votes\": {\"harmless\": 0, \"malicious\": 0}, \"last_analysis_date\": 1759370341, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 0, \"malicious\": 0, \"suspicious\": 0, \"undetected\": 91}}, {\"ioc\": \"https://secure-document-portal.com/shared/view?id=j\nInvestigation Q: What DNS query answers were recorded for host=DESKTOP-BRUCE and domain=secure-document-portal.com? | SPL: search host=DESKTOP-BRUCE domain=\"*secure-document-portal.com*\" dns_answer=* | table _time host domain dns_answer dns_query_answer\nInvestigation Q: What proxy request details exist for host=DESKTOP-BRUCE and url=\"https://secure-document-portal.com/shared/view?id=jkl982hda\"? | SPL: search index=proxy host=\"DESKTOP-BRUCE\" (url=\"*secure-document-portal.com/shared/view?id=jkl982hda*\" OR cs_uri=\"*secure-document-portal.com/shared/view?id=jkl982hda*\") | eval src_ip=coalesce(src_ip, c\nInvestigation Q: What NewProcessName and CommandLine were logged on host=DESKTOP-BRUCE for EventCode=4688 where ParentImage=\"*chrome.exe*\" OR ParentImage=\"*msedge.exe*\" and user=WAYNECORPINC\\bwayne? | SPL: search index=* source=\"WinEventLog:Security\" host=DESKTOP-BRUCE EventCode=4688 (ParentImage=\"*chrome.exe*\" OR ParentImage=\"*msedge.exe*\") Account_Name=\"WAYNECORPINC/bwayne\" | stats count as events by\nInvestigation Q: What outbound netflow connections from host=DESKTOP-BRUCE to dest_ip=198.51.100.10 are present? | SPL: search index=* sourcetype=netflow host=\"DESKTOP-BRUCE\" dest_ip=198.51.100.10 | stats count as connections dc(dest_port) as distinct_ports | table connections distinct_ports\nAdmin org gap Q: Is the domain https://secure-document-portal.com an approved service for executive users, and does corporate web‑use policy permit clicks to such URLs on workstations like DESKTOP‑BRUCE?",
+    "metadata": {
+      "sid": "scheduler__admin__search__t8372_phish_at_1727841600.1",
+      "src": "203.0.113.111",
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:00:00Z",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "severity": "high",
+      "row_index": 0,
+      "signature": "Proofpoint TAP — user clicked malicious URL",
+      "search_name": "Proofpoint: Malicious URL Click (t8372)",
+      "signature_id": "T1566"
+    },
+    "created_at": "2026-06-07T18:46:50.766971+00:00",
+    "updated_at": "2026-06-07T19:46:26.583210+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__t8372_ps_download_at_1727841660.1::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__t8372_ps_download_at_1727841660.1",
+    "search_name": "Sysmon: PowerShell Download Activity (t8372)",
+    "row_index": 0,
+    "essential": {
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:01:00Z",
+      "verdict": "needs_investigation",
+      "priority": "high",
+      "severity": "medium",
+      "signature": "PowerShell download cradle after browser activity",
+      "signature_id": "T1059.001"
+    },
+    "summary_line": "2024-10-02T04:01:00 | Sysmon: PowerShell Download Activity (t8372) | user=WAYNECORPINC\\bwayne host=DESKTOP-BRUCE | PowerShell download cradle after browser activity | severity=medium | Critical executive workstation showed PowerShell invoked by Chrome to download a script from an unverified domain; while threat intel shows no detections, the asset and user have high risk scores and ",
+    "chunk_text": "SOC analysis: Sysmon: PowerShell Download Activity (t8372)\nsid: scheduler__admin__search__t8372_ps_download_at_1727841660.1\nTime: 2024-10-02T04:01:00Z\nEntities: user=WAYNECORPINC\\bwayne host=DESKTOP-BRUCE\nSignal: PowerShell download cradle after browser activity\nSeverity: medium\nVerdict: needs_investigation\nPriority: high\nNext step: Run targeted Splunk searches to collect the full PowerShell process tree, any child processes, network connections to evil-payload-distro.net, and file creation events on DESKTOP-BRUCE, then review the results for malicious activity.\nJudge rationale: Risk_context flags the endpoint (critical) and user (executive) with risk_score=9 each, indicating a high impact if compromised. Although threat_intel finds the domain undetected, the lack of malicious hits does not outweigh the asset risk. Defender's benign hypothesis relies on missing corroborating data, but no change‑management record or extension evidence is available yet. Hunter notes zero ad\nAnalysis summary: Critical executive workstation showed PowerShell invoked by Chrome to download a script from an unverified domain; while threat intel shows no detections, the asset and user have high risk scores and similar alerts (C2 and scheduled task) raise suspicion, requiring focused investigation.\nDefender: - **Benign possibility:** Chrome (parent process) may have launched PowerShell as part of a legitimate extension or internal web‑based tool that pulls scripts from an internal or test server; the `IEX(New-Object Net.WebClient).DownloadString` pattern is sometimes used by IT automation.\n- **Weak signal:** Only a single Sysmon Event ID 1 is present; there is no accompanying network flow, file creation, or secondary PowerShell activity to confirm payload execution.\n- **Minimal checks:** (1) Query the change‑management system for any approved deployment or ticket referencing `invoice.js` or the `e\nHunter: The alert captures a single Sysmon EventID=1 where Chrome spawned PowerShell to download a script from evil-payload-distro.net. Live queries show **zero** additional events for user WAYNECORPINC\\bwayne or host DESKTOP-BRUCE across the indexed data, confirming the current evidence is limited to this one process creation. To determine if this is an isolated benign automation or part of a multi‑stage intrusion, the hunt should (1) enumerate all PowerShell activity on the endpoint around the event time, (2) surface any network connections to the same domain or IP, (3) locate any file writes of the\nHunter SPL ideas: search index=wineventlog sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational host=\"DESKTOP-BRUCE\" Image=\"*powershell.exe*\" | stats count by _time, CommandLine, ParentImage, User; search index=wineventlog sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational host=\"DESKTOP-BRUCE\" EventCode=3 (DestinationHostname=\"evil-payload-distro.net\" OR DestinationIp=*) | stats count by _time\nRisk context: Asset t8372-desktop-bruce: criticality=critical, risk_score=9. User WAYNECORPINC\\bwayne: risk_score=9, department=Executive.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=82 review=NEEDS_HUMAN_REVIEW priority=critical\nMITRE T1059.001: Command and Scripting Interpreter: PowerShell high\nMITRE T1105: Ingress Tool Transfer low\nMITRE KC-3: Delivery low\nThreat intel: {\"iocs\": [{\"ioc\": \"evil-payload-distro.net\", \"link\": \"https://www.virustotal.com/api/v3/domains/evil-payload-distro.net\", \"vt_id\": \"evil-payload-distro.net\", \"verdict\": \"undetected\", \"vt_type\": \"domain\", \"ioc_type\": \"domain\", \"reputation\": 0, \"total_votes\": {\"harmless\": 0, \"malicious\": 0}, \"last_analysis_date\": 1780027383, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 0, \"malicious\": 0, \"suspicious\": 0, \"undetected\": 91}}, {\"ioc\": \"http://evil-payload-distro.net/invoice.js\", \"error\": \"not_fo\nInvestigation Q: What network connections to domain evil-payload-distro.net were made by Image=\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" on host=DESKTOP-BRUCE? | SPL: search index=* source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=DESKTOP-BRUCE Image=\"C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe\" EventCode=3 DestinationHostname=\"evil-payl\nInvestigation Q: Did any file creation events on host=DESKTOP-BRUCE create a file named \"invoice.js\" as a result of the PowerShell process (Image=\"*powershell.exe*\")? | SPL: search index=wineventlog source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=DESKTOP-BRUCE Image=\"*powershell.exe*\" EventCode=11 TargetFilename=\"*invoice.js*\" | stats count as file_creation\nInvestigation Q: What child processes (Image) were spawned by the PowerShell process (Image=\"*powershell.exe*\") on host=DESKTOP-BRUCE after the download event? | SPL: search index=wineventlog source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=DESKTOP-BRUCE EventCode=1 ParentProcessId IN ([search index=wineventlog source=\"WinEventLog:Microsoft-Windows-Sy\nInvestigation Q: Was a scheduled task created on host=DESKTOP-BRUCE (EventCode=12, NewProcessName=\"schtasks.exe\") within minutes after the PowerShell download? | SPL: search index=wineeventlog source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" host=DESKTOP-BRUCE (EventCode=1 Image=\"*powershell.exe*\") OR (EventCode=1 Image=\"*schtasks.exe*\") | sort _time | tra\nAdmin org gap Q: Is the execution of PowerShell with an IEX‑download from an external domain (e.g., evil-payload-distro.net) approved or documented for executive endpoints or for the user WAYNECORPINC\\bwayne, and is there a change‑management record authorizing this activity?",
+    "metadata": {
+      "sid": "scheduler__admin__search__t8372_ps_download_at_1727841660.1",
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:01:00Z",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "severity": "medium",
+      "row_index": 0,
+      "signature": "PowerShell download cradle after browser activity",
+      "search_name": "Sysmon: PowerShell Download Activity (t8372)",
+      "signature_id": "T1059.001"
+    },
+    "created_at": "2026-06-07T18:59:12.367270+00:00",
+    "updated_at": "2026-06-07T19:46:26.352103+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__t8372_schtasks_at_1727841720.1::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__t8372_schtasks_at_1727841720.1",
+    "search_name": "Sysmon: Suspicious Scheduled Task Creation (t8372)",
+    "row_index": 0,
+    "essential": {
+      "host": "DESKTOP-BRUCE",
+      "user": "NT AUTHORITY\\SYSTEM",
+      "_time": "2024-10-02T04:02:00Z",
+      "verdict": "needs_investigation",
+      "priority": "high",
+      "severity": "high",
+      "signature": "Suspicious scheduled task for persistence",
+      "signature_id": "T1053.005"
+    },
+    "summary_line": "2024-10-02T04:02:00 | Sysmon: Suspicious Scheduled Task Creation (t8372) | user=NT AUTHORITY\\SYSTEM host=DESKTOP-BRUCE | Suspicious scheduled task for persistence | severity=high | Critical workstation DESKTOP-BRUCE shows a high‑severity scheduled‑task creation alert with a known malicious EICAR hash; no execution or network activity observed, and Defender suggests a benign test",
+    "chunk_text": "SOC analysis: Sysmon: Suspicious Scheduled Task Creation (t8372)\nsid: scheduler__admin__search__t8372_schtasks_at_1727841720.1\nTime: 2024-10-02T04:02:00Z\nEntities: user=NT AUTHORITY\\SYSTEM host=DESKTOP-BRUCE\nSignal: Suspicious scheduled task for persistence\nSeverity: high\nVerdict: needs_investigation\nPriority: high\nNext step: Run Splunk searches for Windows Task Scheduler creation (EventID 4698/106) and execution events for task \"MicrosoftEdgeUpdate\" on DESKTOP-BRUCE, and verify the content of C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe against the EICAR test file.\nJudge rationale: Risk_context flags the asset as critical (risk_score=9) and the file hash is marked malicious by VirusTotal (66 detections). Hunter highlights the lack of follow‑up telemetry and recommends confirming task existence and execution. Defender offers a benign hypothesis (test file, legitimate Edge updater naming) but provides no evidence that the task actually ran. Because the malicious intel outweigh\nAnalysis summary: Critical workstation DESKTOP-BRUCE shows a high‑severity scheduled‑task creation alert with a known malicious EICAR hash; no execution or network activity observed, and Defender suggests a benign test while Hunter calls for verification.\nDefender: - Alternate: The task name “MicrosoftEdgeUpdate” mirrors the legitimate Edge updater; many IT deployment scripts schedule a helper executable at logon using schtasks.exe.\n- Alternate: The file hash belongs to the well‑known EICAR test string (eicar.com‑33004), often used in AV validation labs; its presence may indicate a controlled test rather than actual malware.\n- Weak signal: Only a single Sysmon EventID 1 is observed – no follow‑up execution of the task, no network connections, and no credential‑access events tied to this file.\n- Weak signal: ParentImage is the same temp‑path executable, s\nHunter: The alert captures a single Sysmon EventID 1 where schtasks.exe creates a task named \\\"MicrosoftEdgeUpdate\\\" that launches a temporary executable (C:\\\\Users\\\\bwayne\\\\AppData\\\\Local\\\\Temp\\\\updater.exe). The parent process of the task creation is that same temp executable, suggesting the task was scripted locally. The file hash of updater.exe is flagged as malicious by VirusTotal (malicious verdict, 66 detections) and is tagged as the EICAR test file, which could indicate a controlled test. However, the asset (DESKTOP-BRUCE) is classified as critical, and no further telemetry was observed: two b\nHunter SPL ideas: search index=wineventlog sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational (EventCode=13 OR EventCode=1) TaskName=\"MicrosoftEdgeUpdate\" | stats count by host _time Image ParentImage CommandLine; search index=wineventlog sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational Image=\"*updater.exe\" OR ParentImage=\"*updater.exe\" | stats count by host _time Image ParentImage Command\nRisk context: Asset t8372-desktop-bruce: criticality=critical, risk_score=9. User NT AUTHORITY\\SYSTEM: risk_score=1, department=Infrastructure.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=82 review=NEEDS_HUMAN_REVIEW priority=critical\nMITRE T1053.005: Scheduled Task high\nMITRE KC-5: Installation medium\nThreat intel: {\"iocs\": [{\"ioc\": \"275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f\", \"md5\": \"44d88612fea8a8f36de82e1278abb02f\", \"link\": \"https://www.virustotal.com/api/v3/files/275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f\", \"sha1\": \"3395856ce81f2b7382dee72602f798b642f14140\", \"tags\": [\"long-sleeps\", \"idle\", \"attachment\", \"via-tor\", \"known-distributor\", \"direct-cpu-clock-access\", \"detect-debug-environment\"], \"vt_id\": \"275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf65\nInvestigation Q: What is the count of task execution events where TaskName=\"MicrosoftEdgeUpdate\" on host=DESKTOP-BRUCE? | SPL: | stats count as task_execution_count\nInvestigation Q: How many process creation events have Image=C:\\\\Users\\\\bwayne\\\\AppData\\\\Local\\\\Temp\\\\updater.exe on host=DESKTOP-BRUCE? | SPL: | stats count as process_creation_count\nInvestigation Q: Did any network connections originate from host=DESKTOP-BRUCE with sha256=275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f? | SPL: search index=wineventlog source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" EventCode=3 host=\"DESKTOP-BRUCE\" sha256=\"275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f\" | stats co\nInvestigation Q: On which hosts does sha256=275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f appear in any event? | SPL: | stats dc(host) as host\nAdmin org gap Q: Is the scheduled task “MicrosoftEdgeUpdate” that runs C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe an authorized, documented change for DESKTOP-BRUCE (e.g., approved by policy or linked to a change ticket)?",
+    "metadata": {
+      "sid": "scheduler__admin__search__t8372_schtasks_at_1727841720.1",
+      "host": "DESKTOP-BRUCE",
+      "user": "NT AUTHORITY\\SYSTEM",
+      "_time": "2024-10-02T04:02:00Z",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "severity": "high",
+      "row_index": 0,
+      "signature": "Suspicious scheduled task for persistence",
+      "search_name": "Sysmon: Suspicious Scheduled Task Creation (t8372)",
+      "signature_id": "T1053.005"
+    },
+    "created_at": "2026-06-07T19:19:21.002654+00:00",
+    "updated_at": "2026-06-07T19:46:26.094034+00:00"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "This search looks at events on host web-prod-01 over the last 24 hours and counts activity by user, helping analysts spot unusual login patterns."
+      }
+    ]
+  }
+}

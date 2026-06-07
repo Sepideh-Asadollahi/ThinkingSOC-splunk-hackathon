@@ -1,0 +1,41 @@
+[
+  {
+    "rule_id": "r-host",
+    "priority": 10,
+    "enabled": true,
+    "entity_type": "asset",
+    "alert_field": "host",
+    "inventory_lookup": "tsoc_assets",
+    "inventory_field": "hostname",
+    "match_type": "exact",
+    "on_multiple_matches": "highest_criticality",
+    "description": "Map Splunk host to asset hostname",
+    "updated_at": "2026-05-16T14:13:48.206868+00:00"
+  },
+  {
+    "rule_id": "r-src",
+    "priority": 20,
+    "enabled": true,
+    "entity_type": "asset",
+    "alert_field": "src",
+    "inventory_lookup": "tsoc_assets",
+    "inventory_field": "ip",
+    "match_type": "exact",
+    "on_multiple_matches": "highest_criticality",
+    "description": "Map source IP to asset IP",
+    "updated_at": "2026-05-16T14:13:48.212549+00:00"
+  },
+  {
+    "rule_id": "r-user",
+    "priority": 30,
+    "enabled": true,
+    "entity_type": "user",
+    "alert_field": "user",
+    "inventory_lookup": "tsoc_users",
+    "inventory_field": "user_id",
+    "match_type": "exact",
+    "on_multiple_matches": "first",
+    "description": "Map alert user to inventory user_id",
+    "updated_at": "2026-05-16T14:13:48.216331+00:00"
+  }
+]

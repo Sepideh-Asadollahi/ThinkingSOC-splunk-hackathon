@@ -1,0 +1,98 @@
+# Code Wiki
+
+Auto-generated documentation from the code knowledge graph community structure.
+
+**Total communities**: 88
+
+## Communities
+
+| Community | Size | Link |
+|-----------|------|------|
+| api-reset | 2 | [api-reset.md](api-reset.md) |
+| backend-pids | 5 | [backend-pids.md](backend-pids.md) |
+| client-parse | 2 | [client-parse.md](client-parse.md) |
+| client-spl | 13 | [client-spl.md](client-spl.md) |
+| datamodel-cim | 23 | [datamodel-cim.md](datamodel-cim.md) |
+| demo-data-demo | 6 | [demo-data-demo.md](demo-data-demo.md) |
+| demo-data-demo | 6 | [demo-data-demo-2.md](demo-data-demo-2.md) |
+| demo-data-demo | 4 | [demo-data-demo-3.md](demo-data-demo-3.md) |
+| demo-data-demo | 2 | [demo-data-demo-4.md](demo-data-demo-4.md) |
+| demo-data-demo | 2 | [demo-data-demo-5.md](demo-data-demo-5.md) |
+| demo-data-demo | 2 | [demo-data-demo-6.md](demo-data-demo-6.md) |
+| demo-data-services | 2 | [demo-data-services.md](demo-data-services.md) |
+| demo-data-sync | 2 | [demo-data-sync.md](demo-data-sync.md) |
+| demo-serialize | 2 | [demo-serialize.md](demo-serialize.md) |
+| devtools-endpoint | 283 | [devtools-endpoint.md](devtools-endpoint.md) |
+| devtools-ensure | 5 | [devtools-ensure.md](devtools-ensure.md) |
+| devtools-ensure | 3 | [devtools-ensure-2.md](devtools-ensure-2.md) |
+| devtools-load | 3 | [devtools-load.md](devtools-load.md) |
+| devtools-load | 2 | [devtools-load-2.md](devtools-load-2.md) |
+| devtools-tsocapierror | 2 | [devtools-tsocapierror.md](devtools-tsocapierror.md) |
+| examples-pp | 2 | [examples-pp.md](examples-pp.md) |
+| graph-core-operation | 10 | [graph-core-operation.md](graph-core-operation.md) |
+| graph-pipelines-alert | 174 | [graph-pipelines-alert.md](graph-pipelines-alert.md) |
+| inventory-default | 35 | [inventory-default.md](inventory-default.md) |
+| inventory-user | 66 | [inventory-user.md](inventory-user.md) |
+| investigation-parser | 2 | [investigation-parser.md](investigation-parser.md) |
+| investigation-question | 12 | [investigation-question.md](investigation-question.md) |
+| investigation-spl | 16 | [investigation-spl.md](investigation-spl.md) |
+| investigation-time | 2 | [investigation-time.md](investigation-time.md) |
+| investigation-timeline | 21 | [investigation-timeline.md](investigation-timeline.md) |
+| llm-context | 5 | [llm-context.md](llm-context.md) |
+| mcp-mcptoolerror | 2 | [mcp-mcptoolerror.md](mcp-mcptoolerror.md) |
+| middleware-config | 4 | [middleware-config.md](middleware-config.md) |
+| middleware-request | 3 | [middleware-request.md](middleware-request.md) |
+| modules-banner | 3 | [modules-banner.md](modules-banner.md) |
+| modules-demo | 2 | [modules-demo.md](modules-demo.md) |
+| modules-embedding | 8 | [modules-embedding.md](modules-embedding.md) |
+| modules-env | 11 | [modules-env.md](modules-env.md) |
+| modules-install | 37 | [modules-install.md](modules-install.md) |
+| modules-nodesource | 11 | [modules-nodesource.md](modules-nodesource.md) |
+| modules-pc | 2 | [modules-pc.md](modules-pc.md) |
+| modules-repo | 2 | [modules-repo.md](modules-repo.md) |
+| modules-services | 9 | [modules-services.md](modules-services.md) |
+| modules-smoke | 3 | [modules-smoke.md](modules-smoke.md) |
+| modules-tsoc | 11 | [modules-tsoc.md](modules-tsoc.md) |
+| observability-analysis-impact | 4 | [observability-analysis-impact.md](observability-analysis-impact.md) |
+| observability-analysis-sql | 72 | [observability-analysis-sql.md](observability-analysis-sql.md) |
+| platform-integration | 19 | [platform-integration.md](platform-integration.md) |
+| post-configure-pc | 5 | [post-configure-pc.md](post-configure-pc.md) |
+| post-configure-pc | 5 | [post-configure-pc-2.md](post-configure-pc-2.md) |
+| post-configure-pc | 4 | [post-configure-pc-3.md](post-configure-pc-3.md) |
+| post-configure-pc | 4 | [post-configure-pc-4.md](post-configure-pc-4.md) |
+| post-configure-pc | 2 | [post-configure-pc-5.md](post-configure-pc-5.md) |
+| post-configure-smoke | 4 | [post-configure-smoke.md](post-configure-smoke.md) |
+| saia-debug-probe | 22 | [saia-debug-probe.md](saia-debug-probe.md) |
+| saia-saia | 3 | [saia-saia.md](saia-saia.md) |
+| saia-spl | 9 | [saia-spl.md](saia-spl.md) |
+| seed-seed | 3 | [seed-seed.md](seed-seed.md) |
+| setup-tool-step | 64 | [setup-tool-step.md](setup-tool-step.md) |
+| soc-analysis-graph-node | 6 | [soc-analysis-graph-node.md](soc-analysis-graph-node.md) |
+| soc-analysis-graph-soc | 2 | [soc-analysis-graph-soc.md](soc-analysis-graph-soc.md) |
+| soc-analysis-graph-user | 6 | [soc-analysis-graph-user.md](soc-analysis-graph-user.md) |
+| soc-rag-alert | 14 | [soc-rag-alert.md](soc-rag-alert.md) |
+| soc-rag-chat | 2 | [soc-rag-chat.md](soc-rag-chat.md) |
+| soc-rag-compact | 8 | [soc-rag-compact.md](soc-rag-compact.md) |
+| soc-rag-compact | 7 | [soc-rag-compact-2.md](soc-rag-compact-2.md) |
+| soc-rag-conversation | 77 | [soc-rag-conversation.md](soc-rag-conversation.md) |
+| soc-rag-correlation | 3 | [soc-rag-correlation.md](soc-rag-correlation.md) |
+| soc-rag-retrieve | 2 | [soc-rag-retrieve.md](soc-rag-retrieve.md) |
+| soc-rag-similar | 2 | [soc-rag-similar.md](soc-rag-similar.md) |
+| splunk-json-store-stored | 3 | [splunk-json-store-stored.md](splunk-json-store-stored.md) |
+| splunk-saia | 18 | [splunk-saia.md](splunk-saia.md) |
+| splunk-saia | 2 | [splunk-saia-2.md](splunk-saia-2.md) |
+| sql-chat-sql | 2 | [sql-chat-sql.md](sql-chat-sql.md) |
+| tests-classifier | 2 | [tests-classifier.md](tests-classifier.md) |
+| tests-conversation | 4 | [tests-conversation.md](tests-conversation.md) |
+| tests-format | 3 | [tests-format.md](tests-format.md) |
+| tests-gap | 95 | [tests-gap.md](tests-gap.md) |
+| tests-load | 2 | [tests-load.md](tests-load.md) |
+| tests-merge | 5 | [tests-merge.md](tests-merge.md) |
+| tests-rejects | 7 | [tests-rejects.md](tests-rejects.md) |
+| tests-sdk | 51 | [tests-sdk.md](tests-sdk.md) |
+| tests-soc | 4 | [tests-soc.md](tests-soc.md) |
+| tests-spl | 293 | [tests-spl.md](tests-spl.md) |
+| tests-testsettings | 2 | [tests-testsettings.md](tests-testsettings.md) |
+| tests-vt | 95 | [tests-vt.md](tests-vt.md) |
+| triage-analysis | 2 | [triage-analysis.md](triage-analysis.md) |
+| triage-format | 2 | [triage-format.md](triage-format.md) |

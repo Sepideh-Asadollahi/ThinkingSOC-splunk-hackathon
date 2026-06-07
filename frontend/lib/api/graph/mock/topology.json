@@ -1,0 +1,42 @@
+{
+  "nodes": [
+    {
+      "id": "alert-101",
+      "label": "Suspicious RDP",
+      "group": ["Alert"],
+      "properties": { "alert_row_id": "ALERT-101", "risk_score": 75 }
+    },
+    {
+      "id": "alert-102",
+      "label": "PsExec lateral movement",
+      "group": ["Alert"],
+      "properties": { "alert_row_id": "ALERT-102", "risk_score": 78 }
+    },
+    {
+      "id": "identity-jdoe",
+      "label": "jdoe@corp.local",
+      "group": ["Identity"],
+      "properties": { "primary_identifier": "username:jdoe@corp.local" }
+    },
+    {
+      "id": "asset-server01",
+      "label": "SERVER01",
+      "group": ["Asset"],
+      "properties": { "primary_identifier": "hostname:SERVER01" }
+    },
+    {
+      "id": "ioc-c2",
+      "label": "203.0.113.50",
+      "group": ["IOC"],
+      "properties": { "primary_identifier": "ipv4:203.0.113.50" }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "from": "alert-101", "to": "asset-server01", "label": "RELATED_TO" },
+    { "id": "e2", "from": "alert-101", "to": "identity-jdoe", "label": "RELATED_TO" },
+    { "id": "e3", "from": "alert-102", "to": "asset-server01", "label": "RELATED_TO" },
+    { "id": "e4", "from": "alert-102", "to": "identity-jdoe", "label": "RELATED_TO" },
+    { "id": "e5", "from": "alert-101", "to": "ioc-c2", "label": "RELATED_TO" }
+  ],
+  "highlight_info": { "node_ids": [], "edge_ids": [] }
+}

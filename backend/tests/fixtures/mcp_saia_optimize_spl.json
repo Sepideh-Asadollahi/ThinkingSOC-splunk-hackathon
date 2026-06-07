@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"spl\": \"search index=main host=\\\"web-prod-01\\\" earliest=-24h@h latest=now | stats count by user | sort -count\", \"explanation\": \"Optimized with sort for readability\"}"
+      }
+    ]
+  }
+}

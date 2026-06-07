@@ -1,0 +1,5 @@
+asset_id,asset_type,hostname,fqdn,ip,owner,criticality,risk_score,description
+srv-web-01,server,web-prod-01,web-prod-01.example.com,10.0.0.5,ops,high,4,Web tier
+srv-db-01,server,db-prod-01,db-prod-01.example.com,10.0.0.10,dba,critical,5,Database
+asset-dup-a,server,dup-a,,10.0.0.99,ops,low,2,Duplicate IP demo row A
+asset-dup-b,server,dup-b,,10.0.0.99,ops,high,3,Duplicate IP demo row B

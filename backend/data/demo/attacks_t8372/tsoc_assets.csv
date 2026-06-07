@@ -1,0 +1,2 @@
+asset_id,asset_type,hostname,fqdn,ip,owner,criticality,risk_score,description
+t8372-desktop-bruce,endpoint,DESKTOP-BRUCE,DESKTOP-BRUCE.waynecorpinc.local,10.1.1.15,bwayne,critical,9,Bruce Wayne workstation — ATTACKS t8372 kill chain

