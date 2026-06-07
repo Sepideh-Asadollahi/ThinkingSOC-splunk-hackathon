@@ -41,6 +41,12 @@ class Settings(BaseSettings):
     tsoc_ingest_auto_analyze: bool = True
     tsoc_ingest_auto_analyze_pipeline: Literal["triage", "route", "none"] = "triage"
     tsoc_ingest_auto_analyze_max_rows: int = Field(default=50, ge=1, le=500)
+    # Buffer per-row webhook POSTs for one sid (Splunk fires one POST per result row),
+    # then analyze the whole job once all rows arrive. Row count comes from the buffered
+    # POST content (deduped by fingerprint), not a single POST.
+    tsoc_ingest_row_buffer: bool = True
+    # Debounce window: flush a sid's buffer this many seconds after its last POST.
+    tsoc_ingest_row_buffer_seconds: float = Field(default=3.0, ge=0.5, le=60.0)
     # Log complete Splunk webhook JSON to console (ingest_webhook_raw_json / _raw_pretty).
     tsoc_ingest_log_raw_webhook_body: bool = True
 

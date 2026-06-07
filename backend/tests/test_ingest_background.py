@@ -12,18 +12,48 @@ from main import app
 from models.handoff import SplunkAlertIngest
 
 
-def test_splunk_ingest_async_accepted(mock_enrich_ok) -> None:
+def test_splunk_ingest_async_buffered(mock_enrich_ok) -> None:
+    """Default auto-analyze path buffers the row (one POST per row) and returns 202."""
     def _override() -> Settings:
         return Settings(
             splunk_username="u",
             splunk_password="p",
             tsoc_postgres_dsn="",
             tsoc_ingest_auto_analyze=True,
+            tsoc_ingest_row_buffer=True,
         )
 
     app.dependency_overrides[get_settings] = _override
     with patch("main.init_store", new_callable=AsyncMock):
-        with patch("api.routes.ingest.run_post_ingest", new_callable=AsyncMock) as m:
+        with patch("api.routes.ingest.accumulate_ingest_row", new_callable=AsyncMock) as acc:
+            acc.return_value = {"base_sid": "scheduler_123", "buffered_rows": 1, "added": 1, "duplicates": 0}
+            with TestClient(app) as client:
+                r = client.post(
+                    "/api/v1/alerts/splunk-ingest",
+                    json={"sid": "scheduler_123", "search_name": "demo", "result": {"host": "h1"}},
+                )
+    app.dependency_overrides.clear()
+    assert r.status_code == 202
+    data = r.json()
+    assert data["status"] == "buffered"
+    assert data["buffered_rows"] == 1
+    acc.assert_awaited_once()
+
+
+def test_splunk_ingest_async_accepted_when_buffer_disabled(mock_enrich_ok) -> None:
+    """With the buffer disabled, the per-HTTP-request path still runs background triage."""
+    def _override() -> Settings:
+        return Settings(
+            splunk_username="u",
+            splunk_password="p",
+            tsoc_postgres_dsn="",
+            tsoc_ingest_auto_analyze=True,
+            tsoc_ingest_row_buffer=False,
+        )
+
+    app.dependency_overrides[get_settings] = _override
+    with patch("main.init_store", new_callable=AsyncMock):
+        with patch("api.routes.ingest.run_post_ingest", new_callable=AsyncMock):
             with TestClient(app) as client:
                 r = client.post(
                     "/api/v1/alerts/splunk-ingest",

@@ -15,14 +15,15 @@ from config import Settings, get_settings
 from services.correlation_integration import upsert_webhook_alert_to_graph
 from models.handoff import SplunkAlertIngest, normalize_splunk_ingest_payload
 from services.alert.alert_pipeline import enrich_alert_from_splunk
-from services.alert.ingest_background import run_post_ingest
+from services.alert.ingest_accumulator import accumulate_ingest_row
+from services.alert.ingest_background import run_buffered_job_triage, run_post_ingest
 from services.alert.ingest_row_shape import detect_splunk_result_row_shape, log_splunk_result_row_shape
 from services.alert.ingest_request_trace import (
     build_rest_row_match_debug,
     log_ingest_delivery_summary,
     log_ingest_http_trace,
-    match_webhook_row_to_rest_index,
     record_ingest_http_trace,
+    resolve_ingest_row_index,
 )
 from services.alert.ingest_webhook_payload import log_ingest_webhook_payload
 from services.soc_analysis.analysis_audit import format_row_sid, splunk_job_sid
@@ -82,6 +83,51 @@ async def splunk_ingest(
         do_analyze,
         do_analyze,
     )
+
+    # Per-row webhook buffer: Splunk sends one POST per result row. Collect every POST
+    # for this sid, then analyze the whole job once (row count = buffered rows). This is
+    # content-driven and does not depend on a single POST or on Splunk REST.
+    if do_analyze and bool(getattr(settings, "tsoc_ingest_row_buffer", True)):
+        try:
+            await upsert_webhook_alert_to_graph(body)
+        except Exception as exc:
+            logger.debug("ingest graph upsert skipped rid=%s: %s", http_rid(request), exc)
+        buffer_info = await accumulate_ingest_row(
+            settings,
+            handoff,
+            debounce_seconds=float(getattr(settings, "tsoc_ingest_row_buffer_seconds", 3.0) or 3.0),
+            flush_callback=run_buffered_job_triage,
+        )
+        logger.info(
+            "api POST /alerts/splunk-ingest rid=%s buffered sid=%s base_sid=%s buffered_rows=%d "
+            "added=%d duplicates=%d duration_ms=%.1f",
+            http_rid(request),
+            handoff.sid,
+            buffer_info["base_sid"],
+            buffer_info["buffered_rows"],
+            buffer_info["added"],
+            buffer_info["duplicates"],
+            (time.perf_counter() - t0) * 1000.0,
+        )
+        return JSONResponse(
+            status_code=202,
+            content={
+                "ok": True,
+                "status": "buffered",
+                "sid": handoff.sid,
+                "base_sid": buffer_info["base_sid"],
+                "search_name": handoff.search_name,
+                "buffered_rows": buffer_info["buffered_rows"],
+                "added_rows": buffer_info["added"],
+                "duplicate_rows": buffer_info["duplicates"],
+                "buffer_window_seconds": float(
+                    getattr(settings, "tsoc_ingest_row_buffer_seconds", 3.0) or 3.0
+                ),
+                "ingest_http_trace": ingest_trace,
+                "auto_analyze": True,
+            },
+        )
+
     try:
         enriched = await enrich_alert_from_splunk(handoff, settings)
     except AppError:
@@ -109,8 +155,11 @@ async def splunk_ingest(
     if len(webhook_rows) == 1:
         base_sid = splunk_job_sid(handoff.sid) or handoff.sid
         match_debug = build_rest_row_match_debug(webhook_rows[0], rest_rows)
-        idx = int(match_debug.get("matched_rest_index") or 0)
-        job_n = max(len(rest_rows), 1)
+        seq = int(ingest_trace.get("request_seq_for_sid") or 0) or None
+        idx, resolved_method = resolve_ingest_row_index(webhook_rows[0], rest_rows, request_seq=seq)
+        match_debug["match_method"] = resolved_method
+        match_debug["matched_rest_index"] = idx
+        job_n = max(len(rest_rows), idx + 1, 1)
         planned_this_request = [format_row_sid(base_sid, idx, job_n)]
         this_request_analyze = 1
         triage_mode = "per_http_request_row"

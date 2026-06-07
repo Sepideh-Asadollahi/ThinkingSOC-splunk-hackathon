@@ -134,40 +134,49 @@ def fix_field_equals_in_pipe_clauses(spl: str) -> str:
     s = (spl or "").strip()
     if "|" not in s:
         return s
+    # Preserve a leading pipe for generating-command pipelines (e.g. ``| tstats``);
+    # splitting on ``|`` drops the empty first segment, so re-add it at the end.
+    leading_pipe = s.startswith("|")
     parts = [p.strip() for p in s.split("|") if p.strip()]
     if not parts:
         return s
 
-    head = ensure_search_generating_command(parts[0])
-    out: list[str] = [head]
-    for seg in parts[1:]:
-        if not _AGG_COMMAND_PREFIX.match(seg):
-            out.append(seg)
-            continue
-        seg = re.sub(
-            r"\bas\s+(\w+)=(\S+)",
-            lambda m: "as {0}".format(_safe_spl_alias(m.group(2))),
-            seg,
-            flags=re.IGNORECASE,
-        )
-        seg = re.sub(
-            r"\bas\s+(\w+)=\"([^\"]*)\"",
-            lambda m: "as {0}".format(_safe_spl_alias(m.group(2))),
-            seg,
-            flags=re.IGNORECASE,
-        )
+    if leading_pipe:
+        out = [_fix_agg_segment(seg) for seg in parts]
+        return "| " + " | ".join(out)
 
-        def _fix_by_clause(m: re.Match[str]) -> str:
-            body = _FIELD_EQ_TOKEN.sub(lambda t: t.group(1), m.group(1))
-            return "by {0}".format(body.strip())
-
-        seg = re.sub(r"\bby\b\s+([^|]+?)(?=\s*\||$)", _fix_by_clause, seg, flags=re.IGNORECASE)
-
-        cmd = seg.split(None, 1)[0].lower()
-        if cmd in ("table", "top", "rare", "fields"):
-            seg = _FIELD_EQ_TOKEN.sub(lambda t: t.group(1), seg)
-        out.append(seg)
+    out: list[str] = [ensure_search_generating_command(parts[0])]
+    out.extend(_fix_agg_segment(seg) for seg in parts[1:])
     return " | ".join(out)
+
+
+def _fix_agg_segment(seg: str) -> str:
+    """Fix ``field=value`` used where an aggregation command expects a field name."""
+    if not _AGG_COMMAND_PREFIX.match(seg):
+        return seg
+    seg = re.sub(
+        r"\bas\s+(\w+)=(\S+)",
+        lambda m: "as {0}".format(_safe_spl_alias(m.group(2))),
+        seg,
+        flags=re.IGNORECASE,
+    )
+    seg = re.sub(
+        r"\bas\s+(\w+)=\"([^\"]*)\"",
+        lambda m: "as {0}".format(_safe_spl_alias(m.group(2))),
+        seg,
+        flags=re.IGNORECASE,
+    )
+
+    def _fix_by_clause(m: re.Match[str]) -> str:
+        body = _FIELD_EQ_TOKEN.sub(lambda t: t.group(1), m.group(1))
+        return "by {0}".format(body.strip())
+
+    seg = re.sub(r"\bby\b\s+([^|]+?)(?=\s*\||$)", _fix_by_clause, seg, flags=re.IGNORECASE)
+
+    cmd = seg.split(None, 1)[0].lower()
+    if cmd in ("table", "top", "rare", "fields"):
+        seg = _FIELD_EQ_TOKEN.sub(lambda t: t.group(1), seg)
+    return seg
 
 
 def fix_spl_quoted_string_escapes(spl: str) -> str:

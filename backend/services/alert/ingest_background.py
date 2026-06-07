@@ -11,7 +11,8 @@ from config import Settings
 from models.agents import AgentTriageRequest
 from models.handoff import SplunkAlertIngest
 from services.alert.agent_triage import run_agent_triage, run_agent_triage_all_rows
-from services.alert.ingest_request_trace import match_webhook_row_to_rest_index
+from services.alert.ingest_dedup import claim_storage_sid, release_storage_sid
+from services.alert.ingest_request_trace import resolve_ingest_row_index
 from services.alert.ingest_row_shape import detect_splunk_result_row_shape, log_splunk_result_row_shape
 from services.soc_analysis.analysis_audit import format_row_sid, splunk_job_sid
 from services.soc_analysis.soc_analysis_batch import merge_normalized_for_row
@@ -61,9 +62,10 @@ async def run_triage_for_ingest(
 
     if len(webhook_rows) == 1:
         webhook_row = webhook_rows[0]
-        idx, match_method = match_webhook_row_to_rest_index(webhook_row, rest_rows)
+        seq = int(trace.get("request_seq_for_sid") or 0) or None
+        idx, match_method = resolve_ingest_row_index(webhook_row, rest_rows, request_seq=seq)
         target_row = rest_rows[idx] if rest_rows and 0 <= idx < len(rest_rows) else webhook_row
-        job_row_count = max(len(rest_rows), 1)
+        job_row_count = max(len(rest_rows), idx + 1, 1)
         storage_sid = format_row_sid(base_sid, idx, job_row_count)
         merged = merge_normalized_for_row(handoff.normalized or {}, target_row)
 
@@ -98,6 +100,15 @@ async def run_triage_for_ingest(
             json.dumps(target_row, ensure_ascii=False, default=str)[:4000],
         )
 
+        if not await claim_storage_sid(storage_sid):
+            logger.info(
+                "post_ingest dedup_skip storage_sid=%s trace_id=%s reason=duplicate_concurrent_or_recent "
+                "(another HTTP POST already handling this row)",
+                storage_sid,
+                trace.get("trace_id"),
+            )
+            return
+
         body = AgentTriageRequest(
             normalized=merged,
             search_name=handoff.search_name,
@@ -106,7 +117,11 @@ async def run_triage_for_ingest(
             row_index=idx,
             job_row_count=job_row_count,
         )
-        await run_agent_triage(settings, body)
+        try:
+            await run_agent_triage(settings, body)
+        except Exception:
+            await release_storage_sid(storage_sid)
+            raise
         return
 
     row_shape = detect_splunk_result_row_shape(
@@ -138,6 +153,32 @@ async def run_triage_for_ingest(
         splunk_results=rest_rows,
     )
     await run_agent_triage_all_rows(settings, body, max_rows=max_rows)
+
+
+async def run_buffered_job_triage(
+    settings: Settings,
+    base_sid: str,
+    rows: List[Dict[str, Any]],
+    template: SplunkAlertIngest,
+) -> None:
+    """Flush callback for the per-row webhook buffer: analyze the whole job at once.
+
+    ``rows`` are all the result rows collected from the separate webhook POSTs for this
+    ``base_sid``. We hand them to the existing batch path, which names each row
+    ``{base_sid}-{n}`` and analyzes them sequentially (row 1, then row 2, …).
+    """
+    enriched: Dict[str, Any] = {
+        "splunk_results": rows,
+        "splunk_results_row_count": len(rows),
+        "enrichment_source": "webhook_row_buffer",
+    }
+    logger.info(
+        "post_ingest buffered_job base_sid=%s total_rows=%d search_name=%s",
+        base_sid,
+        len(rows),
+        template.search_name,
+    )
+    await run_post_ingest(settings, template, enriched, auto_analyze=True)
 
 
 async def run_post_ingest(

@@ -302,3 +302,28 @@ def match_webhook_row_to_rest_index(
             return i, "field_overlap_{0}".format(score)
 
     return 0, "fallback_index_0"
+
+
+def resolve_ingest_row_index(
+    webhook_row: Dict[str, Any],
+    rest_rows: List[Dict[str, Any]],
+    *,
+    request_seq: Optional[int] = None,
+) -> Tuple[int, str]:
+    """Authoritative job-row index for this HTTP POST.
+
+    Prefer a strong fingerprint/field match of the webhook ``result`` to a REST row.
+    When that is ambiguous (webhook serialization differs from REST, so every POST
+    would otherwise collapse to index 0), fall back to the per-sid HTTP request order:
+    Splunk fires one POST per result in order, so the Nth POST maps to the Nth row.
+    This guarantees distinct POSTs map to distinct rows (no duplicate ``-1`` records).
+    """
+    idx, method = match_webhook_row_to_rest_index(webhook_row, rest_rows)
+    if method == "fingerprint_exact" or method.startswith("field_overlap"):
+        return idx, method
+    # Weak match (fallback_index_0) with multiple REST rows → disambiguate by arrival order.
+    if request_seq and request_seq >= 1 and len(rest_rows) > 1:
+        seq_idx = request_seq - 1
+        if 0 <= seq_idx < len(rest_rows):
+            return seq_idx, "http_request_sequence"
+    return idx, method

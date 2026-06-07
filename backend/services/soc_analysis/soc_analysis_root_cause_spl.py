@@ -164,6 +164,31 @@ def _enforce_non_raw_output(spl: str) -> tuple[str, bool]:
     )
 
 
+_BOTSV1_SYSMON_SOURCE = 'source="WinEventLog:Microsoft-Windows-Sysmon/Operational"'
+
+
+def _ensure_botsv1_sysmon_source(spl: str) -> tuple[str, bool]:
+    """Inject the BOTSv1 Sysmon ``source`` when a ``search`` on ``index=botsv1`` omits it.
+
+    Per the root-cause SPL prompt (rule 7), botsv1 Sysmon searches must scope to
+    ``source="WinEventLog:Microsoft-Windows-Sysmon/Operational"`` to hit the right data.
+    """
+    s = (spl or "").strip()
+    if not s:
+        return s, False
+    low = s.lower()
+    if "index=botsv1" not in low:
+        return s, False
+    if "source=" in low or "sourcetype=" in low:
+        return s, False
+
+    pipe_idx = s.find("|")
+    head = (s[:pipe_idx] if pipe_idx >= 0 else s).rstrip()
+    tail = s[pipe_idx:].strip() if pipe_idx >= 0 else ""
+    head = "{0} {1}".format(head, _BOTSV1_SYSMON_SOURCE)
+    return ("{0} {1}".format(head, tail).strip() if tail else head), True
+
+
 def sanitize_root_cause_spl_output(raw: Any) -> Optional[RootCauseSpl]:
     if not isinstance(raw, dict):
         return None
@@ -194,12 +219,15 @@ def sanitize_root_cause_spl_output(raw: Any) -> Optional[RootCauseSpl]:
             validation=RootCauseSplValidation(method="skipped", valid=False, message=bad),
         )
 
+    spl, sysmon_source_added = _ensure_botsv1_sysmon_source(spl)
     spl, non_raw_fixed = _enforce_non_raw_output(spl)
 
     pivots_raw = raw.get("pivots") or []
     notes_raw = raw.get("notes") or []
     pivots: List[str] = [str(x).strip() for x in pivots_raw if str(x).strip()] if isinstance(pivots_raw, list) else []
     notes: List[str] = [str(x).strip() for x in notes_raw if str(x).strip()] if isinstance(notes_raw, list) else []
+    if sysmon_source_added and "injected_botsv1_sysmon_source" not in notes:
+        notes.append("injected_botsv1_sysmon_source")
     if non_raw_fixed and "auto_table_projection_for_non_raw_output" not in notes:
         notes.append("auto_table_projection_for_non_raw_output")
     if complex := _has_complex_command(spl):
