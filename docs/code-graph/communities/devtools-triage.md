@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 94 nodes
+Community of 87 nodes
 
-- **Size**: 94 nodes
-- **Cohesion**: 0.3768
+- **Size**: 87 nodes
+- **Cohesion**: 0.3642
 - **Dominant Language**: python
 
 ## Members
@@ -63,21 +63,21 @@ Community of 94 nodes
 | search_events | Function | backend/devtools/client.py | 198-209 |
 | get_event | Function | backend/devtools/client.py | 211-213 |
 
-*... and 44 more members.*
+*... and 37 more members.*
 
 ## Execution Flows
 
 - **run_analysis** (criticality: 0.76, depth: 6)
-- **agent_triage_endpoint** (criticality: 0.75, depth: 8)
-- **run_post_ingest** (criticality: 0.75, depth: 8)
-- **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
 - **dashboard_overview** (criticality: 0.74, depth: 8)
 - **list_triage_queue** (criticality: 0.73, depth: 6)
-- **run_soc_analysis_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
-- **run_observability_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
-- **mcp_tool_call_endpoint** (criticality: 0.71, depth: 2)
 - **run_observability_analysis** (criticality: 0.71, depth: 5)
-- *... and 43 more flows.*
+- **compute_triage_from_judge_verdict** (criticality: 0.55, depth: 4)
+- **compute_triage_from_ops_judge** (criticality: 0.55, depth: 4)
+- **dashboard_overview** (criticality: 0.38, depth: 3)
+- **dashboard_overview** (criticality: 0.38, depth: 3)
+- **classify_alert** (criticality: 0.37, depth: 2)
+- **route_analysis** (criticality: 0.37, depth: 2)
+- *... and 36 more flows.*
 
 ## Dependencies
 
@@ -85,9 +85,9 @@ Community of 94 nodes
 
 - `get` (24 edge(s))
 - `format` (20 edge(s))
-- `BaseModel` (17 edge(s))
 - `int` (15 edge(s))
 - `patch` (11 edge(s))
+- `BaseModel` (10 edge(s))
 - `json` (9 edge(s))
 - `raise_for_status` (8 edge(s))
 - `TsocTimeoutError` (8 edge(s))
@@ -107,12 +107,12 @@ Community of 94 nodes
 - `backend/services/platform/dashboard_overview.py` (3 edge(s))
 - `backend/services/triage/triage_queue.py` (3 edge(s))
 - `backend/tests/test_triage_queue.py` (3 edge(s))
-- `backend/api/routes/mcp.py::mcp_spl_generate_endpoint` (2 edge(s))
-- `backend/models/mcp.py` (2 edge(s))
-- `backend/models/observability.py` (2 edge(s))
 - `perf_counter` (2 edge(s))
 - `range` (2 edge(s))
 - `len` (2 edge(s))
 - `issubset` (2 edge(s))
 - `backend/devtools/async_client.py` (1 edge(s))
 - `backend/devtools/client.py` (1 edge(s))
+- `backend/models/triage.py` (1 edge(s))
+- `backend/services/triage/triage_priority.py::compute_triage_outcome` (1 edge(s))
+- `backend/api/routes/dashboard.py::dashboard_overview` (1 edge(s))

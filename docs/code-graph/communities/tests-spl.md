@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 268 nodes
+Community of 270 nodes
 
-- **Size**: 268 nodes
-- **Cohesion**: 0.2855
+- **Size**: 270 nodes
+- **Cohesion**: 0.2800
 - **Dominant Language**: python
 
 ## Members
@@ -28,6 +28,9 @@ Community of 268 nodes
 | McpHunterEvidence | Class | backend/models/mcp.py | 31-37 |
 | McpJudgeEvidence | Class | backend/models/mcp.py | 40-46 |
 | McpStatusResponse | Class | backend/models/mcp.py | 64-71 |
+| McpToolCallResponse | Class | backend/models/mcp.py | 79-81 |
+| _merge_result_row | Function | backend/services/alert/alert_fields.py | 8-28 |
+| build_alert_fields_for_llm | Function | backend/services/alert/alert_fields.py | 31-61 |
 | merge_alert_field_sample | Function | backend/services/investigation/investigation_question_context.py | 68-87 |
 | _fields_from_orig_search | Function | backend/services/investigation/investigation_question_context.py | 90-97 |
 | _truncate_val | Function | backend/services/investigation/investigation_question_context.py | 100-104 |
@@ -48,10 +51,6 @@ Community of 268 nodes
 | execute_investigation_spl | Function | backend/services/investigation/investigation_spl_execute.py | 65-106 |
 | execute_investigation_item | Function | backend/services/investigation/investigation_spl_execute.py | 109-145 |
 | _run_one | Function | backend/services/investigation/investigation_spl_execute.py | 148-203 |
-| _truncate_saia_prompt | Function | backend/services/investigation/saia_prompt_prepare.py | 24-30 |
-| _compact_alert_for_prepare | Function | backend/services/investigation/saia_prompt_prepare.py | 33-65 |
-| _prepare_user_message | Function | backend/services/investigation/saia_prompt_prepare.py | 68-92 |
-| prepare_saia_prompt_with_llm | Function | backend/services/investigation/saia_prompt_prepare.py | 95-149 |
 | spl_validation_is_error | Function | backend/services/investigation/spl_mcp_review.py | 23-27 |
 | _spl_error_refine_max_attempts | Function | backend/services/investigation/spl_mcp_review.py | 30-31 |
 | _spl_error_refine_enabled | Function | backend/services/investigation/spl_mcp_review.py | 34-35 |
@@ -62,8 +61,9 @@ Community of 268 nodes
 | _execution_refine_user_message | Function | backend/services/investigation/spl_mcp_review.py | 262-314 |
 | _splunk_catalog_block | Function | backend/services/investigation/spl_mcp_review.py | 317-354 |
 | refine_spl_with_llm_on_error | Function | backend/services/investigation/spl_mcp_review.py | 357-441 |
+| refine_root_cause_spl_until_valid | Function | backend/services/investigation/spl_mcp_review.py | 444-503 |
 
-*... and 218 more members.*
+*... and 220 more members.*
 
 ## Execution Flows
 
@@ -77,42 +77,42 @@ Community of 268 nodes
 - **dashboard_overview** (criticality: 0.74, depth: 8)
 - **work** (criticality: 0.74, depth: 6)
 - **review_spl_from_mcp_with_llm** (criticality: 0.73, depth: 5)
-- *... and 23 more flows.*
+- *... and 20 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (130 edge(s))
-- `append` (116 edge(s))
-- `strip` (92 edge(s))
+- `get` (151 edge(s))
+- `append` (132 edge(s))
+- `strip` (108 edge(s))
+- `isinstance` (105 edge(s))
+- `format` (96 edge(s))
 - `str` (89 edge(s))
-- `isinstance` (89 edge(s))
-- `format` (82 edge(s))
-- `len` (73 edge(s))
-- `getattr` (37 edge(s))
-- `info` (34 edge(s))
-- `lower` (28 edge(s))
-- `bool` (23 edge(s))
-- `join` (23 edge(s))
-- `model_copy` (23 edge(s))
-- `patch` (23 edge(s))
-- `list` (22 edge(s))
+- `len` (66 edge(s))
+- `getattr` (35 edge(s))
+- `info` (33 edge(s))
+- `lower` (29 edge(s))
+- `join` (27 edge(s))
+- `list` (24 edge(s))
+- `bool` (22 edge(s))
+- `model_copy` (22 edge(s))
+- `patch` (22 edge(s))
 
 ### Incoming
 
-- `patch` (23 edge(s))
-- `len` (17 edge(s))
+- `patch` (22 edge(s))
 - `backend/services/soc_analysis/soc_analysis_root_cause_spl.py` (15 edge(s))
+- `len` (15 edge(s))
 - `backend/services/llm/full_trace_log.py` (14 edge(s))
 - `backend/splunk/mcp/hunter_judge_context.py` (14 edge(s))
-- `model_copy` (13 edge(s))
 - `backend/services/investigation/spl_mcp_review.py` (12 edge(s))
-- `lower` (11 edge(s))
+- `model_copy` (12 edge(s))
 - `backend/services/investigation/spl_predict_pipeline.py` (10 edge(s))
+- `lower` (10 edge(s))
 - `get` (10 edge(s))
 - `backend/tests/test_splunk_live_mcp_saia.py` (10 edge(s))
 - `backend/services/investigation/investigation_questions_spl.py` (8 edge(s))
-- `backend/services/soc_analysis/soc_analysis_json.py` (8 edge(s))
+- `backend/splunk/mcp/saia/parse.py` (8 edge(s))
 - `backend/services/soc_analysis/soc_analysis_prompts.py` (7 edge(s))
-- `object` (7 edge(s))
+- `backend/services/soc_rag/compact_alert.py` (7 edge(s))

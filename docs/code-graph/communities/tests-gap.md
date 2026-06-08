@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 147 nodes
+Community of 150 nodes
 
-- **Size**: 147 nodes
-- **Cohesion**: 0.2933
+- **Size**: 150 nodes
+- **Cohesion**: 0.2875
 - **Dominant Language**: python
 
 ## Members
@@ -21,10 +21,10 @@ Community of 147 nodes
 | SocAnalysisResult | Class | backend/models/analysis.py | 144-184 |
 | AnalysisRunRequest | Class | backend/models/analysis.py | 187-203 |
 | EnrichmentResult | Class | backend/models/enrichment.py | 10-15 |
+| McpAlertContext | Class | backend/models/mcp.py | 49-61 |
 | EntityResolution | Class | backend/models/observability.py | 13-18 |
 | TriageFactor | Class | backend/models/triage.py | 14-22 |
 | TriageReport | Class | backend/models/triage.py | 25-36 |
-| TriageOutcome | Class | backend/models/triage.py | 39-55 |
 | _norm_str | Function | backend/services/alert/enrichment_resolver.py | 33-36 |
 | _rows_matching_exact | Function | backend/services/alert/enrichment_resolver.py | 39-56 |
 | _pick_asset_row | Function | backend/services/alert/enrichment_resolver.py | 59-69 |
@@ -63,12 +63,11 @@ Community of 147 nodes
 | _infer_kill_chain_phase | Function | backend/services/soc_analysis/framework_mapping.py | 83-97 |
 | ensure_mitre_and_kill_chain | Function | backend/services/soc_analysis/framework_mapping.py | 100-137 |
 
-*... and 97 more members.*
+*... and 100 more members.*
 
 ## Execution Flows
 
 - **admin_org_gap_suggest** (criticality: 0.80, depth: 5)
-- **run_buffered_job_triage** (criticality: 0.78, depth: 10)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
 - **agent_triage_endpoint** (criticality: 0.76, depth: 8)
@@ -77,21 +76,22 @@ Community of 147 nodes
 - **list_triage_queue** (criticality: 0.73, depth: 6)
 - **work** (criticality: 0.72, depth: 5)
 - **build_fallback_soc_result** (criticality: 0.71, depth: 5)
-- *... and 8 more flows.*
+- **run_soc_analysis_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
+- *... and 7 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (183 edge(s))
+- `get` (185 edge(s))
 - `format` (59 edge(s))
 - `append` (53 edge(s))
 - `isinstance` (50 edge(s))
 - `str` (49 edge(s))
+- `patch` (25 edge(s))
 - `strip` (24 edge(s))
 - `len` (24 edge(s))
 - `lower` (18 edge(s))
-- `patch` (15 edge(s))
 - `BaseModel` (13 edge(s))
 - `any` (13 edge(s))
 - `model_validate` (10 edge(s))
@@ -101,8 +101,8 @@ Community of 147 nodes
 
 ### Incoming
 
+- `patch` (25 edge(s))
 - `backend/services/triage/triage_priority.py` (20 edge(s))
-- `patch` (15 edge(s))
 - `backend/services/alert/enrichment_resolver.py` (12 edge(s))
 - `backend/services/soc_analysis/admin_org_gap.py` (10 edge(s))
 - `backend/tests/test_triage_priority.py` (10 edge(s))
@@ -115,4 +115,4 @@ Community of 147 nodes
 - `any` (6 edge(s))
 - `backend/tests/test_threat_intel_compact.py` (6 edge(s))
 - `lower` (5 edge(s))
-- `backend/tests/test_splunk_json_store.py` (5 edge(s))
+- `get` (5 edge(s))

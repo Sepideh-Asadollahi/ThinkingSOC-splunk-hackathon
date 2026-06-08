@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 300 nodes
+Community of 304 nodes
 
-- **Size**: 300 nodes
-- **Cohesion**: 0.2853
+- **Size**: 304 nodes
+- **Cohesion**: 0.2852
 - **Dominant Language**: python
 
 ## Members
@@ -63,7 +63,7 @@ Community of 300 nodes
 | delete_asset_endpoint | Function | backend/api/routes/inventory.py | 167-175 |
 | list_relationships_endpoint | Function | backend/api/routes/inventory.py | 182-186 |
 
-*... and 250 more members.*
+*... and 254 more members.*
 
 ## Execution Flows
 
@@ -90,10 +90,10 @@ Community of 300 nodes
 - `info` (84 edge(s))
 - `HTTPException` (73 edge(s))
 - `warning` (62 edge(s))
-- `patch` (46 edge(s))
 - `Depends` (45 edge(s))
 - `perf_counter` (45 edge(s))
 - `format` (42 edge(s))
+- `patch` (40 edge(s))
 - `strip` (39 edge(s))
 - `append` (35 edge(s))
 - `int` (23 edge(s))
@@ -101,7 +101,7 @@ Community of 300 nodes
 
 ### Incoming
 
-- `patch` (37 edge(s))
+- `patch` (31 edge(s))
 - `backend/api/routes/inventory.py` (19 edge(s))
 - `len` (16 edge(s))
 - `backend/tests/test_alert_classifier_llm.py` (13 edge(s))
