@@ -1,5 +1,5 @@
 <!-- folder-readme: auto -->
-# thinking_soc_splunk_app/metadata
+# ThinkingSOC_Hackathon_Splunk_App/metadata
 
 Parent: [README.md](../README.md)
 

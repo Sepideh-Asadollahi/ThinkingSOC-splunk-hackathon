@@ -1,4 +1,4 @@
-# Splunk app: `ThinkingSOC_Hackathon`
+# Splunk app: `ThinkingSOC_Hackathon_Splunk_App`
 
 **Splunk version:** developed and expected to run on **Splunk 10+** (Enterprise or Cloud).
 
@@ -6,15 +6,15 @@ This app is intentionally minimal for the hackathon:
 
 - index definition (`thinking_soc`) for Splunk-side data/search use
 - **no** CSV lookups (inventory lives in PostgreSQL)
-- custom modular alert action **ThinkingSOC_Hackathon** (replaces generic Webhook in the UI)
+- custom modular alert action **ThinkingSOC_Hackathon_Splunk_App** (replaces generic Webhook in the UI)
 
 Install path:
 
-`$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon/`
+`$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon_Splunk_App/`
 
 After installing/reloading the app, configure each alert:
 
-1. **Trigger Actions → Add Actions → ThinkingSOC_Hackathon**
+1. **Trigger Actions → Add Actions → ThinkingSOC_Hackathon_Splunk_App**
 2. **Backend URL:** `http://127.0.0.1:9876/api/v1/alerts/splunk-ingest` (or your backend host)
 3. **Bearer token:** see [Ingest token](#ingest-token-tsoc_ingest_token) below
 
@@ -91,7 +91,7 @@ Mirror in `frontend/.env.local`, then restart:
 sudo systemctl restart tsoc-backend tsoc-frontend
 ```
 
-Copy the same string into Splunk: alert → **Trigger Actions** → **ThinkingSOC_Hackathon** → **Bearer token**.
+Copy the same string into Splunk: alert → **Trigger Actions** → **ThinkingSOC_Hackathon_Splunk_App** → **Bearer token**.
 
 ### Quick reference
 

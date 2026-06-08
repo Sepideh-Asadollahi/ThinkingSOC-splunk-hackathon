@@ -178,7 +178,7 @@ See [02-integration-boundaries.md](./02-integration-boundaries.md) for webhook a
 |----------|-----------|
 | Backend | `backend/.env` → `TSOC_INGEST_TOKEN=…` |
 | Frontend proxy | `frontend/.env.local` → `TSOC_INGEST_TOKEN=…` (same string) |
-| Splunk alert | **ThinkingSOC_Hackathon** alert action → **Bearer token** field |
+| Splunk alert | **ThinkingSOC_Hackathon_Splunk_App** alert action → **Bearer token** field |
 
 After changing the token, restart backend and frontend so `.env` / `.env.local` reload:
 
@@ -202,7 +202,7 @@ When prompted *“Set a shared webhook ingest token (backend + frontend)?”*, a
 openssl rand -hex 24
 ```
 
-Copy the output into `backend/.env` and `frontend/.env.local`, then paste the same string into the Splunk **ThinkingSOC_Hackathon** alert action **Bearer token** field.
+Copy the output into `backend/.env` and `frontend/.env.local`, then paste the same string into the Splunk **ThinkingSOC_Hackathon_Splunk_App** alert action **Bearer token** field.
 
 Any long random string is acceptable (32+ characters recommended). Do **not** commit tokens to git.
 
@@ -224,7 +224,7 @@ Splunk still **fires** the alert action when token auth fails; the failure appea
 | Local hackathon / lab demo | Leave empty |
 | Backend reachable on LAN or internet | Set a token |
 
-See also: [02-integration-boundaries.md](./02-integration-boundaries.md) (Splunk handoff), [ThinkingSOC_Hackathon/README.md](../ThinkingSOC_Hackathon/README.md) (Splunk alert action UI).
+See also: [02-integration-boundaries.md](./02-integration-boundaries.md) (Splunk handoff), [ThinkingSOC_Hackathon_Splunk_App/README.md](../ThinkingSOC_Hackathon_Splunk_App/README.md) (Splunk alert action UI).
 
 ---
 

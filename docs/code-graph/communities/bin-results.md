@@ -12,9 +12,9 @@ Community of 3 nodes
 
 | Name | Kind | File | Lines |
 |------|------|------|-------|
-| _open_results_text | Function | ThinkingSOC_Hackathon/bin/thinkingsoc_hackathon.py | 16-21 |
-| _read_results_file | Function | ThinkingSOC_Hackathon/bin/thinkingsoc_hackathon.py | 24-37 |
-| _collect_results | Function | ThinkingSOC_Hackathon/bin/thinkingsoc_hackathon.py | 40-59 |
+| _open_results_text | Function | ThinkingSOC_Hackathon_Splunk_App/bin/thinkingsoc_hackathon.py | 16-21 |
+| _read_results_file | Function | ThinkingSOC_Hackathon_Splunk_App/bin/thinkingsoc_hackathon.py | 24-37 |
+| _collect_results | Function | ThinkingSOC_Hackathon_Splunk_App/bin/thinkingsoc_hackathon.py | 40-59 |
 
 ## Execution Flows
 
@@ -39,4 +39,4 @@ Community of 3 nodes
 
 ### Incoming
 
-- `ThinkingSOC_Hackathon/bin/thinkingsoc_hackathon.py` (4 edge(s))
+- `ThinkingSOC_Hackathon_Splunk_App/bin/thinkingsoc_hackathon.py` (4 edge(s))

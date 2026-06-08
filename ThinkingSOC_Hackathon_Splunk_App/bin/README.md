@@ -1,4 +1,4 @@
-# ThinkingSOC_Hackathon/bin
+# ThinkingSOC_Hackathon_Splunk_App/bin
 
 Parent: [README.md](../README.md)
 

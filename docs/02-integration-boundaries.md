@@ -11,7 +11,7 @@ Structural view of how **Splunk** and the **external application** connect: tran
 │  • Built-in Webhook Alert Action  ──HTTP POST JSON──►             │
 │  • REST management API :8089      ◄──GET job results──           │
 │  • MCP Server (app 7931, opt.)    ◄──JSON-RPC /services/mcp──    │
-│  • ThinkingSOC_Hackathon: index + webhook (no inventory CSV)  │
+│  • ThinkingSOC_Hackathon_Splunk_App: index + webhook (no inventory CSV)  │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -31,7 +31,7 @@ Structural view of how **Splunk** and the **external application** connect: tran
 
 | Item | Value |
 |------|--------|
-| Mechanism | Splunk **ThinkingSOC_Hackathon** modular alert action (or generic Webhook with same URL) |
+| Mechanism | Splunk **ThinkingSOC_Hackathon_Splunk_App** modular alert action (or generic Webhook with same URL) |
 | Method | `POST` |
 | Path | `/api/v1/alerts/splunk-ingest` |
 | Auth | Optional `Authorization: Bearer <TSOC_INGEST_TOKEN>` — required only when the token is set in `backend/.env` |
@@ -39,7 +39,7 @@ Structural view of how **Splunk** and the **external application** connect: tran
 | Query string | **Not used for configuration.** Env-style or legacy toggle params (e.g. `?auto_analyze=true`, `?TSOC_INGEST_*`) are rejected with HTTP `400`. |
 | Success responses | `202` when `TSOC_INGEST_AUTO_ANALYZE=true` (default); `200` when ingest-only |
 
-The repo ships **`ThinkingSOC_Hackathon`** with `bin/thinkingsoc_hackathon.py` so the alert action appears in Splunk UI under a clear name (not the generic **Webhook** action). See [ThinkingSOC_Hackathon/README.md](../ThinkingSOC_Hackathon/README.md).
+The repo ships **`ThinkingSOC_Hackathon_Splunk_App`** with `bin/thinkingsoc_hackathon.py` so the alert action appears in Splunk UI under a clear name (not the generic **Webhook** action). See [ThinkingSOC_Hackathon_Splunk_App/README.md](../ThinkingSOC_Hackathon_Splunk_App/README.md).
 
 ### Ingest token (`TSOC_INGEST_TOKEN`)
 
@@ -127,7 +127,7 @@ Helpers: `format_row_sid`, `splunk_job_sid` in `backend/services/soc_analysis/an
 
 | Mode | When | Webhook shape | Backend |
 |------|------|---------------|---------|
-| **All rows in one POST** (default with `ThinkingSOC_Hackathon`) | `alert.digest_mode=true` or Splunk passes `results_file` | `result` + `results[]` (all rows from `results.csv.gz`) | Buffer collects rows → REST confirms count → **batch triage** (`triage_mode=batch_all_rest_rows`) |
+| **All rows in one POST** (default with `ThinkingSOC_Hackathon_Splunk_App`) | `alert.digest_mode=true` or Splunk passes `results_file` | `result` + `results[]` (all rows from `results.csv.gz`) | Buffer collects rows → REST confirms count → **batch triage** (`triage_mode=batch_all_rest_rows`) |
 | **One POST per row** | `alert.digest_mode=false` | Single `result` per HTTP call, same `sid` | Row buffer debounces POSTs → flush → batch triage |
 
 **Splunk app (`bin/thinkingsoc_hackathon.py`):** Splunk supplies `results_file=…/results.csv.gz` (gzip CSV). The action decompresses it and sends all rows in `results[]` when there are 2+. Always includes `result` (first row) for backward compatibility.
@@ -236,15 +236,15 @@ sequenceDiagram
   M-->>B: spl_results rows
 ```
 
-## Splunk app boundary (`ThinkingSOC_Hackathon/`)
+## Splunk app boundary (`ThinkingSOC_Hackathon_Splunk_App/`)
 
 | Contains | Does not contain |
 |----------|------------------|
 | `default/indexes.conf` — demo index metadata | Product dashboards or analysis views |
-| Webhook alert action **ThinkingSOC_Hackathon** (modular alert in `bin/`) | CSV lookups or inventory sync |
+| Webhook alert action **ThinkingSOC_Hackathon_Splunk_App** (modular alert in `bin/`) | CSV lookups or inventory sync |
 | Permissions in `metadata/default.meta` | Product dashboards or analysis views |
 
-**Install path:** `$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon/`  
+**Install path:** `$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon_Splunk_App/`  
 **Demo inventory:** `setup.py` seeds PostgreSQL from `backend/data/demo/*.csv` when tables are empty.
 
 ## Inventory boundary

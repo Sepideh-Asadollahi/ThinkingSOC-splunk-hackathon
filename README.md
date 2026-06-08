@@ -648,7 +648,7 @@ Edit `backend/.env` minimum for Splunk integration:
 
 Then complete [Splunk-side setup](#splunk-side-setup):
 
-- Install `ThinkingSOC_Hackathon`
+- Install `ThinkingSOC_Hackathon_Splunk_App`
 - Webhook URL: `http://<backend-ip>:9876/api/v1/alerts/splunk-ingest`
 - Optional: MCP/SAIA
 
@@ -906,25 +906,25 @@ Target platform: **Splunk Enterprise or Cloud 10.x+**. On this hackathon VM, Spl
 
 | Component | Required? | Purpose |
 |-----------|-----------|---------|
-| **`ThinkingSOC_Hackathon`** | **Yes** | Defines index `thinking_soc`; documents webhook contract (no product UI in Splunk) |
-| **Built-in Webhook Alert Action** | No (use **ThinkingSOC_Hackathon** action below) | Legacy generic Webhook — prefer the app action |
-| **ThinkingSOC_Hackathon Alert Action** | **Yes** | Branded action; sends `sid` + first result row to backend |
+| **`ThinkingSOC_Hackathon_Splunk_App`** | **Yes** | Defines index `thinking_soc`; documents webhook contract (no product UI in Splunk) |
+| **Built-in Webhook Alert Action** | No (use **ThinkingSOC_Hackathon_Splunk_App** action below) | Legacy generic Webhook — prefer the app action |
+| **ThinkingSOC_Hackathon_Splunk_App Alert Action** | **Yes** | Branded action; sends `sid` + first result row to backend |
 | **Service account** | **Yes** | REST on **8089** backend loads **full** job results via `GET /services/search/v2/jobs/{sid}/results` |
 | **Splunk MCP Server** (Splunkbase [7931](https://splunkbase.splunk.com/)) | Optional | Live SPL, metadata, Hunter/Judge MCP context |
 | **Splunk AI Assistant (SAIA)** | Optional | `/predict` and `saia_ask_splunk_question` when MCP is enabled |
 
 Inventory (users, assets, relationships) lives in **PostgreSQL**, not in the Splunk app. See [docs/02-integration-boundaries.md](docs/02-integration-boundaries.md).
 
-### 1. Install `ThinkingSOC_Hackathon`
+### 1. Install `ThinkingSOC_Hackathon_Splunk_App`
 
 From the repository root, copy or symlink the app into Splunk’s apps directory:
 
 ```bash
 export SPLUNK_HOME=/opt/splunk   # adjust if different
 
-sudo cp -r ThinkingSOC_Hackathon "$SPLUNK_HOME/etc/apps/"
+sudo cp -r ThinkingSOC_Hackathon_Splunk_App "$SPLUNK_HOME/etc/apps/"
 # Dev alternative (live edits without copy):
-# sudo ln -sf "$(pwd)/ThinkingSOC_Hackathon" "$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon"
+# sudo ln -sf "$(pwd)/ThinkingSOC_Hackathon_Splunk_App" "$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon_Splunk_App"
 
 "$SPLUNK_HOME/bin/splunk" restart
 ```
@@ -937,7 +937,7 @@ Verify the app is enabled:
 
 The app creates index **`thinking_soc`** (`default/indexes.conf`). You do not need to index demo CSVs there for the hackathon path webhook + REST `sid` expansion is what the backend uses.
 
-More detail: [ThinkingSOC_Hackathon/README.md](ThinkingSOC_Hackathon/README.md).
+More detail: [ThinkingSOC_Hackathon_Splunk_App/README.md](ThinkingSOC_Hackathon_Splunk_App/README.md).
 
 ### 2. Create a Splunk service account
 
@@ -966,12 +966,12 @@ With the backend running, open **Splunk connection** in the UI (`/splunk-connect
 
 If TLS uses a self-signed cert, use the same trust settings as your Splunk deployment (see [docs/11-environment-configuration.md](docs/11-environment-configuration.md)).
 
-### 3. Configure ThinkingSOC_Hackathon alert action
+### 3. Configure ThinkingSOC_Hackathon_Splunk_App alert action
 
 For each alert that should trigger ThinkingSOC:
 
 1. In Splunk: **Settings → Searches, reports, and alerts** → open the alert → **Trigger Actions**.
-2. Add action **ThinkingSOC_Hackathon** (not the generic **Webhook** action).
+2. Add action **ThinkingSOC_Hackathon_Splunk_App** (not the generic **Webhook** action).
 3. **Backend URL:** `http://<backend-host>:9876/api/v1/alerts/splunk-ingest`  
    - Same machine: `http://127.0.0.1:9876/api/v1/alerts/splunk-ingest`  
    - Remote backend: use the server LAN IP (e.g. `http://192.168.1.150:9876/...`).
@@ -1007,7 +1007,7 @@ The demo works without MCP: pipelines use rule/LLM fallbacks when MCP or REST is
 
 | Step | Done? |
 |------|-------|
-| `ThinkingSOC_Hackathon` under `$SPLUNK_HOME/etc/apps/` | ☐ |
+| `ThinkingSOC_Hackathon_Splunk_App` under `$SPLUNK_HOME/etc/apps/` | ☐ |
 | Splunk restarted | ☐ |
 | Service account in `backend/.env` | ☐ |
 | Webhook URL points to running backend `:9876` | ☐ |
@@ -1277,10 +1277,10 @@ Never commit `.env` or `.env.local`.
 Same app as [Splunk installation guide](#splunk-installation-guide) install path:
 
 ```text
-$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon/
+$SPLUNK_HOME/etc/apps/ThinkingSOC_Hackathon_Splunk_App/
 ```
 
-See [ThinkingSOC_Hackathon/README.md](ThinkingSOC_Hackathon/README.md) and [docs/02-integration-boundaries.md](docs/02-integration-boundaries.md).
+See [ThinkingSOC_Hackathon_Splunk_App/README.md](ThinkingSOC_Hackathon_Splunk_App/README.md) and [docs/02-integration-boundaries.md](docs/02-integration-boundaries.md).
 
 ---
 
@@ -1305,7 +1305,7 @@ See [ThinkingSOC_Hackathon/README.md](ThinkingSOC_Hackathon/README.md) and [docs
 | `backend/` | FastAPI app (`run.py`, `main.py`, agents, Splunk client) |
 | `backend/devtools/` | [Developer SDK & CLI](docs/22-developer-sdk.md) typed Python client, evaluation runner |
 | `frontend/` | Next.js analyst UI |
-| `ThinkingSOC_Hackathon/` | Minimal Splunk app (webhook, index metadata) |
+| `ThinkingSOC_Hackathon_Splunk_App/` | Minimal Splunk app (webhook, index metadata) |
 | `correlation/` | Neo4j correlation graph library (API mounted on unified backend at `/api/v1/graph`) |
 | `docs/` | Public architecture & structure |
 | `setup_tool/` | `setup.py` implementation |
@@ -1376,7 +1376,7 @@ thinking-soc-splunk-hackathon/
 │   ├── graph_schemas/                #   Pydantic schemas (analysis, exploration, finding)
 │   ├── seed/                         #   Demo data (Cypher, SQL, fixtures)
 │   └── tests/                        #   Pytest suite
-├── ThinkingSOC_Hackathon/          # Minimal Splunk TA
+├── ThinkingSOC_Hackathon_Splunk_App/          # Minimal Splunk TA
 │   ├── bin/                          #   Scripted inputs / alert actions
 │   ├── default/                      #   app.conf, indexes.conf, alert_actions, lookups
 │   └── metadata/                     #   Splunk metadata (default.meta)

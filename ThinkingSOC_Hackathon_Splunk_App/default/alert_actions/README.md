@@ -1,5 +1,5 @@
 <!-- folder-readme: auto -->
-# ThinkingSOC_Hackathon/default/alert_actions
+# ThinkingSOC_Hackathon_Splunk_App/default/alert_actions
 
 Parent: [README.md](../README.md)
 

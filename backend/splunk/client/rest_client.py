@@ -113,7 +113,7 @@ class SplunkRestClient:
         session_key: str,
         *,
         prompt: str,
-        source_app_id: str = "ThinkingSOC_Hackathon",
+        source_app_id: str = "ThinkingSOC_Hackathon_Splunk_App",
         app: str = "Splunk_AI_Assistant_Cloud",
         owner: str = "nobody",
         timeout_seconds: float = 25.0,

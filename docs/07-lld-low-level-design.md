@@ -8,19 +8,19 @@ Implementation contracts, data shapes, API surface, and operation sequence for t
 
 | Path | Role |
 |------|------|
-| `thinking_soc_splunk_app/` | Minimal Splunk app (index metadata, webhook) — install under `$SPLUNK_HOME/etc/apps/` |
+| `ThinkingSOC_Hackathon_Splunk_App/` | Minimal Splunk app (index metadata, webhook) — install under `$SPLUNK_HOME/etc/apps/` |
 | `backend/data/demo/` | Demo PostgreSQL snapshot + CSV fallback — see [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) |
 | `backend/` | FastAPI application, services, Splunk clients, PostgreSQL access |
 | `backend/db/schema.sql` | PostgreSQL DDL |
 | `frontend/` | Next.js analyst UI (inventory, analysis, investigation — not in Splunk) |
 | `setup.py` + `setup_tool/` | Venv, dependencies, Postgres, schema, seed |
 
-Splunk install target (typical): `/opt/splunk/etc/apps/thinking_soc_splunk_app/`
+Splunk install target (typical): `/opt/splunk/etc/apps/ThinkingSOC_Hackathon_Splunk_App/`
 
 ## 2. Minimal Splunk app structure
 
 ```text
-thinking_soc_splunk_app/
+ThinkingSOC_Hackathon_Splunk_App/
 ├── default/
 │   ├── app.conf
 │   └── indexes.conf
@@ -105,12 +105,12 @@ Splunk **built-in Webhook Alert Action** → `POST /api/v1/alerts/splunk-ingest`
 | `search_name` | Saved search / alert name |
 | `server_uri` | Optional Splunk server reference |
 | `result` | First / primary result row |
-| `results` | Optional array of **all** job rows (sent by `ThinkingSOC_Hackathon` when `results.csv.gz` has 2+ rows) |
+| `results` | Optional array of **all** job rows (sent by `ThinkingSOC_Hackathon_Splunk_App` when `results.csv.gz` has 2+ rows) |
 | `app`, `owner` | Optional Splunk context |
 
 Backend normalizes into `SplunkAlertIngest` (`result` or `results[]`). Optional bearer: `Authorization: Bearer <TSOC_INGEST_TOKEN>` when configured.
 
-**Splunk app:** `ThinkingSOC_Hackathon/bin/thinkingsoc_hackathon.py` reads Splunk’s gzip results file (`results.csv.gz`) and includes every row in `results` when present.
+**Splunk app:** `ThinkingSOC_Hackathon_Splunk_App/bin/thinkingsoc_hackathon.py` reads Splunk’s gzip results file (`results.csv.gz`) and includes every row in `results` when present.
 
 **No URL configuration:** do not append query parameters to the ingest URL (e.g. `?auto_analyze=true`). Behavior is controlled by `TSOC_INGEST_AUTO_ANALYZE` in `backend/.env`. Forbidden query keys return HTTP `400`.
 

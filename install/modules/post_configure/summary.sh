@@ -114,7 +114,7 @@ _pc_print_splunk_restart_reminder() {
     echo -e "${YELLOW}${BOLD}  Restart Splunk (required after app / MCP changes)${NC}"
     echo -e "${YELLOW}${BOLD}═══════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo "  ThinkingSOC_Hackathon and Splunk MCP Server (7931) only load fully"
+    echo "  ThinkingSOC_Hackathon_Splunk_App and Splunk MCP Server (7931) only load fully"
     echo "  after a Splunk restart. Run as a user that can manage Splunk:"
     echo ""
 
@@ -129,6 +129,6 @@ _pc_print_splunk_restart_reminder() {
 
     echo ""
     echo "  Verify apps:"
-    echo "    \$SPLUNK_HOME/bin/splunk list app | grep -E 'ThinkingSOC_Hackathon|Splunk_MCP'"
+    echo "    \$SPLUNK_HOME/bin/splunk list app | grep -E 'ThinkingSOC_Hackathon_Splunk_App|Splunk_MCP'"
     echo ""
 }

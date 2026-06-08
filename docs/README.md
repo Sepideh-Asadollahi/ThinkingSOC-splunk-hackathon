@@ -96,7 +96,7 @@ flowchart LR
 | 23 | [23-post-install-integration-wizard.md](./23-post-install-integration-wizard.md) | **Post-install wizard** — Splunk / LiteLLM / MCP setup, smoke test, `.env` summary, Splunk restart |
 | 24 | [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) | **Demo data** — moment PostgreSQL snapshot, `install.sh` auto-load, export script |
 
-Subfolders (`code-graph/`, etc.) include their own **`README.md`** index. The repository also has per-folder READMEs under `backend/`, `thinking_soc_splunk_app/`, `setup_tool/`, and elsewhere.
+Subfolders (`code-graph/`, etc.) include their own **`README.md`** index. The repository also has per-folder READMEs under `backend/`, `ThinkingSOC_Hackathon_Splunk_App/`, `setup_tool/`, and elsewhere.
 
 **System diagram (repository root):** [architecture_diagram.md](../architecture_diagram.md)
 

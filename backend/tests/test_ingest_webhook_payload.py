@@ -53,12 +53,12 @@ def test_log_raw_webhook_body_full_json(caplog) -> None:
         "sid": "job.1",
         "search_name": "demo",
         "result": {"host": "h1"},
-        "app": "ThinkingSOC_Hackathon",
+        "app": "ThinkingSOC_Hackathon_Splunk_App",
     }
     log_raw_webhook_body(stage="webhook_received", raw_body=raw)
     messages = [r.getMessage() for r in caplog.records]
     assert any("ingest_webhook_raw_json" in m and '"host": "h1"' in m for m in messages)
-    assert any("ingest_webhook_raw_pretty" in m and "ThinkingSOC_Hackathon" in m for m in messages)
+    assert any("ingest_webhook_raw_pretty" in m and "ThinkingSOC_Hackathon_Splunk_App" in m for m in messages)
 
 
 def test_log_webhook_payload_includes_result_preview(caplog) -> None:

@@ -71,7 +71,7 @@ flowchart TB
 | Component | Responsibility |
 |-----------|----------------|
 | **Splunk platform** | Indexes data, runs saved searches, fires alerts, exposes REST and optional MCP |
-| **`thinking_soc_splunk_app/`** | Minimal app: index metadata, webhook — **no** CSV lookups or product dashboards |
+| **`ThinkingSOC_Hackathon_Splunk_App/`** | Minimal app: index metadata, webhook — **no** CSV lookups or product dashboards |
 | **`backend/`** | Ingest, REST/MCP clients, inventory enrichment, classification, LangGraph pipelines, storage APIs |
 | **`correlation/`** | Graph Correlation demo — Neo4j alert graph, findings, Smart Attack Discovery (`/api/v1/graph`) |
 | **PostgreSQL** | Inventory tables + typed JSON audit (`tsoc_records`) + **`graph_findings`** |
@@ -117,7 +117,7 @@ Each major directory has its own **`README.md`** (see [../README.md](../README.m
 
 | Tier | Runs where | Notes |
 |------|------------|-------|
-| Splunk | Customer Splunk host / Cloud | Webhook URL points to backend; post-install wizard installs `thinking_soc_splunk_app` + MCP 7931 |
+| Splunk | Customer Splunk host / Cloud | Webhook URL points to backend; post-install wizard installs `ThinkingSOC_Hackathon_Splunk_App` + MCP 7931 |
 | Backend API | Host venv (`backend/.venv`) | `python run.py` — not in Docker in default layout |
 | PostgreSQL + Qdrant + Neo4j | Docker (`backend/docker-compose.yml`) | Postgres `5432`, Qdrant `6333`, Neo4j `7687` |
 | Frontend | Optional `npm run dev` | Not required for API-only demo |

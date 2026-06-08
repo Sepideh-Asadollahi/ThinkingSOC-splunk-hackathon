@@ -18,7 +18,7 @@ How to navigate the repository using the **code graph**, directory layout, and k
 | Communities | 22 |
 | Languages | Python, SQL |
 
-**Indexed paths:** `backend/`, `thinking_soc_splunk_app/`, tests. Excluded: `node_modules`, `.venv`, `frontend/`, `project-engineering/`, generated caches.
+**Indexed paths:** `backend/`, `ThinkingSOC_Hackathon_Splunk_App/`, tests. Excluded: `node_modules`, `.venv`, `frontend/`, `project-engineering/`, generated caches.
 
 Regenerate after large refactors:
 

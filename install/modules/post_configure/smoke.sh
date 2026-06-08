@@ -66,10 +66,10 @@ run_integration_configure_smoke() {
         else
             _pc_smoke_warn "Splunk binary missing at ${splunk_home}/bin/splunk"
         fi
-        if [[ -d "${splunk_home}/etc/apps/ThinkingSOC_Hackathon" ]]; then
-            _pc_smoke_ok "ThinkingSOC_Hackathon installed under Splunk apps"
+        if [[ -d "${splunk_home}/etc/apps/ThinkingSOC_Hackathon_Splunk_App" ]]; then
+            _pc_smoke_ok "ThinkingSOC_Hackathon_Splunk_App installed under Splunk apps"
         else
-            _pc_smoke_warn "ThinkingSOC_Hackathon not in ${splunk_home}/etc/apps/ (install via wizard or README)"
+            _pc_smoke_warn "ThinkingSOC_Hackathon_Splunk_App not in ${splunk_home}/etc/apps/ (install via wizard or README)"
         fi
     else
         _pc_smoke_warn "SPLUNK_HOME not set in backend/.env"

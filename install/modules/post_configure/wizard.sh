@@ -13,7 +13,7 @@ run_post_install_configure() {
     echo ""
     echo "  Configure minimum integrations now:"
     echo "    · Splunk install path (SPLUNK_HOME) + REST credentials"
-    echo "    · Copy ThinkingSOC_Hackathon into Splunk"
+    echo "    · Copy ThinkingSOC_Hackathon_Splunk_App into Splunk"
     echo "    · LiteLLM: LITELLM_MODEL + LITELLM_API_KEY (required for SOC analysis)"
     echo "    · Splunk MCP Server app (7931), RBAC, and bearer token on Splunk"
     echo ""
@@ -60,9 +60,9 @@ run_post_install_configure() {
         PC_SPLUNK_PASS="$splunk_pass"
     fi
 
-    if _pc_validate_splunk_home "$splunk_home" && [[ -d "${INSTALL_DIR}/ThinkingSOC_Hackathon" ]]; then
+    if _pc_validate_splunk_home "$splunk_home" && [[ -d "${INSTALL_DIR}/ThinkingSOC_Hackathon_Splunk_App" ]]; then
         echo ""
-        if prompt_yn "Install ThinkingSOC_Hackathon into \$SPLUNK_HOME/etc/apps?" "y"; then
+        if prompt_yn "Install ThinkingSOC_Hackathon_Splunk_App into \$SPLUNK_HOME/etc/apps?" "y"; then
             _pc_install_thinking_soc_app "$splunk_home" || true
         fi
     fi

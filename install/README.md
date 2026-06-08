@@ -151,7 +151,7 @@ bash scripts/configure-integration.sh --smoke
 
 1. **Prompts:** `SPLUNK_HOME`, Splunk REST URL/credentials, LiteLLM **model** + **API key** (required), optional ingest token.  
 2. **Writes:** `backend/.env`, `frontend/.env.local` (includes `TSOC_INGEST_AUTO_ANALYZE=true` for auto triage after Splunk/webhook ingest).  
-3. **Splunk:** Copies `ThinkingSOC_Hackathon`; runs `scripts/setup_splunk_mcp.py` (app 7931, `mcp_tool_execute` RBAC, MCP token).  
+3. **Splunk:** Copies `ThinkingSOC_Hackathon_Splunk_App`; runs `scripts/setup_splunk_mcp.py` (app 7931, `mcp_tool_execute` RBAC, MCP token).  
 4. **Restarts** `tsoc-backend` and `tsoc-frontend` automatically so `.env` / `.env.local` load (no prompt).  
 5. **Smoke test:** Splunk REST login, `GET /health`, `GET /api/v1/mcp/status` — confirms integration works **now**.  
 6. **Prints** masked `.env` summary for manual edits.  
@@ -168,7 +168,7 @@ Code under `install/modules/post_configure/` (loader: `post_configure.sh`):
 | `helpers.sh` | Prompts, `.env` reads, Splunk path/URL parsing |
 | `litellm.sh` | `LITELLM_MODEL` picker (default = current `.env`) |
 | `env_apply.sh` | Write `backend/.env` + `frontend/.env.local` |
-| `splunk_app.sh` | Copy `ThinkingSOC_Hackathon` |
+| `splunk_app.sh` | Copy `ThinkingSOC_Hackathon_Splunk_App` |
 | `mcp.sh` | Splunk MCP via `scripts/setup_splunk_mcp.py` |
 | `restart.sh` | Restart `tsoc-backend` + `tsoc-frontend`, verify, manual-restart hints |
 | `smoke_probes.sh` | Live Splunk REST + MCP API probes |

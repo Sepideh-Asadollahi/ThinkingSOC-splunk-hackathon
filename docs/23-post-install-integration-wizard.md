@@ -26,7 +26,7 @@ flowchart TD
   Ask["Run integration wizard?"]
   Skip["Skip wizard"]
   SplunkPath["SPLUNK_HOME + REST URL/user/pass"]
-  AppCopy["Optional: copy ThinkingSOC_Hackathon"]
+  AppCopy["Optional: copy ThinkingSOC_Hackathon_Splunk_App"]
   LLM["LiteLLM: model + API key (required)"]
   Ingest["Optional: TSOC_INGEST_TOKEN"]
   WriteEnv["Write backend/.env + frontend/.env.local"]
@@ -58,7 +58,7 @@ flowchart TD
 | `SPLUNK_MGMT_URL` | No | `https://127.0.0.1:8089` |
 | Splunk REST username | No (empty = skip REST/MCP) | — |
 | Splunk REST password | If username set | hidden |
-| Install `ThinkingSOC_Hackathon` | If Splunk binary exists | Yes |
+| Install `ThinkingSOC_Hackathon_Splunk_App` | If Splunk binary exists | Yes |
 | Replace existing app copy | If dest exists | No |
 | Restart Splunk after app copy | — | Yes |
 | `LITELLM_MODEL` | Always (LiteLLM required) | Menu (default: current `.env` or `gpt-4o-mini`) |
@@ -93,7 +93,7 @@ Purpose: confirm post-install integration works at the end of the wizard — not
 | `backend/.env` exists | ✓ | ✗ missing |
 | Backend `GET /health` | ✓ (waits if port open) | ✗ not running |
 | `SPLUNK_HOME` path + binary | ✓ / warn | ✗ path missing |
-| `ThinkingSOC_Hackathon` under Splunk apps | ✓ / warn if missing | |
+| `ThinkingSOC_Hackathon_Splunk_App` under Splunk apps | ✓ / warn if missing | |
 | `SPLUNK_MGMT_URL` + frontend host/port match | ✓ | ✗ mismatch |
 | Splunk REST login (`services/auth/login`) | ✓ if creds set | ✗ bad creds |
 | `TSOC_MCP_ENABLED` | ✓ | warn |
@@ -170,7 +170,7 @@ At the end of the wizard, a **masked summary** prints every post-install key and
 
 ## Splunk restart (required)
 
-After copying `ThinkingSOC_Hackathon` and/or installing **Splunk MCP Server (7931)**, restart Splunk so apps and RBAC capabilities load:
+After copying `ThinkingSOC_Hackathon_Splunk_App` and/or installing **Splunk MCP Server (7931)**, restart Splunk so apps and RBAC capabilities load:
 
 ```bash
 $SPLUNK_HOME/bin/splunk restart
@@ -190,7 +190,7 @@ Loaded by [install/modules/post_configure.sh](../install/modules/post_configure.
 | `helpers.sh` | Prompts, `.env` read, URL parse |
 | `litellm.sh` | `LITELLM_MODEL` menu |
 | `env_apply.sh` | Write `.env` files |
-| `splunk_app.sh` | Copy `ThinkingSOC_Hackathon` |
+| `splunk_app.sh` | Copy `ThinkingSOC_Hackathon_Splunk_App` |
 | `mcp.sh` | Call `setup_splunk_mcp.py` |
 | `restart.sh` | Restart `tsoc-backend` + `tsoc-frontend`, verify health/login |
 | `smoke_probes.sh` | REST login + MCP API probes |
