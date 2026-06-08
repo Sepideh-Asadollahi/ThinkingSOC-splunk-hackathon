@@ -294,40 +294,19 @@ Software is deployed to **`/opt/thinking-soc-splunk-hackathon`** (created automa
 | **With systemd** (default) | Demo / production servers, auto-start on boot | `systemctl`, `journalctl` → [Service control with systemd](#service-control-with-systemd) |
 | **Without systemd** | Quick trial, manual control | `scripts/start-tsoc-services.sh`, `logs/*.log` → [Production services (no systemd)](#production-services-no-systemd) |
 
+**Run the installer:** one-liner or clone steps in [Installation](#installation).
+
 **Installer-focused guide:** [install/README.md](install/README.md)  
-**Help without installing:** `sudo bash install.sh --help`
-
-Quick one-liner (also at top of [Installation](#installation)) — **`install/bootstrap.sh`**, clones to `/opt`, then installs:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Sepideh-Asadollahi/ThinkingSOC-splunk-hackathon/main/install/bootstrap.sh | sudo bash
-```
-
-From `/opt/thinking-soc-splunk-hackathon` (skip bootstrap / second clone):
-
-```bash
-cd /opt/thinking-soc-splunk-hackathon
-sudo bash install.sh
-```
-
-Clone under `/opt`, then install (equivalent to the one-liner):
-
-```bash
-sudo mkdir -p /opt && cd /opt
-sudo git clone --branch main --depth 1 https://github.com/Sepideh-Asadollahi/ThinkingSOC-splunk-hackathon.git thinking-soc-splunk-hackathon
-cd /opt/thinking-soc-splunk-hackathon
-sudo bash install.sh
-```
-
-Advanced: override install path with `TSOC_INSTALL_DIR=/other/path sudo bash install.sh` (not recommended for the hackathon demo).
+**Help without installing:** `sudo bash install.sh --help`  
+**Advanced:** override install path with `TSOC_INSTALL_DIR=/other/path sudo bash install.sh` (not recommended for the hackathon demo).
 
 **Troubleshooting the one-liner**
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `BASH_SOURCE[0]: unbound variable` then `Missing required installer module: …/install/modules/common.sh` | Piped **`install.sh`** from GitHub raw (stale cache or pre-bootstrap version) | Use **`install/bootstrap.sh`** one-liner above, or clone manually under `/opt` |
+| `BASH_SOURCE[0]: unbound variable` then `Missing required installer module: …/install/modules/common.sh` | Piped **`install.sh`** from GitHub raw (stale cache or pre-bootstrap version) | Use **`install/bootstrap.sh`** one-liner in [Installation](#installation), or clone manually under `/opt` |
 | `Installer must run as root` | Missing `sudo` on the curl pipe | `curl … \| sudo bash` |
-| Clone fails | No network / git / GitHub access | Clone manually (block above), or set `TSOC_REPO_URL` to a mirror |
+| Clone fails | No network / git / GitHub access | Clone manually ([Installation](#installation)), or set `TSOC_REPO_URL` to a mirror |
 
 By default the installer prints **full command output** in the console (`apt`, `pip`, `git`, `npm`, `curl` progress, `docker compose` image pulls, `setup.py`) so you can see where it stalls. For the old minimal output only: `TSOC_INSTALL_QUIET=1 sudo bash install.sh`.
 
