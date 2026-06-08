@@ -2,25 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { BrainCircuitIcon, FileSearchIcon, PlayIcon, PlusIcon, RefreshCwIcon } from "lucide-react"
+import { BrainCircuitIcon, FileSearchIcon, RefreshCwIcon } from "lucide-react"
 
 import {
-  Dialog,
   NeonActionButton,
   NeonAlert,
   NeonAlertDescription,
   NeonAlertTitle,
   NeonBadge,
   NeonCardHeader,
-  NeonDialogContent,
-  NeonDialogFooter,
-  NeonDialogFooterButton,
-  NeonDialogHeaderWithIcon,
-  NeonField,
-  NeonFieldGroup,
-  NeonFieldLabel,
   NeonGlassCard,
-  NeonInput,
   NeonTabs,
   NeonTabsContent,
   NeonTabsContents,
@@ -28,10 +19,8 @@ import {
   NeonTabsTrigger,
 } from "@/components/neon-glass"
 import { TsocDataTable, type TsocColumn } from "@/components/tables"
-import { TsocOverflowScroll } from "@/components/ui/tsoc-scroll"
-import { AnalysisRouteView } from "@/components/structured-data"
 import { ApiError, backendFetch } from "@/lib/api/client"
-import type { AnalysisRouteRequest, TriageQueueItem, TriageQueueResponse } from "@/lib/api/types"
+import type { TriageQueueItem, TriageQueueResponse } from "@/lib/api/types"
 import { investigationHrefForRow } from "@/lib/analysis-payload"
 import { formatEventCreatedAt, getStorageEventId } from "@/lib/storage-events"
 import { triagePriorityBadgeClass, triageVerdictBadgeClass } from "@/lib/triage-display"
@@ -86,12 +75,6 @@ export function AnalysisContent() {
   const [track, setTrack] = useState<"all" | "security" | "observability">("all")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [routeDialogOpen, setRouteDialogOpen] = useState(false)
-  const [routing, setRouting] = useState(false)
-  const [routeResult, setRouteResult] = useState<Record<string, unknown> | null>(null)
-
-  const [sid, setSid] = useState("")
-  const [searchName, setSearchName] = useState("Suspicious login - demo")
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -287,37 +270,6 @@ export function AnalysisContent() {
     [reviewVerdictFilterOptions, priorityFilterOptions]
   )
 
-  function openRouteDialog() {
-    setRouteResult(null)
-    setError(null)
-    setRouteDialogOpen(true)
-  }
-
-  async function runRoute(e: React.FormEvent) {
-    e.preventDefault()
-    setRouting(true)
-    setRouteResult(null)
-    setError(null)
-    try {
-      const body: AnalysisRouteRequest = {
-        sid: sid || undefined,
-        search_name: searchName || undefined,
-        normalized: { src_ip: "10.0.0.1", user: "demo_user" },
-        splunk_results: [],
-      }
-      const res = await backendFetch<Record<string, unknown>>("/analysis/route", {
-        method: "POST",
-        body: JSON.stringify(body),
-      })
-      setRouteResult(res)
-      await load()
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Route failed")
-    } finally {
-      setRouting(false)
-    }
-  }
-
   return (
     <div className="grid gap-4">
       <NeonGlassCard accent="orange">
@@ -331,10 +283,6 @@ export function AnalysisContent() {
               <NeonActionButton accent="orange" onClick={() => void load()} disabled={loading}>
                 <RefreshCwIcon className="size-4" />
                 Refresh
-              </NeonActionButton>
-              <NeonActionButton accent="orange" type="button" onClick={openRouteDialog}>
-                <PlusIcon className="size-4" />
-                New analysis
               </NeonActionButton>
             </>
           }
@@ -359,7 +307,7 @@ export function AnalysisContent() {
             <NeonTabsContents>
               {(["all", "security", "observability"] as const).map((t) => (
                 <NeonTabsContent key={t} value={t} className="space-y-4">
-                  {error && !routeDialogOpen ? (
+                  {error ? (
                     <NeonAlert variant="destructive">
                       <NeonAlertTitle>Error</NeonAlertTitle>
                       <NeonAlertDescription>{error}</NeonAlertDescription>
@@ -382,7 +330,7 @@ export function AnalysisContent() {
                     }}
                     loading={loading}
                     loadingMessage="Loading analysis & triage…"
-                    emptyMessage="No analyzed alerts yet. Run a new analysis or enable ingest auto-triage."
+                    emptyMessage="No analyzed alerts yet. Enable ingest auto-triage or submit alerts via the API."
                     searchPlaceholder="Search alerts…"
                     defaultPageSize={10}
                     defaultSortColumnId="created"
@@ -398,69 +346,6 @@ export function AnalysisContent() {
           </NeonTabs>
         </div>
       </NeonGlassCard>
-
-      <Dialog open={routeDialogOpen} onOpenChange={setRouteDialogOpen}>
-        <NeonDialogContent accent="orange" className="sm:max-w-2xl">
-          <form onSubmit={runRoute} className="space-y-4">
-            <NeonDialogHeaderWithIcon
-              accent="orange"
-              icon={<PlayIcon className="size-5 text-orange-400" />}
-              title="Run analysis route"
-              description="Agentic ops: classify alert and run security or observability pipeline"
-            />
-            {error && routeDialogOpen ? (
-              <NeonAlert variant="destructive" className="mx-6">
-                <NeonAlertTitle>Error</NeonAlertTitle>
-                <NeonAlertDescription>{error}</NeonAlertDescription>
-              </NeonAlert>
-            ) : null}
-            <NeonFieldGroup className="px-6">
-              <NeonField>
-                <NeonFieldLabel htmlFor="route_sid">Splunk SID (optional)</NeonFieldLabel>
-                <NeonInput
-                  id="route_sid"
-                  accent="orange"
-                  placeholder="scheduler_…"
-                  value={sid}
-                  onChange={(e) => setSid(e.target.value)}
-                />
-              </NeonField>
-              <NeonField>
-                <NeonFieldLabel htmlFor="route_search">Search name</NeonFieldLabel>
-                <NeonInput
-                  id="route_search"
-                  accent="orange"
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
-                />
-              </NeonField>
-            </NeonFieldGroup>
-
-            {routeResult ? (
-              <TsocOverflowScroll
-                className="mx-6 max-h-[50vh] rounded-lg border border-white/10 bg-black/40 p-3"
-                axis="both"
-              >
-                <AnalysisRouteView data={routeResult} />
-              </TsocOverflowScroll>
-            ) : null}
-
-            <NeonDialogFooter className="px-6 pb-6">
-              <NeonDialogFooterButton
-                accent="orange"
-                type="button"
-                footerVariant="secondary"
-                onClick={() => setRouteDialogOpen(false)}
-              >
-                {routeResult ? "Close" : "Cancel"}
-              </NeonDialogFooterButton>
-              <NeonDialogFooterButton accent="orange" type="submit" disabled={routing}>
-                {routing ? "Running…" : routeResult ? "Run again" : "Run route"}
-              </NeonDialogFooterButton>
-            </NeonDialogFooter>
-          </form>
-        </NeonDialogContent>
-      </Dialog>
     </div>
   )
 }
