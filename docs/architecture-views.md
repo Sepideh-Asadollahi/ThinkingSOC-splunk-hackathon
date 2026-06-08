@@ -366,10 +366,14 @@ sequenceDiagram
   participant Analyst as Human Analyst
 
   Note over Splunk,Backend: Phase 1 - Alert Ingest
-  Splunk->>Backend: POST /api/v1/alerts/splunk-ingest (sid, search_name, result)
+  Splunk->>Backend: POST /api/v1/alerts/splunk-ingest (sid, result, results[])
+  Backend->>Backend: Buffer rows per sid (debounce)
   Backend->>Splunk: GET /services/search/v2/jobs/{sid}/results (REST v2)
   Splunk-->>Backend: Full job rows (JSON)
   Backend->>PG: Store splunk_ingest record
+  loop Each result row
+    Backend->>PG: Store soc_analysis (sid …-1, …-2, …)
+  end
 
   Note over Splunk,Backend: Phase 2 - Analysis Pipeline
   Backend->>Backend: Classify (rule + LLM hybrid)

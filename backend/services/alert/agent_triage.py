@@ -17,12 +17,7 @@ from services.alert.alert_mcp_enrichment import classify_with_optional_mcp
 from services.alert.alert_pipeline import enrich_alert_from_splunk
 from services.observability_analysis import run_observability_analysis
 from services.soc_analysis import append_analysis_log, run_analysis
-from services.soc_analysis.soc_analysis_risk import find_asset_row, find_user_row
-from services.triage.triage_priority import (
-    compute_triage_from_observability,
-    compute_triage_from_soc,
-    merge_triage_into_analysis_output,
-)
+from services.triage.triage_priority import merge_triage_into_analysis_output
 from services.splunk_integration.splunk_ai_assistant import suggest_spl_for_alert
 from services.inventory.inventory_loader import IncompleteOfflineInventoryError, load_inventory_tables
 from services.soc_analysis.analysis_audit import (
@@ -35,11 +30,7 @@ from services.soc_analysis.analysis_audit import (
 )
 from services.alert.ingest_row_shape import detect_splunk_result_row_shape, log_splunk_result_row_shape
 from services.soc_analysis.soc_analysis_batch import merge_normalized_for_row
-from services.splunk_json_store import (
-    persist_agentic_ops_route_to_splunk,
-    persist_observability_analysis_to_splunk,
-    persist_soc_analysis_to_splunk,
-)
+from services.splunk_json_store import persist_agentic_ops_route_to_splunk
 
 logger = logging.getLogger(__name__)
 
@@ -134,26 +125,11 @@ async def run_agent_triage(settings: Settings, body: AgentTriageRequest) -> Agen
             assets=assets,
             relationships=relationships,
             analysis_row_index=row_index,
-        )
-        id_res = security_result.enrichment
-        security_triage = compute_triage_from_soc(
-            security_result,
             classification=classification,
-            user_row=find_user_row(users, id_res.resolved_user_id),
-            asset_row=find_asset_row(assets, id_res.resolved_asset_id),
         )
-        security_result = security_result.model_copy(update={"triage": security_triage})
         append_analysis_log(settings, security_result)
         analysis_output = build_analysis_output(security_result)
-        await persist_soc_analysis_to_splunk(
-            settings,
-            sec_body,
-            security_result,
-            row_index=row_index,
-            raw_alert=raw_alert,
-            analysis_input=analysis_input,
-            analysis_output=analysis_output,
-        )
+        security_triage = security_result.triage
 
     elif classification.recommended_pipeline == "observability":
         obs_body = ObservabilityRunRequest(
@@ -163,31 +139,24 @@ async def run_agent_triage(settings: Settings, body: AgentTriageRequest) -> Agen
             splunk_results=row_slice,
         )
         observability_result = await run_observability_analysis(
-            settings, obs_body, users=users, assets=assets, relationships=relationships
-        )
-        observability_triage = compute_triage_from_observability(
-            observability_result,
-            classification=classification,
-        )
-        observability_result = observability_result.model_copy(update={"triage": observability_triage})
-        await persist_observability_analysis_to_splunk(
             settings,
             obs_body,
-            observability_result,
-            row_index=row_index,
-            raw_alert=raw_alert,
-            analysis_input=analysis_input,
-            analysis_output=merge_triage_into_analysis_output(
-                {
-                    "verdict": observability_result.ops_judge.verdict,
-                    "priority": observability_result.ops_judge.priority,
-                    "recommended_next_step": observability_result.ops_judge.recommended_next_step,
-                    "confidence": observability_result.ops_judge.confidence,
-                    "rationale": observability_result.ops_judge.rationale,
-                    "summary": observability_result.summary,
-                },
-                observability_triage,
-            ),
+            users=users,
+            assets=assets,
+            relationships=relationships,
+            classification=classification,
+        )
+        observability_triage = observability_result.triage
+        analysis_output = merge_triage_into_analysis_output(
+            {
+                "verdict": observability_result.ops_judge.verdict,
+                "priority": observability_result.ops_judge.priority,
+                "recommended_next_step": observability_result.ops_judge.recommended_next_step,
+                "confidence": observability_result.ops_judge.confidence,
+                "rationale": observability_result.ops_judge.rationale,
+                "summary": observability_result.summary,
+            },
+            observability_triage,
         )
 
     enrichment_for_spl = None

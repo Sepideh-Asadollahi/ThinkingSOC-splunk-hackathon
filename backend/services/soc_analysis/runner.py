@@ -7,6 +7,7 @@ import time
 from typing import Any, Dict, List, Optional
 
 from config import Settings
+from models.agentic_ops import AlertClassificationResult
 from models.analysis import AnalysisRunRequest, EvidenceChain, SocAnalysisResult
 from services.soc_analysis.analysis_audit import (
     build_analysis_input,
@@ -152,6 +153,7 @@ async def run_analysis(
     assets: List[Dict[str, Any]],
     relationships: List[Dict[str, Any]],
     analysis_row_index: Optional[int] = None,
+    classification: Optional[AlertClassificationResult] = None,
 ) -> SocAnalysisResult:
     """
     Enrichment → LangGraph (prepare → risk_engine → Defender → Hunter → Judge) → assemble.
@@ -238,7 +240,12 @@ async def run_analysis(
         )
         path_name = "langgraph_fallback"
 
-    triage = compute_triage_from_soc(result, user_row=urow, asset_row=arow)
+    triage = compute_triage_from_soc(
+        result,
+        classification=classification,
+        user_row=urow,
+        asset_row=arow,
+    )
     result = result.model_copy(
         update={
             "triage": triage,

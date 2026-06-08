@@ -60,7 +60,6 @@ Community of 37 nodes
 - **curl_fetch** (criticality: 0.37, depth: 2)
 - **apt_update_lists** (criticality: 0.37, depth: 2)
 - **apt_upgrade_all** (criticality: 0.37, depth: 2)
-- **apt_install_packages** (criticality: 0.37, depth: 2)
 
 ## Dependencies
 

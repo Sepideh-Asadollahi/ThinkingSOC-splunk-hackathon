@@ -24,10 +24,10 @@ Community of 72 nodes
 | LiteLLMProviderError | Class | backend/services/llm/litellm_service.py | 25-37 |
 | __init__ | Function | backend/services/llm/litellm_service.py | 28-37 |
 | provider_error_http_status | Function | backend/services/llm/litellm_service.py | 40-49 |
-| _connection_indicators | Function | backend/services/llm/litellm_service.py | 52-65 |
-| _map_litellm_exception | Function | backend/services/llm/litellm_service.py | 68-133 |
-| _normalize_messages | Function | backend/services/llm/litellm_service.py | 136-146 |
-| litellm_chat_completion | Function | backend/services/llm/litellm_service.py | 149-253 |
+| _connection_indicators | Function | backend/services/llm/litellm_service.py | 52-67 |
+| _map_litellm_exception | Function | backend/services/llm/litellm_service.py | 70-135 |
+| _normalize_messages | Function | backend/services/llm/litellm_service.py | 138-148 |
+| litellm_chat_completion | Function | backend/services/llm/litellm_service.py | 151-258 |
 | _append_thinking | Function | backend/services/llm/thinking_content.py | 45-48 |
 | _extract_thinking_blocks | Function | backend/services/llm/thinking_content.py | 51-67 |
 | _strip_tag_blocks | Function | backend/services/llm/thinking_content.py | 70-84 |
@@ -68,11 +68,11 @@ Community of 72 nodes
 ## Execution Flows
 
 - **admin_org_gap_suggest** (criticality: 0.80, depth: 5)
-- **assistant_spl_suggest** (criticality: 0.78, depth: 9)
+- **run_buffered_job_triage** (criticality: 0.78, depth: 10)
+- **assistant_spl_suggest** (criticality: 0.77, depth: 9)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
-- **agent_triage_endpoint** (criticality: 0.75, depth: 8)
-- **run_post_ingest** (criticality: 0.75, depth: 8)
+- **agent_triage_endpoint** (criticality: 0.76, depth: 8)
 - **soc_chat** (criticality: 0.75, depth: 5)
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
 - **work** (criticality: 0.74, depth: 6)

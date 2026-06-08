@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 293 nodes
+Community of 262 nodes
 
-- **Size**: 293 nodes
-- **Cohesion**: 0.2964
+- **Size**: 262 nodes
+- **Cohesion**: 0.2909
 - **Dominant Language**: python
 
 ## Members
@@ -13,10 +13,9 @@ Community of 293 nodes
 | Name | Kind | File | Lines |
 |------|------|------|-------|
 | mcp_status_endpoint | Function | backend/api/routes/mcp.py | 28-32 |
-| Settings | Class | backend/config.py | 24-209 |
-| mcp_configured | Function | backend/config.py | 212-219 |
-| splunk_mcp_url_for | Function | backend/config.py | 222-228 |
-| investigation_questions_max | Function | backend/config.py | 252-254 |
+| mcp_configured | Function | backend/config.py | 221-228 |
+| splunk_mcp_url_for | Function | backend/config.py | 231-237 |
+| investigation_questions_max | Function | backend/config.py | 261-263 |
 | RootCauseSplValidation | Class | backend/models/analysis.py | 46-51 |
 | RootCauseSpl | Class | backend/models/analysis.py | 54-69 |
 | SplSearchResult | Class | backend/models/analysis.py | 72-78 |
@@ -62,57 +61,58 @@ Community of 293 nodes
 | _execution_refine_user_message | Function | backend/services/investigation/spl_mcp_review.py | 262-314 |
 | _splunk_catalog_block | Function | backend/services/investigation/spl_mcp_review.py | 317-354 |
 | refine_spl_with_llm_on_error | Function | backend/services/investigation/spl_mcp_review.py | 357-441 |
+| refine_root_cause_spl_until_valid | Function | backend/services/investigation/spl_mcp_review.py | 444-503 |
 
-*... and 243 more members.*
+*... and 212 more members.*
 
 ## Execution Flows
 
 - **execute_investigation_spl** (criticality: 0.84, depth: 5)
 - **admin_org_gap_suggest** (criticality: 0.80, depth: 5)
-- **assistant_spl_suggest** (criticality: 0.78, depth: 9)
+- **run_buffered_job_triage** (criticality: 0.78, depth: 10)
+- **assistant_spl_suggest** (criticality: 0.77, depth: 9)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
-- **agent_triage_endpoint** (criticality: 0.75, depth: 8)
-- **run_post_ingest** (criticality: 0.75, depth: 8)
+- **agent_triage_endpoint** (criticality: 0.76, depth: 8)
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
 - **dashboard_overview** (criticality: 0.74, depth: 8)
 - **work** (criticality: 0.74, depth: 6)
-- *... and 27 more flows.*
+- *... and 24 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (129 edge(s))
-- `append` (98 edge(s))
-- `strip` (87 edge(s))
-- `isinstance` (80 edge(s))
-- `str` (77 edge(s))
-- `len` (77 edge(s))
-- `format` (73 edge(s))
+- `get` (126 edge(s))
+- `append` (102 edge(s))
+- `strip` (90 edge(s))
+- `isinstance` (85 edge(s))
+- `str` (80 edge(s))
+- `format` (75 edge(s))
+- `len` (73 edge(s))
 - `getattr` (37 edge(s))
 - `info` (33 edge(s))
-- `lower` (26 edge(s))
-- `patch` (25 edge(s))
+- `lower` (27 edge(s))
 - `bool` (23 edge(s))
 - `model_copy` (23 edge(s))
+- `patch` (23 edge(s))
 - `join` (22 edge(s))
 - `list` (22 edge(s))
 
 ### Incoming
 
-- `patch` (25 edge(s))
-- `len` (21 edge(s))
-- `get` (15 edge(s))
+- `patch` (23 edge(s))
+- `len` (17 edge(s))
+- `backend/services/soc_analysis/soc_analysis_root_cause_spl.py` (15 edge(s))
 - `backend/services/llm/full_trace_log.py` (14 edge(s))
-- `backend/services/soc_analysis/soc_analysis_root_cause_spl.py` (14 edge(s))
 - `backend/splunk/mcp/hunter_judge_context.py` (14 edge(s))
 - `model_copy` (13 edge(s))
 - `backend/services/investigation/spl_mcp_review.py` (12 edge(s))
-- `backend/tests/test_splunk_json_store.py` (12 edge(s))
-- `backend/services/investigation/spl_predict_pipeline.py` (11 edge(s))
 - `lower` (11 edge(s))
+- `backend/services/investigation/spl_predict_pipeline.py` (10 edge(s))
+- `get` (10 edge(s))
 - `backend/tests/test_splunk_live_mcp_saia.py` (10 edge(s))
 - `backend/services/investigation/investigation_questions_spl.py` (8 edge(s))
 - `backend/services/soc_analysis/soc_analysis_json.py` (8 edge(s))
-- `object` (8 edge(s))
+- `backend/services/soc_analysis/soc_analysis_prompts.py` (7 edge(s))
+- `object` (7 edge(s))

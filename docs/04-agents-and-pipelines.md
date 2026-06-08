@@ -8,7 +8,7 @@ The same core logic is reachable from multiple APIs:
 
 | Entry | Typical caller | Flow |
 |-------|----------------|------|
-| Webhook `POST /alerts/splunk-ingest` | Splunk | normalize → enrich → optional `run_post_ingest` → triage when `TSOC_INGEST_AUTO_ANALYZE=true` |
+| Webhook `POST /alerts/splunk-ingest` | Splunk | normalize → row buffer (default) → REST enrich → `run_post_ingest` → per-row triage (`…-1`, `…-2`) when `TSOC_INGEST_AUTO_ANALYZE=true` |
 | `POST /analysis/route` | UI / SDK | classify → run pipeline(s) → persist route record |
 | `POST /agents/triage` | SDK / automation | Full triage bundle (classification + pipelines + SPL hints) |
 | `POST /analysis/run` | Security-only tools | SOC pipeline with inventory load |

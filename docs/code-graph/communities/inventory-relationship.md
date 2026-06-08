@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 34 nodes
+Community of 45 nodes
 
-- **Size**: 34 nodes
-- **Cohesion**: 0.2688
+- **Size**: 45 nodes
+- **Cohesion**: 0.2589
 - **Dominant Language**: python
 
 ## Members
@@ -15,7 +15,16 @@ Community of 34 nodes
 | UserRecord | Class | backend/models/inventory.py | 10-16 |
 | AssetRecord | Class | backend/models/inventory.py | 31-40 |
 | RelationshipRecord | Class | backend/models/inventory.py | 58-62 |
+| _first | Function | backend/services/alert/graph_correlation.py | 35-40 |
+| _is_private_ip | Function | backend/services/alert/graph_correlation.py | 43-54 |
+| derive_alert_row_id | Function | backend/services/alert/graph_correlation.py | 57-61 |
+| normalize_row_data | Function | backend/services/alert/graph_correlation.py | 64-76 |
+| build_entity_identifiers | Function | backend/services/alert/graph_correlation.py | 79-102 |
+| _severity_risk | Function | backend/services/alert/graph_correlation.py | 105-110 |
+| _time_to_iso | Function | backend/services/alert/graph_correlation.py | 113-125 |
+| build_correlation_block | Function | backend/services/alert/graph_correlation.py | 128-150 |
 | _load_inventory | Function | backend/services/alert/graph_correlation.py | 153-165 |
+| ensure_graph_correlation_on_payload | Function | backend/services/alert/graph_correlation.py | 168-197 |
 | is_unique_violation | Function | backend/services/inventory/_db.py | 12-14 |
 | raise_if_delete_missing | Function | backend/services/inventory/_db.py | 17-19 |
 | dynamic_update | Function | backend/services/inventory/_db.py | 22-38 |
@@ -44,6 +53,8 @@ Community of 34 nodes
 | create_user | Function | backend/services/inventory/users.py | 37-57 |
 | update_user | Function | backend/services/inventory/users.py | 60-68 |
 | delete_user | Function | backend/services/inventory/users.py | 71-75 |
+| test_derive_alert_row_id_stable | Test | backend/tests/test_graph_correlation.py | 10-16 |
+| test_build_entity_identifiers_from_alert_fields | Test | backend/tests/test_graph_correlation.py | 19-34 |
 | test_inventory_users_list_requires_pg_mock | Test | backend/tests/test_inventory_api.py | 26-34 |
 | test_inventory_relationships_list | Test | backend/tests/test_inventory_api.py | 42-54 |
 
@@ -65,24 +76,25 @@ Community of 34 nodes
 
 ### Outgoing
 
+- `get` (16 edge(s))
 - `format` (15 edge(s))
+- `str` (13 edge(s))
 - `backend/services/splunk_json_store/__init__.py::ensure_pool` (13 edge(s))
 - `acquire` (13 edge(s))
+- `strip` (9 edge(s))
+- `dict` (8 edge(s))
 - `execute` (7 edge(s))
 - `model_dump` (6 edge(s))
-- `dict` (5 edge(s))
+- `startswith` (4 edge(s))
+- `append` (4 edge(s))
 - `patch` (4 edge(s))
 - `BaseModel` (3 edge(s))
-- `str` (3 edge(s))
+- `isinstance` (3 edge(s))
 - `fetchrow` (3 edge(s))
-- `fetch` (3 edge(s))
-- `get` (3 edge(s))
-- `json` (2 edge(s))
-- `join` (1 edge(s))
-- `enumerate` (1 edge(s))
 
 ### Incoming
 
+- `backend/services/alert/graph_correlation.py` (10 edge(s))
 - `backend/models/inventory.py` (6 edge(s))
 - `backend/services/inventory/converters.py` (6 edge(s))
 - `backend/services/inventory/relationships.py` (6 edge(s))
@@ -91,9 +103,9 @@ Community of 34 nodes
 - `patch` (4 edge(s))
 - `backend/services/inventory/_db.py` (3 edge(s))
 - `backend/services/inventory/exceptions.py` (2 edge(s))
+- `backend/tests/test_graph_correlation.py` (2 edge(s))
 - `backend/tests/test_inventory_api.py` (2 edge(s))
 - `get` (2 edge(s))
 - `json` (2 edge(s))
-- `backend/services/alert/graph_correlation.py` (1 edge(s))
-- `backend/services/alert/graph_correlation.py::ensure_graph_correlation_on_payload` (1 edge(s))
 - `backend/services/inventory/loader.py` (1 edge(s))
+- `startswith` (1 edge(s))

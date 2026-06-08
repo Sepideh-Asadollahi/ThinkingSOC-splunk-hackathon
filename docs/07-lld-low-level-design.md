@@ -104,10 +104,13 @@ Splunk **built-in Webhook Alert Action** → `POST /api/v1/alerts/splunk-ingest`
 | `orig_sid` | Optional original SID |
 | `search_name` | Saved search / alert name |
 | `server_uri` | Optional Splunk server reference |
-| `result` | First result row from webhook payload |
+| `result` | First / primary result row |
+| `results` | Optional array of **all** job rows (sent by `ThinkingSOC_Hackathon` when `results.csv.gz` has 2+ rows) |
 | `app`, `owner` | Optional Splunk context |
 
-Backend normalizes into `SplunkAlertIngest`. Optional bearer: `Authorization: Bearer <TSOC_INGEST_TOKEN>` when configured.
+Backend normalizes into `SplunkAlertIngest` (`result` or `results[]`). Optional bearer: `Authorization: Bearer <TSOC_INGEST_TOKEN>` when configured.
+
+**Splunk app:** `ThinkingSOC_Hackathon/bin/thinkingsoc_hackathon.py` reads Splunk’s gzip results file (`results.csv.gz`) and includes every row in `results` when present.
 
 **No URL configuration:** do not append query parameters to the ingest URL (e.g. `?auto_analyze=true`). Behavior is controlled by `TSOC_INGEST_AUTO_ANALYZE` in `backend/.env`. Forbidden query keys return HTTP `400`.
 
@@ -119,12 +122,16 @@ Backend normalizes into `SplunkAlertIngest`. Optional bearer: `Authorization: Be
 
 ### Multi-row jobs
 
-Splunk may return multiple statistics/events for one search (e.g. `| stats … | head 2`). After enrich:
+Splunk may return multiple statistics/events for one search (e.g. `| stats … | head 2`).
 
-1. `run_post_ingest` → `run_agent_triage_all_rows` loops rows **in order** (await per row).
-2. Each row gets a full Security or Observability pipeline + triage + PostgreSQL records.
-3. Storage `sid` = `{job_sid}-{n}` when `n > 1` rows exist (`n` is 1-based); single-row jobs keep `sid` as-is.
-4. Cap: `TSOC_INGEST_AUTO_ANALYZE_MAX_ROWS` (default 50).
+**Ingest path (default):**
+
+1. Webhook POST(s) → optional **row buffer** per `sid` (`TSOC_INGEST_ROW_BUFFER`, debounce `TSOC_INGEST_ROW_BUFFER_SECONDS`).
+2. On flush → **REST enrich** loads/confirms all job rows (`enrich_alert_from_splunk`).
+3. `run_post_ingest` → `run_agent_triage_all_rows` loops rows **in order** (await per row).
+4. Each row: classify → Security or Observability pipeline → **one** `soc_analysis` persist (`run_analysis`).
+5. Storage `sid` = `{job_sid}-{n}` when `n > 1` rows exist (`n` is **1-based**); single-row jobs keep `sid` as-is.
+6. Cap: `TSOC_INGEST_AUTO_ANALYZE_MAX_ROWS` (default 50).
 
 `raw_alert.splunk_job_sid` preserves the Splunk REST job id; strip row suffix before `GET .../jobs/{sid}/results`.
 

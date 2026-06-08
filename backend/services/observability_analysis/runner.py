@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 from config import Settings
+from models.agentic_ops import AlertClassificationResult
 from models.observability import ObservabilityAnalysisResult, ObservabilityRunRequest
 from services.alert.enrichment_resolver import enrich_from_inventory
 from services.soc_analysis.analysis_audit import (
@@ -42,6 +43,7 @@ async def run_observability_analysis(
     assets: List[Dict[str, Any]],
     relationships: List[Dict[str, Any]],
     analysis_row_index: Optional[int] = None,
+    classification: Optional[AlertClassificationResult] = None,
 ) -> ObservabilityAnalysisResult:
     row_index = resolve_row_index(
         analysis_row_index if analysis_row_index is not None else body.row_index,
@@ -103,7 +105,7 @@ async def run_observability_analysis(
         ops_judge=ops_judge,
         evidence_refs=evidence_refs,
     )
-    triage = compute_triage_from_observability(result)
+    triage = compute_triage_from_observability(result, classification=classification)
     result = result.model_copy(update={"triage": triage})
     analysis_output = merge_triage_into_analysis_output(
         {

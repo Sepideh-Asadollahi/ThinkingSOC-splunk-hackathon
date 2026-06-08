@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 16 nodes
+Community of 17 nodes
 
-- **Size**: 16 nodes
-- **Cohesion**: 0.1849
+- **Size**: 17 nodes
+- **Cohesion**: 0.1951
 - **Dominant Language**: python
 
 ## Members
@@ -19,10 +19,11 @@ Community of 16 nodes
 | strip_redundant_boolean_and | Function | backend/services/investigation/spl_syntax_sanitize.py | 101-103 |
 | _safe_spl_alias | Function | backend/services/investigation/spl_syntax_sanitize.py | 106-110 |
 | ensure_search_generating_command | Function | backend/services/investigation/spl_syntax_sanitize.py | 113-124 |
-| fix_field_equals_in_pipe_clauses | Function | backend/services/investigation/spl_syntax_sanitize.py | 127-170 |
-| fix_spl_quoted_string_escapes | Function | backend/services/investigation/spl_syntax_sanitize.py | 173-224 |
-| discourage_values_aggregation | Function | backend/services/investigation/spl_syntax_sanitize.py | 227-238 |
-| sanitize_spl_syntax | Function | backend/services/investigation/spl_syntax_sanitize.py | 241-255 |
+| fix_field_equals_in_pipe_clauses | Function | backend/services/investigation/spl_syntax_sanitize.py | 127-150 |
+| _fix_agg_segment | Function | backend/services/investigation/spl_syntax_sanitize.py | 153-179 |
+| fix_spl_quoted_string_escapes | Function | backend/services/investigation/spl_syntax_sanitize.py | 182-233 |
+| discourage_values_aggregation | Function | backend/services/investigation/spl_syntax_sanitize.py | 236-247 |
+| sanitize_spl_syntax | Function | backend/services/investigation/spl_syntax_sanitize.py | 250-264 |
 | test_quote_any_colon_field_value | Test | backend/tests/test_spl_syntax_sanitize.py | 13-16 |
 | test_dedupe_all_search_fields | Test | backend/tests/test_spl_syntax_sanitize.py | 19-27 |
 | test_sanitize_fixes_missing_search_and_by_field_eq | Test | backend/tests/test_spl_syntax_sanitize.py | 30-35 |
@@ -39,23 +40,23 @@ No execution flows pass through this community.
 
 - `sub` (13 edge(s))
 - `strip` (13 edge(s))
-- `append` (11 edge(s))
+- `append` (9 edge(s))
 - `format` (4 edge(s))
 - `group` (4 edge(s))
+- `startswith` (4 edge(s))
+- `join` (4 edge(s))
 - `match` (3 edge(s))
-- `startswith` (3 edge(s))
 - `split` (3 edge(s))
-- `join` (3 edge(s))
 - `replace` (3 edge(s))
-- `len` (2 edge(s))
 - `lower` (2 edge(s))
+- `len` (2 edge(s))
 - `count` (2 edge(s))
 - `isdigit` (1 edge(s))
 - `find` (1 edge(s))
 
 ### Incoming
 
-- `backend/services/investigation/spl_syntax_sanitize.py` (11 edge(s))
+- `backend/services/investigation/spl_syntax_sanitize.py` (12 edge(s))
 - `backend/tests/test_spl_syntax_sanitize.py` (5 edge(s))
 - `count` (2 edge(s))
 - `startswith` (1 edge(s))

@@ -11,6 +11,7 @@ from config import Settings
 from models.agents import AgentTriageRequest
 from models.handoff import SplunkAlertIngest
 from services.alert.agent_triage import run_agent_triage, run_agent_triage_all_rows
+from services.alert.alert_pipeline import enrich_alert_from_splunk
 from services.alert.ingest_dedup import claim_storage_sid, release_storage_sid
 from services.alert.ingest_request_trace import resolve_ingest_row_index
 from services.alert.ingest_row_shape import detect_splunk_result_row_shape, log_splunk_result_row_shape
@@ -164,21 +165,37 @@ async def run_buffered_job_triage(
     """Flush callback for the per-row webhook buffer: analyze the whole job at once.
 
     ``rows`` are all the result rows collected from the separate webhook POSTs for this
-    ``base_sid``. We hand them to the existing batch path, which names each row
-    ``{base_sid}-{n}`` and analyzes them sequentially (row 1, then row 2, …).
+    ``base_sid``. Splunk often sends only the first row per POST (digest mode) or one row
+    per HTTP call; when REST is configured we load the full job result set before triage
+    so multi-row alerts become ``{base_sid}-1``, ``{base_sid}-2``, … — not duplicates of row 0.
     """
-    enriched: Dict[str, Any] = {
-        "splunk_results": rows,
-        "splunk_results_row_count": len(rows),
-        "enrichment_source": "webhook_row_buffer",
-    }
+    handoff = template.model_copy(update={"sid": base_sid, "results": rows})
+    try:
+        enriched = await enrich_alert_from_splunk(handoff, settings)
+    except Exception as exc:
+        logger.warning(
+            "post_ingest buffered_job enrich failed base_sid=%s webhook_rows=%d: %s",
+            base_sid,
+            len(rows),
+            exc,
+            exc_info=True,
+        )
+        enriched = {
+            "splunk_results": rows,
+            "splunk_results_row_count": len(rows),
+            "enrichment_source": "webhook_row_buffer",
+        }
+    rest_rows = list(enriched.get("splunk_results") or rows)
+    if rest_rows:
+        handoff = handoff.model_copy(update={"results": rest_rows})
     logger.info(
-        "post_ingest buffered_job base_sid=%s total_rows=%d search_name=%s",
+        "post_ingest buffered_job base_sid=%s webhook_rows=%d rest_rows=%d search_name=%s",
         base_sid,
         len(rows),
+        len(rest_rows),
         template.search_name,
     )
-    await run_post_ingest(settings, template, enriched, auto_analyze=True)
+    await run_post_ingest(settings, handoff, enriched, auto_analyze=True)
 
 
 async def run_post_ingest(

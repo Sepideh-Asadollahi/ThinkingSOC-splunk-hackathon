@@ -16,12 +16,10 @@ htmlcov/
 *.prof
 
 # ── Environment & secrets (NEVER commit) ─────────────────────────────────────
-.env
-.env.local
-.env.*.local
-backend/.env
-frontend/.env.local
-correlation/.env
+**/.env
+**/.env.*
+!**/.env.example
+!backend/.env.test_empty
 *.pem
 *.key
 
@@ -41,6 +39,9 @@ backend/logs/
 # ── Caches & large model files ───────────────────────────────────────────────
 backend/.cache/
 .cache/
+*.db
+*.db-wal
+*.db-shm
 
 # ── Node.js / Frontend ──────────────────────────────────────────────────────
 node_modules/

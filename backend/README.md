@@ -99,7 +99,7 @@ Live Splunk tests are separately marked `splunk_live` and require `TSOC_RUN_SPLU
 ## Endpoints
 
 - `GET /health`
-- `POST /api/v1/alerts/splunk-ingest` — JSON handoff from Splunk alert action (Bearer if `TSOC_INGEST_TOKEN` set). Returns `202` when `TSOC_INGEST_AUTO_ANALYZE=true` (default), else `200`. **Configuration is not overridable via URL query parameters.** When the Splunk job has multiple result rows, background triage runs **sequentially per row** (storage `sid` suffix `-1`, `-2`, …); see [docs/02-integration-boundaries.md](../docs/02-integration-boundaries.md).
+- `POST /api/v1/alerts/splunk-ingest` — JSON handoff from Splunk alert action (`result` + optional `results[]`; Bearer if `TSOC_INGEST_TOKEN` set). Returns `202` when `TSOC_INGEST_AUTO_ANALYZE=true` (default), else `200`. **Configuration is not overridable via URL query parameters.** Multi-row jobs: row buffer per `sid` → REST enrich → **sequential per-row triage** (storage `sid` suffix `-1`, `-2`, …); see [docs/02-integration-boundaries.md](../docs/02-integration-boundaries.md).
 - `POST /api/v1/classification/alert` — classify alert into `security|observability|both|unknown` (optional `sid` enrichment)
 - `GET /api/v1/llm/status` — LiteLLM config surface (no secrets); see [docs/04-agents-and-pipelines.md](../docs/04-agents-and-pipelines.md)
 - `POST /api/v1/llm/chat` — chat completion via LiteLLM (`messages` array); same Bearer rule as ingest when `TSOC_INGEST_TOKEN` is set
