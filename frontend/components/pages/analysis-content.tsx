@@ -229,9 +229,8 @@ export function AnalysisContent() {
         sortValue: (row) => Number(row.row_index ?? -1),
         cell: (row) => {
           const ri = row.row_index
-          if (ri == null || ri === "") return "—"
-          const n = Number(ri)
-          return Number.isFinite(n) ? String(n + 1) : "—"
+          if (ri == null) return "—"
+          return Number.isFinite(ri) ? String(ri + 1) : "—"
         },
       },
       {
