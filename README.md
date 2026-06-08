@@ -239,74 +239,62 @@ User-to-asset relationship map for enrichment — linked inventory attributes an
 
 ## Installation
 
-**Start here.** ThinkingSOC is installed under **`/opt/thinking-soc-splunk-hackathon`** (same path as Splunk on this VM: `/opt/splunk`).
+**Start here.** Default install path: **`/opt/thinking-soc-splunk-hackathon`** (Splunk on this VM: `/opt/splunk`). Default ports: **9876** (API), **3000** (UI). Demo login: `admin` / `123456@a`.
 
-On a fresh Ubuntu 24.04 VM, run **one command** — the script downloads `install.sh`, **clones the full repository to `/opt/thinking-soc-splunk-hackathon`**, then installs Docker, Python, Node.js, the database stack, production UI build, and optional systemd services:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Sepideh-Asadollahi/ThinkingSOC-splunk-hackathon/main/install/bootstrap.sh | sudo bash
-```
-
-> **How the one-liner works:** Use **`install/bootstrap.sh`** (not `install.sh` alone). GitHub’s raw CDN can serve a stale cached `install.sh` on `/main/` for several minutes after a push. `bootstrap.sh` has no module dependencies, clones to **`/opt/thinking-soc-splunk-hackathon`**, then runs the full installer. Requires **`sudo bash`** (root).
-
-Or clone under `/opt`, then install:
-
-```bash
-sudo mkdir -p /opt
-cd /opt
-sudo git clone --branch main --depth 1 https://github.com/Sepideh-Asadollahi/ThinkingSOC-splunk-hackathon.git thinking-soc-splunk-hackathon
-cd /opt/thinking-soc-splunk-hackathon
-sudo bash install.sh
-```
-
-Already have a checkout at `/opt/thinking-soc-splunk-hackathon`? Run the installer from there:
-
-```bash
-cd /opt/thinking-soc-splunk-hackathon
-sudo bash install.sh
-```
-
-> **Install directory:** The one-liner always deploys to **`/opt/thinking-soc-splunk-hackathon`** (override: `TSOC_INSTALL_DIR=/other/path`). If you run `install.sh` from an existing checkout, that checkout is used unless `TSOC_INSTALL_DIR` is set.
-
-| Path | Use when |
+| Mode | Use when |
 |------|----------|
-| **[Automatic installation](#automated-installation-recommended)** (below) | Default — hackathon demo, fresh server, fastest path |
+| **[Automatic installation](#automatic-installation-recommended)** (recommended) | Fresh Ubuntu VM, hackathon demo, fastest path — one script installs Docker, Python, Node.js, DB stack, and production UI |
 | **[Manual installation](#manual-installation)** | Air-gapped host, strict Docker policy, or you prefer not to run `install.sh` as root |
 
-**After install (both paths):**
+**After install (both modes):**
 
 1. Answer **Yes** to the post-install integration wizard (Splunk REST, LiteLLM, MCP) — or run `sudo bash scripts/configure-integration.sh`
 2. Complete **[Splunk installation guide](#splunk-installation-guide)** (webhook + optional MCP/SAIA)
 3. Validate with **[Testing with sample data](#testing-with-sample-data)** — no real Splunk alert required
 
-Default ports: **9876** (API), **3000** (UI). Install path: **`/opt/thinking-soc-splunk-hackathon`**. Demo login: `admin` / `123456@a`.
+### Automatic installation (recommended)
 
----
+`install.sh` installs everything in [Manual installation → Prerequisites](#prerequisites-manual-path-only) for you — no need to install Docker, Python, or Node.js by hand.  
+Deploys to **`/opt/thinking-soc-splunk-hackathon`** (created if missing). Override path: `TSOC_INSTALL_DIR=/other/path` (not recommended for the hackathon demo).
 
-## Automated installation (recommended)
+**Installer guide:** [install/README.md](install/README.md) · **Help:** `sudo bash install.sh --help`
 
-The `install.sh` script installs everything listed in [Manual installation → Prerequisites](#prerequisites-manual-path-only) automatically — you do **not** need to install Docker, Python, or Node.js by hand first.  
-Software is deployed to **`/opt/thinking-soc-splunk-hackathon`** (created automatically if missing).  
-**After install, the stack runs in one of two modes** (you choose during install):
+**1. Fresh server (recommended)** — `install/bootstrap.sh` clones the repo, then runs the full installer. Use **`bootstrap.sh`**, not raw `install.sh` from GitHub (CDN cache can serve a stale `install.sh` for several minutes after a push). Requires **`sudo bash`**:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Sepideh-Asadollahi/ThinkingSOC-splunk-hackathon/main/install/bootstrap.sh | sudo bash
+```
+
+**2. Already have the repo** — run the installer from the checkout:
+
+```bash
+cd /opt/thinking-soc-splunk-hackathon
+sudo bash install.sh
+```
+
+**3. Clone manually, then install** (equivalent to option 1):
+
+```bash
+sudo mkdir -p /opt && cd /opt
+sudo git clone --branch main --depth 1 https://github.com/Sepideh-Asadollahi/ThinkingSOC-splunk-hackathon.git thinking-soc-splunk-hackathon
+cd /opt/thinking-soc-splunk-hackathon
+sudo bash install.sh
+```
+
+**Service mode** (chosen during install):
 
 | Mode | Best for | Manage with |
 |------|----------|-------------|
 | **With systemd** (default) | Demo / production servers, auto-start on boot | `systemctl`, `journalctl` → [Service control with systemd](#service-control-with-systemd) |
 | **Without systemd** | Quick trial, manual control | `scripts/start-tsoc-services.sh`, `logs/*.log` → [Production services (no systemd)](#production-services-no-systemd) |
 
-**Run the installer:** one-liner or clone steps in [Installation](#installation).
-
-**Installer-focused guide:** [install/README.md](install/README.md)  
-**Help without installing:** `sudo bash install.sh --help`  
-**Advanced:** override install path with `TSOC_INSTALL_DIR=/other/path sudo bash install.sh` (not recommended for the hackathon demo).
-
 **Troubleshooting the one-liner**
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `BASH_SOURCE[0]: unbound variable` then `Missing required installer module: …/install/modules/common.sh` | Piped **`install.sh`** from GitHub raw (stale cache or pre-bootstrap version) | Use **`install/bootstrap.sh`** one-liner in [Installation](#installation), or clone manually under `/opt` |
+| `BASH_SOURCE[0]: unbound variable` then `Missing required installer module: …/install/modules/common.sh` | Piped **`install.sh`** from GitHub raw (stale cache or pre-bootstrap version) | Use **`install/bootstrap.sh`** one-liner above, or clone manually under `/opt` |
 | `Installer must run as root` | Missing `sudo` on the curl pipe | `curl … \| sudo bash` |
-| Clone fails | No network / git / GitHub access | Clone manually ([Installation](#installation)), or set `TSOC_REPO_URL` to a mirror |
+| Clone fails | No network / git / GitHub access | Clone manually (block above), or set `TSOC_REPO_URL` to a mirror |
 
 By default the installer prints **full command output** in the console (`apt`, `pip`, `git`, `npm`, `curl` progress, `docker compose` image pulls, `setup.py`) so you can see where it stalls. For the old minimal output only: `TSOC_INSTALL_QUIET=1 sudo bash install.sh`.
 
@@ -324,7 +312,7 @@ The installer will ask:
 | Load demo data? | Yes | Restores the full demo database backup (inventory + records + RAG + correlation findings) — see [docs/24-demo-postgresql-data.md](docs/24-demo-postgresql-data.md) |
 | **Create systemd services?** | **Yes** | See [Installer: systemd or background](#installer-systemd-or-background) |
 
-### Installer: systemd or background
+#### Installer: systemd or background
 
 During `sudo bash install.sh`, step **Service deployment (systemd)** asks how to run the stack.  
 Both options use **production** frontend: `npm run build` then `npm run start` — not `npm run dev`.
@@ -379,18 +367,13 @@ sudo bash install/smoke-integration-config.sh   # verification only
 
 See [docs/23-post-install-integration-wizard.md](docs/23-post-install-integration-wizard.md) and [install/README.md](install/README.md#post-install-integration-wizard-splunk-litellm-mcp). Manual edits: [Minimal changes you must make](#minimal-changes-you-must-make).
 
-- **Without systemd:** background **production** stack — [Production services (no systemd)](#production-services-no-systemd).
-- **With systemd:** units created during install — [Service control with systemd](#service-control-with-systemd).
+### Manual installation
 
----
-
-## Manual installation
-
-> **Not the default path.** Most users should use [Automatic installation](#automated-installation-recommended) above. Use manual steps only when you need full control: existing Splunk/Docker policies, air-gapped hosts, or you prefer not to run `install.sh` as root.
+> **Not the default path.** Use [Automatic installation](#automatic-installation-recommended) unless you need full control: existing Splunk/Docker policies, air-gapped hosts, or you prefer not to run `install.sh` as root.
 
 The steps mirror what the automated installer does, in order.
 
-### Prerequisites (manual path only)
+#### Prerequisites (manual path only)
 
 | Component | Version / notes |
 |-----------|-----------------|
@@ -439,7 +422,7 @@ Default ports: **9876** (API), **3000** (UI), **5432** / **6333** / **7474** (Po
 
 Splunk configuration is **not** part of either install path — complete it after the stack is up: **[Splunk installation guide](#splunk-installation-guide)**.
 
-### Overview
+#### Overview
 
 | Step | What you do | Automated equivalent |
 |------|-------------|----------------------|
@@ -453,7 +436,7 @@ Splunk configuration is **not** part of either install path — complete it afte
 
 Default install path: **`/opt/thinking-soc-splunk-hackathon`** (same for automatic and manual installs).
 
-### 1. Install prerequisites
+#### 1. Install prerequisites
 
 Install everything in [Prerequisites (manual path only)](#prerequisites-manual-path-only) before continuing.
 
@@ -473,7 +456,7 @@ sudo systemctl enable --now docker
 docker info
 ```
 
-### 2. Clone the repository
+#### 2. Clone the repository
 
 ```bash
 sudo mkdir -p /opt
@@ -482,7 +465,7 @@ sudo git clone https://github.com/Sepideh-Asadollahi/ThinkingSOC-splunk-hackatho
 cd /opt/thinking-soc-splunk-hackathon
 ```
 
-### 3. Python virtual environment
+#### 3. Python virtual environment
 
 Create the backend venv and install dependencies (do **not** use a repo-root `.venv`; use `backend/.venv`):
 
@@ -493,7 +476,7 @@ backend/.venv/bin/python -m pip install --upgrade pip
 backend/.venv/bin/pip install -r backend/requirements.txt
 ```
 
-### 4. Project setup (Docker stack + database schema)
+#### 4. Project setup (Docker stack + database schema)
 
 **Start all data services** (PostgreSQL, Qdrant, Neo4j) with one command:
 
@@ -520,7 +503,7 @@ backend/.venv/bin/python setup.py --skip-docker -v
 
 This creates `backend/.env` from `.env.example` if missing, applies `backend/db/schema.sql`, and loads demo data (postgres snapshot or CSV fallback). To skip demo data only: add `--no-seed`. See [docs/24-demo-postgresql-data.md](docs/24-demo-postgresql-data.md).
 
-### 5. Frontend dependencies and environment
+#### 5. Frontend dependencies and environment
 
 ```bash
 cd frontend
@@ -538,7 +521,7 @@ Edit `frontend/.env.local` for your deployment (see [Minimal changes](#minimal-c
 cd ..   # back to repo root
 ```
 
-### 6. Backend configuration (Splunk + secrets)
+#### 6. Backend configuration (Splunk + secrets)
 
 ```bash
 cd backend
@@ -557,7 +540,7 @@ Edit `backend/.env` minimum for Splunk integration:
 
 Then complete [Splunk-side setup](#splunk-side-setup): install `ThinkingSOC_Hackathon`, webhook URL `http://<backend-ip>:9876/api/v1/alerts/splunk-ingest`, optional MCP/SAIA.
 
-### 7. Run the stack
+#### 7. Run the stack
 
 **Recommended (production UI — matches installer):**
 
@@ -584,7 +567,7 @@ Open the UI at `http://127.0.0.1:3000/` or `http://<server-ip>:3000/`. Demo logi
 cd frontend && npm run dev
 ```
 
-### 8. Verify installation
+#### 8. Verify installation
 
 Manual checks equivalent to the installer smoke test:
 
@@ -606,7 +589,7 @@ docker exec tsoc-postgres psql -U tsoc -d tsoc -tAc "SELECT COUNT(*) FROM tsoc_u
 docker exec tsoc-postgres psql -U tsoc -d tsoc -tAc "SELECT COUNT(*) FROM tsoc_records;"
 ```
 
-### 9. Optional: systemd services (manual)
+#### 9. Optional: systemd services (manual)
 
 Prefer **`sudo bash scripts/install-systemd.sh`** after a normal install — it builds the frontend and installs the same units as `install.sh`. Full command reference: [Service control with systemd](#service-control-with-systemd).
 
@@ -916,7 +899,7 @@ You can validate the full pipeline **without** waiting for Splunk to fire a real
 
 ### 1. Seed backend demo data (PostgreSQL)
 
-From repo root (Docker Postgres must be up — after [Automatic installation](#automated-installation-recommended) or [Manual installation](#manual-installation)):
+From repo root (Docker Postgres must be up — after [Automatic installation](#automatic-installation-recommended) or [Manual installation](#manual-installation)):
 
 ```bash
 backend/.venv/bin/python setup.py --skip-docker -v
