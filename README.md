@@ -5,12 +5,154 @@ Splunk **10+** alert handoff → external FastAPI backend → identity resolutio
 | Resource | Description |
 |----------|-------------|
 | [Installation](#installation) | **Start here** — automatic install (recommended) or manual steps |
-| [Architecture diagram](architecture_diagram.md) | System integration (Mermaid) |
+| [Architecture diagram](#architecture-diagram) | System integration (Mermaid, in README) · [full doc](architecture_diagram.md) |
 | [docs/](docs/README.md) | HLD, LLD, agents, integration boundaries |
 | [Developer SDK & CLI](docs/22-developer-sdk.md) | Typed Python SDK, CLI, evaluation runner |
 | [Submission & evidence pack](submission/README.md) | Devpost evidence scripts; judging criteria mapping (local: `project-engineering/github-extras/08-judging-evidence.md`) |
 | [docs/code-graph/graph.html](docs/code-graph/graph.html) | Interactive codebase graph |
 | [Analyst UI](#analyst-ui-screenshots) | Demo screenshots — dashboard, investigation, correlation graph, inventory relationships |
+
+---
+
+## Architecture Diagram
+
+High-level integration and data flow for the **ThinkingSOC Agentic Ops Router** (Splunk **10+** → FastAPI → agent pipelines → PostgreSQL / Qdrant / Neo4j → analyst UI).
+
+```mermaid
+flowchart LR
+  subgraph splunk ["Splunk 10+"]
+    SavedSearch["Saved / Correlation Searches"]
+    Webhook["Alert Webhook"]
+    REST["REST API :8089"]
+    MCP["MCP Server\n(App 7931)"]
+    SAIA["AI Assistant\n/predict"]
+  end
+
+  subgraph entry ["Entry Points"]
+    SDK["Devtools SDK / CLI"]
+    ManualAPI["REST APIs\n/analysis · /agents · /observability"]
+  end
+
+  subgraph backend ["FastAPI Backend :9876"]
+    Ingest["Ingest API\nPOST /alerts/splunk-ingest"]
+    Enrich["Inventory Enrichment\nusers / assets / relationships"]
+    Router{"Agentic Ops Router\nLLM classifier (exclusive)"}
+
+    subgraph secPipeline ["Security Pipeline (LangGraph)"]
+      SecPrep["prepare → risk_engine → virustotal"]
+      Defender["Defender"]
+      Hunter["Hunter\n+ MCP hunt queries"]
+      Judge["Judge\n+ MCP SAIA verify"]
+      SecPost["framework_mapping\n+ investigation_questions"]
+      InvSPL["Investigation SPL\nSAIA /predict + MCP execute"]
+      SecPrep --> Defender --> Hunter --> Judge --> SecPost --> InvSPL
+    end
+
+    subgraph obsPipeline ["Observability Pipeline"]
+      Entity["Entity Resolution"]
+      Impact["Impact Context"]
+      Diagnoser["Diagnoser"]
+      Responder["Responder"]
+      OpsJudge["Ops Judge"]
+      Entity --> Impact --> Diagnoser --> Responder --> OpsJudge
+    end
+
+    Triage["Triage Priority\nscore + verdict + queue"]
+    AdminOrg["Admin Org GAP\n(Security post-step)"]
+    Correlation["Graph Correlation\n/api/v1/graph/*"]
+    SOCChat["SOC Chat\nRAG + Text-to-SQL"]
+    Dashboard["Dashboard\nKPIs + health + timeline"]
+    Timeline["Investigation Workflow\ntimeline + analyst actions"]
+    Integrations["Integration Settings\n+ post-install wizard"]
+    LLM["LLM Service\nLiteLLM wrapper"]
+  end
+
+  subgraph stores ["Data Stores"]
+    PG[("PostgreSQL\ntsoc_records + inventory\nchat + graph_findings")]
+    Qdrant[("Qdrant\nvector embeddings\nSOC RAG")]
+    Neo4j[("Neo4j\nalert graph\ncorrelation")]
+  end
+
+  subgraph frontend ["Next.js UI :3000"]
+    AnalystUI["Analyst UI\nDashboard · Triage · Analysis\nCorrelation · Chat\nInventory · Relationships\nSplunk Connection"]
+  end
+
+  subgraph external ["External"]
+    LLMProvider["LLM Provider\nOpenAI / Anthropic\nNVIDIA NIM / Qwen"]
+    VTApi["VirusTotal API v3"]
+  end
+
+  SavedSearch --> Webhook
+  Webhook -->|"sid + sample row"| Ingest
+  SDK --> ManualAPI
+  ManualAPI --> Router
+  ManualAPI --> Ingest
+
+  Ingest -->|"GET /jobs/{sid}/results"| REST
+  Ingest --> Enrich --> Router
+  Router -->|"optional MCP context"| MCP
+
+  Router -->|security| SecPrep
+  Router -->|observability| Entity
+  Router -->|manual_review| Triage
+
+  SecPrep --> VTApi
+  Hunter -->|"MCP hunt"| MCP
+  Judge -->|"MCP SAIA"| MCP
+  InvSPL -->|"/predict"| SAIA
+  InvSPL -->|"splunk_run_query"| MCP
+
+  InvSPL --> AdminOrg --> Triage
+  OpsJudge --> Triage
+
+  Triage --> PG
+  Triage --> Qdrant
+  Ingest --> Correlation
+  PG --> Correlation
+  Correlation --> Neo4j
+  Correlation --> PG
+
+  PG --> Dashboard
+  PG --> SOCChat
+  PG --> Timeline
+  Qdrant --> SOCChat
+
+  LLM --> LLMProvider
+  Router -.-> LLM
+  Defender -.-> LLM
+  Hunter -.-> LLM
+  Judge -.-> LLM
+  Diagnoser -.-> LLM
+  Responder -.-> LLM
+  OpsJudge -.-> LLM
+  SOCChat -.-> LLM
+
+  PG --> AnalystUI
+  Qdrant --> AnalystUI
+  Neo4j --> AnalystUI
+  Integrations --> AnalystUI
+```
+
+| Flow | Mechanism |
+|------|-----------|
+| **Alert handoff** | Splunk webhook → `POST /api/v1/alerts/splunk-ingest` (`sid` + sample row) |
+| **Full context** | Splunk REST v2 loads all job rows by `sid` |
+| **Routing** | LLM-only Agentic Ops Router → **Security** or **Observability** (exclusive); `manual_review` when unclear |
+| **Security analysis** | LangGraph: prepare → risk_engine → virustotal → Defender → Hunter → Judge → SPL |
+| **Observability analysis** | Entity → Impact → Diagnoser → Responder → Ops Judge |
+| **Splunk AI tools** | MCP (`splunk_run_query`, `saia_*`) + SAIA `/predict` for investigation SPL |
+| **Persistence** | PostgreSQL `tsoc_records` + Qdrant (RAG) + Neo4j (correlation graph) |
+
+**Deeper views:** [architecture_diagram.md](architecture_diagram.md) (data-flow table) · [docs/architecture-views.md](docs/architecture-views.md) (8 multi-perspective diagrams) · [docs/03-architecture.md](docs/03-architecture.md) (runtime layers).
+
+### Architecture highlights
+
+- **Full-context analysis:** alert `sid` is expanded to full Splunk job rows (not only the first webhook row).
+- **Context-aware decisions:** inventory enrichment (`users/assets/relationships`) is applied before verdicting.
+- **Exclusive routing:** each alert goes to **Security** or **Observability** (or `manual_review` when unclear) — never both pipelines at once.
+- **Autonomous Splunk reasoning:** MCP + SAIA `/predict` are used for evidence gathering and investigation SPL.
+- **Actionable outputs:** final verdict, triage priority, investigation SPL, and analyst-ready evidence.
+- **Operational resilience:** fallback paths (including REST execution fallback) prevent single-point AI/tool failures.
 
 ---
 
@@ -62,62 +204,6 @@ ThinkingSOC uses AI **inside structured pipelines** (LangGraph + LiteLLM), with 
 - **Splunk MCP + SAIA** (optional) show Splunk-native AI **combined** with your own agent pipelines not a replacement for Splunk, but an orchestration story judges can run end-to-end.
 
 Deeper problem/solution framing: [docs/01-system-overview.md](docs/01-system-overview.md) · Agent design: [docs/04-agents-and-pipelines.md](docs/04-agents-and-pipelines.md).
-
----
-
-## Quick Overall View
-
-This is the high-level at-a-glance diagram for the system.  
-For the complete multi-view architecture (all detailed perspectives), see [docs/architecture-views.md](docs/architecture-views.md).
-
-### Core architecture strengths
-
-- **Full-context analysis:** alert `sid` is expanded to full Splunk job rows (not only the first webhook row).
-- **Context-aware decisions:** inventory enrichment (`users/assets/relationships`) is applied before verdicting.
-- **Exclusive routing:** each alert goes to **Security** or **Observability** (or `manual_review` when unclear) — never both pipelines at once.
-- **Autonomous Splunk reasoning:** MCP + SAIA `/predict` are used for evidence gathering and investigation SPL.
-- **Actionable outputs:** final verdict, triage priority, investigation SPL, and analyst-ready evidence.
-- **Operational resilience:** fallback paths (including REST execution fallback) prevent single-point AI/tool failures.
-
-```mermaid
-flowchart LR
-  Splunk["Splunk 10+ Alerts"]
-  Webhook["Webhook Ingest (sid)"]
-  Backend["FastAPI Backend"]
-  Enrich["Inventory Enrichment (users/assets/relationships)"]
-  Router{"Agentic Ops Router"}
-  Security["Security Pipeline (Defender/Hunter/Judge)"]
-  Observability["Observability Pipeline (Diagnoser/Responder/OpsJudge)"]
-  MCP["Splunk MCP + SAIA /predict"]
-  Triage["Triage + Admin Org GAP"]
-  Postgres[("PostgreSQL")]
-  Qdrant[("Qdrant")]
-  Neo4j[("Neo4j")]
-  UI["Analyst UI + SOC Chat"]
-
-  Splunk --> Webhook --> Backend --> Enrich --> Router
-  Router -->|security| Security
-  Router -->|observability| Observability
-  Router -->|manual_review| Triage
-
-  Security --> MCP
-  Observability --> Triage
-  MCP --> Security
-  Security --> Triage --> Postgres
-  Observability --> Postgres
-
-  Postgres --> UI
-  Postgres --> Qdrant
-  Postgres --> Neo4j
-  Qdrant --> UI
-  Neo4j --> UI
-```
-
-### Quick deliverables and references
-
-- **System design clarity:** one-page overview here + deep technical views in [docs/architecture-views.md](docs/architecture-views.md).
-- **Traceable architecture:** clear data path from Splunk alert to stored verdict and analyst UI.
-- **Core capabilities:** MCP integration, triage scoring, correlation graph, and SOC chat (RAG + SQL).
 
 ---
 

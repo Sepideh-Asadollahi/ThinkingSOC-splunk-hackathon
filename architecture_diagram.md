@@ -5,10 +5,16 @@ High-level integration and data flow for the **ThinkingSOC Agentic Ops Router**.
 ```mermaid
 flowchart LR
   subgraph splunk ["Splunk 10+"]
+    SavedSearch["Saved / Correlation Searches"]
     Webhook["Alert Webhook"]
     REST["REST API :8089"]
     MCP["MCP Server\n(App 7931)"]
     SAIA["AI Assistant\n/predict"]
+  end
+
+  subgraph entry ["Entry Points"]
+    SDK["Devtools SDK / CLI"]
+    ManualAPI["REST APIs\n/analysis · /agents · /observability"]
   end
 
   subgraph backend ["FastAPI Backend :9876"]
@@ -16,12 +22,14 @@ flowchart LR
     Enrich["Inventory Enrichment\nusers / assets / relationships"]
     Router{"Agentic Ops Router\nLLM classifier (exclusive)"}
 
-    subgraph secPipeline ["Security Pipeline"]
+    subgraph secPipeline ["Security Pipeline (LangGraph)"]
+      SecPrep["prepare → risk_engine → virustotal"]
       Defender["Defender"]
       Hunter["Hunter\n+ MCP hunt queries"]
       Judge["Judge\n+ MCP SAIA verify"]
-      VT["VirusTotal IOC\nenrichment"]
+      SecPost["framework_mapping\n+ investigation_questions"]
       InvSPL["Investigation SPL\nSAIA /predict + MCP execute"]
+      SecPrep --> Defender --> Hunter --> Judge --> SecPost --> InvSPL
     end
 
     subgraph obsPipeline ["Observability Pipeline"]
@@ -30,24 +38,27 @@ flowchart LR
       Diagnoser["Diagnoser"]
       Responder["Responder"]
       OpsJudge["Ops Judge"]
+      Entity --> Impact --> Diagnoser --> Responder --> OpsJudge
     end
 
     Triage["Triage Priority\nscore + verdict + queue"]
-    AdminOrg["Admin Org GAP"]
+    AdminOrg["Admin Org GAP\n(Security post-step)"]
+    Correlation["Graph Correlation\n/api/v1/graph/*"]
     SOCChat["SOC Chat\nRAG + Text-to-SQL"]
     Dashboard["Dashboard\nKPIs + health + timeline"]
     Timeline["Investigation Workflow\ntimeline + analyst actions"]
+    Integrations["Integration Settings\n+ post-install wizard"]
     LLM["LLM Service\nLiteLLM wrapper"]
   end
 
   subgraph stores ["Data Stores"]
-    PG[("PostgreSQL\ntsoc_records\ninventory\nchat\nfindings")]
+    PG[("PostgreSQL\ntsoc_records + inventory\nchat + graph_findings")]
     Qdrant[("Qdrant\nvector embeddings\nSOC RAG")]
     Neo4j[("Neo4j\nalert graph\ncorrelation")]
   end
 
   subgraph frontend ["Next.js UI :3000"]
-    AnalystUI["Analyst Dashboard\nTriage · Analysis\nCorrelation · Chat\nInventory"]
+    AnalystUI["Analyst UI\nDashboard · Triage · Analysis\nCorrelation · Chat\nInventory · Relationships\nSplunk Connection"]
   end
 
   subgraph external ["External"]
@@ -55,39 +66,55 @@ flowchart LR
     VTApi["VirusTotal API v3"]
   end
 
+  SavedSearch --> Webhook
   Webhook -->|"sid + sample row"| Ingest
+  SDK --> ManualAPI
+  ManualAPI --> Router
+  ManualAPI --> Ingest
+
   Ingest -->|"GET /jobs/{sid}/results"| REST
   Ingest --> Enrich --> Router
+  Router -->|"optional MCP context"| MCP
 
-  Router -->|security| Defender
+  Router -->|security| SecPrep
   Router -->|observability| Entity
   Router -->|manual_review| Triage
 
-  Defender --> Hunter --> Judge --> Triage
-  VT --> Hunter
+  SecPrep --> VTApi
   Hunter -->|"MCP hunt"| MCP
   Judge -->|"MCP SAIA"| MCP
   InvSPL -->|"/predict"| SAIA
   InvSPL -->|"splunk_run_query"| MCP
 
-  Entity --> Impact --> Diagnoser --> Responder --> OpsJudge --> Triage
+  InvSPL --> AdminOrg --> Triage
+  OpsJudge --> Triage
 
-  Triage --> AdminOrg
   Triage --> PG
   Triage --> Qdrant
+  Ingest --> Correlation
+  PG --> Correlation
+  Correlation --> Neo4j
+  Correlation --> PG
 
   PG --> Dashboard
   PG --> SOCChat
   PG --> Timeline
-  PG --> Neo4j
   Qdrant --> SOCChat
 
   LLM --> LLMProvider
-  VT --> VTApi
+  Router -.-> LLM
+  Defender -.-> LLM
+  Hunter -.-> LLM
+  Judge -.-> LLM
+  Diagnoser -.-> LLM
+  Responder -.-> LLM
+  OpsJudge -.-> LLM
+  SOCChat -.-> LLM
 
   PG --> AnalystUI
   Qdrant --> AnalystUI
   Neo4j --> AnalystUI
+  Integrations --> AnalystUI
 ```
 
 ## Data flow summary
@@ -96,20 +123,24 @@ flowchart LR
 |------|-----------|
 | **Alert handoff** | Splunk webhook → `POST /api/v1/alerts/splunk-ingest` (sid + sample row) |
 | **Full job rows** | Splunk REST `GET /services/search/v2/jobs/{sid}/results` |
+| **Multi-row ingest** | Per HTTP row analysis with storage `sid` suffix (`…-1`, `…-2`) when `TSOC_INGEST_AUTO_ANALYZE=true` |
 | **Inventory enrichment** | PostgreSQL `tsoc_users` / `tsoc_assets` / `tsoc_relationships` → identity + risk context |
 | **Classification** | LLM-only router (full alert payload + optional MCP metadata) → **Security** or **Observability** (exclusive); `manual_review` when LLM unavailable |
-| **Security pipeline** | LangGraph: Defender → Hunter → Judge (structured JSON) |
-| **Observability pipeline** | Entity → Impact → Diagnoser → Responder → Ops Judge |
-| **VirusTotal** | IOC extraction → VT API v3 lookups → compact threat intel for analysis |
+| **Security pipeline** | LangGraph: prepare → risk_engine → virustotal → Defender → Hunter → Judge → framework_mapping → investigation_questions → root_cause_spl |
+| **Observability pipeline** | Entity resolution → Impact context → Diagnoser → Responder → Ops Judge |
+| **VirusTotal** | IOC extraction in `virustotal` graph node → VT API v3 → compact threat intel for LLM context |
 | **MCP integration** | JSON-RPC at `/services/mcp` — `splunk_get_metadata`, `splunk_run_query`, `saia_*` tools |
 | **Hunter / Judge evidence** | MCP live hunt queries + SAIA ask before LLM reasoning |
 | **Investigation SPL** | SAIA REST `/predict` → LLM review → MCP execute (All Time) → refine loop |
+| **Admin org GAP** | Post-Security analysis: one organizational question when inventory/escalation context is missing |
 | **Triage** | Priority scoring (critical/high/medium/low) + review verdict + analyst queue |
-| **Correlation** | Neo4j alert graph — entity co-occurrence, campaign detection, Smart Attack Discovery |
+| **Correlation** | Neo4j alert graph + `graph_findings` in PostgreSQL — entity co-occurrence, campaign detection, Smart Attack Discovery |
 | **SOC Chat** | RAG (Qdrant + FastEmbed) + Text-to-SQL (PostgreSQL) + session history |
 | **Dashboard** | KPIs, 14-day activity timeline, triage charts, health score, system resources |
 | **Investigation workflow** | Timeline reconstruction + analyst acknowledge / escalate (human-in-the-loop) |
-| **Storage** | PostgreSQL `tsoc_records` JSONB — 11 record types for full audit trail |
+| **Integration wizard** | Post-install Splunk/LiteLLM/MCP setup → `backend/.env` + Splunk Connection UI |
+| **Devtools SDK** | Python SDK / CLI — same REST APIs as UI (`/analysis/route`, `/agents/triage`, etc.) |
+| **Storage** | PostgreSQL `tsoc_records` JSONB — typed audit trail (`splunk_ingest`, `soc_analysis`, `observability_analysis`, `agentic_ops_analysis`, `soc_investigation_*`, `investigation_analyst_action`, …) |
 | **LLM service** | LiteLLM wrapper — multi-provider, error classification, thinking extraction, context budget |
 
 ## Detailed documentation
@@ -132,4 +163,6 @@ flowchart LR
 | 18 | [LLM Service](docs/18-llm-service-layer.md) | LiteLLM, errors, thinking, budget |
 | 19 | [Storage](docs/19-storage-persistence.md) | PostgreSQL persistence layer |
 | 20 | [Investigation](docs/20-investigation-workflow.md) | Timeline and analyst actions |
+| 22 | [Developer SDK](docs/22-developer-sdk.md) | Python SDK, CLI, evaluation runner |
+| 23 | [Integration wizard](docs/23-post-install-integration-wizard.md) | Post-install Splunk/LiteLLM/MCP setup |
 | — | [Architecture Views](docs/architecture-views.md) | 8 multi-perspective Mermaid diagrams |

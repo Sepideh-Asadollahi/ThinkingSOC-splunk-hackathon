@@ -88,6 +88,8 @@ Judge is always the **final decision layer** for Security track output. Admin or
 
 | Stage | Purpose |
 |-------|---------|
+| **Entity resolution** | Map host/service to inventory asset |
+| **Impact context** | Severity + asset criticality + metric thresholds → impact score |
 | **Diagnoser** | Root-cause hypotheses |
 | **Responder** | Operational response plan |
 | **Ops Judge** | Final operational verdict and recommended next step |

@@ -109,10 +109,12 @@ flowchart TD
   end
 
   subgraph obsPipeline ["Observability Pipeline"]
+    ObsEntity["Entity Resolution: host/service → asset"]
+    ObsImpact["Impact Context: severity + criticality score"]
     Diagnoser["Diagnoser: Root Cause Hypotheses"]
     Responder["Responder: Mitigation Steps"]
     OpsJudge["Ops Judge: Final Operational Verdict"]
-    Diagnoser --> Responder --> OpsJudge
+    ObsEntity --> ObsImpact --> Diagnoser --> Responder --> OpsJudge
   end
 
   subgraph postAnalysis ["Post-Analysis"]
@@ -376,7 +378,7 @@ sequenceDiagram
   end
 
   Note over Splunk,Backend: Phase 2 - Analysis Pipeline
-  Backend->>Backend: Classify (rule + LLM hybrid)
+  Backend->>Backend: Classify (LLM-only router)
   alt low confidence
     Backend->>Analyst: manual_review + needs_human_routing
   end
@@ -465,8 +467,6 @@ flowchart TD
 
   F -->|"Security"| G
   F -->|"Observability"| O
-  F -->|"Both"| G
-  F -->|"Both"| O
   F -->|"Unknown/manual_review"| R1 --> R2 --> S
 
   G --> H --> H1 --> I --> J --> K --> K1 --> L --> L1 --> M --> N --> N1 --> N2 --> N3 --> S
@@ -525,7 +525,7 @@ flowchart LR
   end
 
   subgraph observabilityPlane ["Observability Analysis Plane"]
-    ObsPipeline["Diagnoser -> Responder -> Ops Judge"]
+    ObsPipeline["Entity -> Impact -> Diagnoser -> Responder -> Ops Judge"]
   end
 
   subgraph aiPlane ["AI and Tooling Plane"]
