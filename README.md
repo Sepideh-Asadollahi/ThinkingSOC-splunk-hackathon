@@ -10,7 +10,7 @@ Splunk **10+** alert handoff → external FastAPI backend → identity resolutio
 | [Developer SDK & CLI](docs/22-developer-sdk.md) | Typed Python SDK, CLI, evaluation runner |
 | [Submission & evidence pack](submission/README.md) | Devpost evidence scripts; judging criteria mapping (local: `project-engineering/github-extras/08-judging-evidence.md`) |
 | [docs/code-graph/graph.html](docs/code-graph/graph.html) | Interactive codebase graph |
-| [Analyst UI](#analyst-ui-screenshots) | Demo screenshots — dashboard, investigation, correlation graph |
+| [Analyst UI](#analyst-ui-screenshots) | Demo screenshots — dashboard, investigation, correlation graph, inventory relationships |
 
 ---
 
@@ -142,6 +142,12 @@ Per-alert investigation view: triage verdict, Defender/Hunter/Judge timeline, an
 Cross-alert kill-chain storyline with MITRE ATT&CK mapping — phishing → lateral movement (Neo4j-backed graph explorer).
 
 ![Correlation graph explorer — phishing-driven RDP and PsExec lateral movement](docs/images/correlation-graph-explorer.png)
+
+### Inventory relationships
+
+User-to-asset relationship map for enrichment — linked inventory attributes and alert field matching when alerts match only one side of a link.
+
+![Inventory relationships — user–asset links with linked attributes and enrichment keys](docs/images/inventory-relationships.png)
 
 ---
 
