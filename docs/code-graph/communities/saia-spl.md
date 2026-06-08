@@ -24,7 +24,6 @@ Community of 9 nodes
 
 ## Execution Flows
 
-- **run_buffered_job_triage** (criticality: 0.78, depth: 10)
 - **assistant_spl_suggest** (criticality: 0.77, depth: 9)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **agent_triage_endpoint** (criticality: 0.76, depth: 8)

@@ -68,7 +68,6 @@ Community of 72 nodes
 ## Execution Flows
 
 - **admin_org_gap_suggest** (criticality: 0.80, depth: 5)
-- **run_buffered_job_triage** (criticality: 0.78, depth: 10)
 - **assistant_spl_suggest** (criticality: 0.77, depth: 9)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
@@ -77,7 +76,8 @@ Community of 72 nodes
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
 - **work** (criticality: 0.74, depth: 6)
 - **classify_alert_endpoint** (criticality: 0.73, depth: 6)
-- *... and 9 more flows.*
+- **review_spl_from_mcp_with_llm** (criticality: 0.73, depth: 5)
+- *... and 8 more flows.*
 
 ## Dependencies
 

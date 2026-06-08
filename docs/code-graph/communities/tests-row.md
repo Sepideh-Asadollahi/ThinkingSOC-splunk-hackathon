@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 361 nodes
+Community of 300 nodes
 
-- **Size**: 361 nodes
-- **Cohesion**: 0.2835
+- **Size**: 300 nodes
+- **Cohesion**: 0.2853
 - **Dominant Language**: python
 
 ## Members
@@ -42,6 +42,7 @@ Community of 361 nodes
 | run_routed_analysis_endpoint | Function | backend/api/routes/analysis.py | 167-344 |
 | run_soc_analysis_batch_by_sid_endpoint | Function | backend/api/routes/analysis.py | 352-427 |
 | assistant_spl_suggest | Function | backend/api/routes/assistant.py | 23-52 |
+| dashboard_overview | Function | backend/api/routes/dashboard.py | 21-51 |
 | splunk_ingest | Function | backend/api/routes/ingest.py | 42-283 |
 | splunk_ingest_debug | Function | backend/api/routes/ingest.py | 287-329 |
 | list_settings_endpoint | Function | backend/api/routes/integrations.py | 22-25 |
@@ -61,55 +62,54 @@ Community of 361 nodes
 | update_asset_endpoint | Function | backend/api/routes/inventory.py | 154-163 |
 | delete_asset_endpoint | Function | backend/api/routes/inventory.py | 167-175 |
 | list_relationships_endpoint | Function | backend/api/routes/inventory.py | 182-186 |
-| create_relationship_endpoint | Function | backend/api/routes/inventory.py | 190-198 |
 
-*... and 311 more members.*
+*... and 250 more members.*
 
 ## Execution Flows
 
 - **admin_org_gap_suggest** (criticality: 0.80, depth: 5)
-- **run_buffered_job_triage** (criticality: 0.78, depth: 10)
 - **assistant_spl_suggest** (criticality: 0.77, depth: 9)
-- **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
 - **agent_triage_endpoint** (criticality: 0.76, depth: 8)
 - **soc_chat** (criticality: 0.75, depth: 5)
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
 - **dashboard_overview** (criticality: 0.74, depth: 8)
 - **splunk_ingest** (criticality: 0.74, depth: 3)
-- *... and 55 more flows.*
+- **classify_alert_endpoint** (criticality: 0.73, depth: 6)
+- **list_triage_queue** (criticality: 0.73, depth: 6)
+- *... and 31 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (240 edge(s))
-- `len` (112 edge(s))
-- `str` (100 edge(s))
-- `isinstance` (95 edge(s))
-- `info` (83 edge(s))
-- `HTTPException` (74 edge(s))
-- `format` (74 edge(s))
-- `append` (72 edge(s))
+- `get` (207 edge(s))
+- `len` (106 edge(s))
+- `str` (88 edge(s))
+- `isinstance` (85 edge(s))
+- `info` (84 edge(s))
+- `HTTPException` (73 edge(s))
 - `warning` (62 edge(s))
-- `strip` (50 edge(s))
+- `patch` (46 edge(s))
 - `Depends` (45 edge(s))
-- `patch` (44 edge(s))
-- `perf_counter` (43 edge(s))
-- `int` (26 edge(s))
-- `list` (24 edge(s))
+- `perf_counter` (45 edge(s))
+- `format` (42 edge(s))
+- `strip` (39 edge(s))
+- `append` (35 edge(s))
+- `int` (23 edge(s))
+- `list` (23 edge(s))
 
 ### Incoming
 
-- `patch` (35 edge(s))
+- `patch` (37 edge(s))
 - `backend/api/routes/inventory.py` (19 edge(s))
-- `len` (18 edge(s))
-- `get` (13 edge(s))
+- `len` (16 edge(s))
 - `backend/tests/test_alert_classifier_llm.py` (13 edge(s))
 - `backend/api/routes/analysis.py` (12 edge(s))
 - `backend/tests/test_splunk_json_store.py` (12 edge(s))
 - `backend/services/alert/alert_classifier_llm.py` (10 edge(s))
 - `backend/services/alert/ingest_request_trace.py` (10 edge(s))
+- `get` (10 edge(s))
 - `backend/tests/test_ingest_request_trace.py` (10 edge(s))
 - `backend/tests/test_agent_triage_all_rows.py` (9 edge(s))
 - `run` (9 edge(s))

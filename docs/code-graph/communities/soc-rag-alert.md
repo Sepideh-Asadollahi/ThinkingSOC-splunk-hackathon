@@ -23,17 +23,16 @@ Community of 14 nodes
 | compact_alert_document | Function | backend/services/soc_rag/compact_alert.py | 181-224 |
 | test_build_alert_fields_includes_search_name_and_all_result_keys | Test | backend/tests/test_alert_fields.py | 6-28 |
 | test_build_alert_fields_merges_normalized_and_row | Test | backend/tests/test_alert_fields.py | 31-39 |
-| test_build_alert_fields_uses_row_index | Test | backend/tests/test_analysis_audit.py | 37-46 |
+| test_build_alert_fields_uses_row_index | Test | backend/tests/test_analysis_audit.py | 60-69 |
 | test_extract_essential_strips_raw_and_secrets | Test | backend/tests/test_soc_rag_compact.py | 6-17 |
 | test_compact_alert_document_shape | Test | backend/tests/test_soc_rag_compact.py | 20-31 |
 
 ## Execution Flows
 
-- **assistant_spl_suggest** (criticality: 0.78, depth: 9)
+- **assistant_spl_suggest** (criticality: 0.77, depth: 9)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
-- **agent_triage_endpoint** (criticality: 0.75, depth: 8)
-- **run_post_ingest** (criticality: 0.75, depth: 8)
+- **agent_triage_endpoint** (criticality: 0.76, depth: 8)
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
 - **review_spl_from_mcp_with_llm** (criticality: 0.73, depth: 5)
 - **work** (criticality: 0.72, depth: 5)

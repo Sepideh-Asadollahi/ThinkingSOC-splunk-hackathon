@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 262 nodes
+Community of 268 nodes
 
-- **Size**: 262 nodes
-- **Cohesion**: 0.2909
+- **Size**: 268 nodes
+- **Cohesion**: 0.2855
 - **Dominant Language**: python
 
 ## Members
@@ -13,6 +13,7 @@ Community of 262 nodes
 | Name | Kind | File | Lines |
 |------|------|------|-------|
 | mcp_status_endpoint | Function | backend/api/routes/mcp.py | 28-32 |
+| mcp_tool_call_endpoint | Function | backend/api/routes/mcp.py | 89-109 |
 | mcp_configured | Function | backend/config.py | 221-228 |
 | splunk_mcp_url_for | Function | backend/config.py | 231-237 |
 | investigation_questions_max | Function | backend/config.py | 261-263 |
@@ -61,15 +62,13 @@ Community of 262 nodes
 | _execution_refine_user_message | Function | backend/services/investigation/spl_mcp_review.py | 262-314 |
 | _splunk_catalog_block | Function | backend/services/investigation/spl_mcp_review.py | 317-354 |
 | refine_spl_with_llm_on_error | Function | backend/services/investigation/spl_mcp_review.py | 357-441 |
-| refine_root_cause_spl_until_valid | Function | backend/services/investigation/spl_mcp_review.py | 444-503 |
 
-*... and 212 more members.*
+*... and 218 more members.*
 
 ## Execution Flows
 
 - **execute_investigation_spl** (criticality: 0.84, depth: 5)
 - **admin_org_gap_suggest** (criticality: 0.80, depth: 5)
-- **run_buffered_job_triage** (criticality: 0.78, depth: 10)
 - **assistant_spl_suggest** (criticality: 0.77, depth: 9)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
@@ -77,26 +76,27 @@ Community of 262 nodes
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
 - **dashboard_overview** (criticality: 0.74, depth: 8)
 - **work** (criticality: 0.74, depth: 6)
-- *... and 24 more flows.*
+- **review_spl_from_mcp_with_llm** (criticality: 0.73, depth: 5)
+- *... and 23 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (126 edge(s))
-- `append` (102 edge(s))
-- `strip` (90 edge(s))
-- `isinstance` (85 edge(s))
-- `str` (80 edge(s))
-- `format` (75 edge(s))
+- `get` (130 edge(s))
+- `append` (116 edge(s))
+- `strip` (92 edge(s))
+- `str` (89 edge(s))
+- `isinstance` (89 edge(s))
+- `format` (82 edge(s))
 - `len` (73 edge(s))
 - `getattr` (37 edge(s))
-- `info` (33 edge(s))
-- `lower` (27 edge(s))
+- `info` (34 edge(s))
+- `lower` (28 edge(s))
 - `bool` (23 edge(s))
+- `join` (23 edge(s))
 - `model_copy` (23 edge(s))
 - `patch` (23 edge(s))
-- `join` (22 edge(s))
 - `list` (22 edge(s))
 
 ### Incoming

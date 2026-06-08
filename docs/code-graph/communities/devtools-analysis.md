@@ -2,17 +2,16 @@
 
 ## Overview
 
-Community of 88 nodes
+Community of 67 nodes
 
-- **Size**: 88 nodes
-- **Cohesion**: 0.3808
+- **Size**: 67 nodes
+- **Cohesion**: 0.5019
 - **Dominant Language**: python
 
 ## Members
 
 | Name | Kind | File | Lines |
 |------|------|------|-------|
-| dashboard_overview | Function | backend/api/routes/dashboard.py | 21-51 |
 | AsyncTsocSdkClient | Class | backend/devtools/async_client.py | 37-283 |
 | __init__ | Function | backend/devtools/async_client.py | 38-51 |
 | _headers | Function | backend/devtools/async_client.py | 53-56 |
@@ -62,57 +61,56 @@ Community of 88 nodes
 | run_analysis | Function | backend/devtools/client.py | 182-187 |
 | run_analysis_by_sid | Function | backend/devtools/client.py | 189-194 |
 | search_events | Function | backend/devtools/client.py | 198-209 |
+| get_event | Function | backend/devtools/client.py | 211-213 |
 
-*... and 38 more members.*
+*... and 17 more members.*
 
 ## Execution Flows
 
-- **splunk_ingest** (criticality: 0.76, depth: 9)
-- **agent_triage_endpoint** (criticality: 0.75, depth: 8)
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
-- **dashboard_overview** (criticality: 0.74, depth: 8)
+- **mcp_tool_call_endpoint** (criticality: 0.71, depth: 2)
 - **run_soc_analysis_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
 - **run_observability_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
-- **mcp_tool_call_endpoint** (criticality: 0.71, depth: 2)
 - **run_observability_analysis** (criticality: 0.71, depth: 5)
 - **mcp_spl_generate_endpoint** (criticality: 0.65, depth: 2)
 - **dashboard_overview** (criticality: 0.38, depth: 3)
-- *... and 39 more flows.*
+- **dashboard_overview** (criticality: 0.38, depth: 3)
+- **classify_alert** (criticality: 0.37, depth: 2)
+- **route_analysis** (criticality: 0.37, depth: 2)
+- *... and 36 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `format` (21 edge(s))
-- `BaseModel` (16 edge(s))
-- `get` (14 edge(s))
-- `int` (14 edge(s))
-- `json` (9 edge(s))
-- `patch` (9 edge(s))
+- `format` (20 edge(s))
+- `BaseModel` (9 edge(s))
 - `raise_for_status` (8 edge(s))
+- `json` (8 edge(s))
 - `TsocTimeoutError` (8 edge(s))
-- `model_validate` (7 edge(s))
-- `acquire` (7 edge(s))
-- `fetchval` (5 edge(s))
-- `perf_counter` (4 edge(s))
+- `get` (6 edge(s))
 - `max` (4 edge(s))
+- `model_validate` (4 edge(s))
 - `AsyncClient` (4 edge(s))
 - `post` (4 edge(s))
+- `TsocApiError` (4 edge(s))
+- `Client` (4 edge(s))
+- `rstrip` (2 edge(s))
+- `int` (2 edge(s))
+- `float` (2 edge(s))
 
 ### Incoming
 
-- `patch` (9 edge(s))
-- `backend/services/splunk_json_store/stats.py` (7 edge(s))
-- `backend/models/dashboard.py` (6 edge(s))
-- `backend/services/platform/dashboard_overview.py` (3 edge(s))
 - `backend/api/routes/mcp.py::mcp_spl_generate_endpoint` (2 edge(s))
 - `backend/models/mcp.py` (2 edge(s))
 - `backend/models/observability.py` (2 edge(s))
-- `perf_counter` (2 edge(s))
-- `backend/api/routes/dashboard.py` (1 edge(s))
 - `backend/devtools/async_client.py` (1 edge(s))
 - `backend/devtools/client.py` (1 edge(s))
 - `backend/api/routes/analysis.py::run_routed_analysis_endpoint` (1 edge(s))
 - `backend/models/agentic_ops.py` (1 edge(s))
-- `backend/models/agents.py` (1 edge(s))
-- `backend/services/alert/agent_triage.py::run_agent_triage` (1 edge(s))
+- `backend/models/analysis.py` (1 edge(s))
+- `backend/services/soc_analysis/soc_analysis_batch.py::run_analysis_batch_by_sid` (1 edge(s))
+- `backend/api/routes/mcp.py::mcp_tool_call_endpoint` (1 edge(s))
+- `backend/services/observability_analysis/runner.py::run_observability_analysis` (1 edge(s))
+- `backend/services/observability_analysis/observability_analysis_batch.py::run_observability_batch_by_sid` (1 edge(s))
+- `backend/services/soc_rag/models.py` (1 edge(s))
