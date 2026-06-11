@@ -130,7 +130,7 @@ flowchart TD
   end
 
   Alert --> Webhook --> RowBuffer
-  RowBuffer -->|yes (default)| Buffered202 --> AutoAnalyze
+  RowBuffer -->|"yes (default)"| Buffered202 --> AutoAnalyze
   RowBuffer -->|no| AutoAnalyze
   AutoAnalyze -->|yes/background| Normalize
   AutoAnalyze -->|no/direct| Normalize
