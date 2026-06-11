@@ -44,7 +44,7 @@ flowchart TD
   end
   subgraph ui [UI / API]
     Q[GET /triage/queue]
-    P[/triage page + Analysis detail Triage section]
+    P["/triage page + Analysis detail Triage section"]
   end
   WH --> SOC
   WH --> OBS
