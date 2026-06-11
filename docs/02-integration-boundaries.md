@@ -4,25 +4,32 @@ Structural view of how **Splunk** and the **external application** connect: tran
 
 ## Boundary diagram
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ Splunk 10+                                                       │
-│  • Scheduled / correlation alerts                                  │
-│  • Built-in Webhook Alert Action  ──HTTP POST JSON──►             │
-│  • REST management API :8089      ◄──GET job results──           │
-│  • MCP Server (app 7931, opt.)    ◄──JSON-RPC /services/mcp──    │
-│  • ThinkingSOC_Hackathon_Splunk_App: index + webhook (no inventory CSV)  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│ External application (backend/)                                  │
-│  • Ingest API          normalize + enrich                        │
-│  • Inventory enrich    PostgreSQL users / assets / relationships │
-│  • Agentic router      Security **or** Observability (exclusive) │
-│  • Pipelines           LangGraph + LiteLLM (+ MCP assist)        │
-│  • Storage             PostgreSQL tsoc_records + inventory       │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  subgraph splunk ["Splunk 10+"]
+    direction TB
+    SS["Scheduled and correlation alerts"]
+    WA["Webhook alert action<br/>ThinkingSOC_Hackathon_Splunk_App"]
+    SR["REST management API<br/>port 8089"]
+    SM["MCP Server optional<br/>port 7931 JSON-RPC"]
+    PKG["Demo index metadata<br/>no inventory CSV sync"]
+    SS --> WA
+  end
+
+  subgraph ext ["External application — backend"]
+    direction TB
+    IN["Ingest API<br/>normalize, buffer, enrich trigger"]
+    IV["Inventory enrich<br/>PostgreSQL users, assets, relationships"]
+    RT["Agentic Ops Router<br/>Security or Observability exclusive"]
+    PL["LangGraph pipelines<br/>LiteLLM plus optional MCP"]
+    ST[("PostgreSQL<br/>tsoc_records and inventory")]
+    IN --> IV --> RT --> PL --> ST
+  end
+
+  WA -->|"HTTP POST JSON<br/>optional Bearer token"| IN
+  IN <-->|"GET search job results"| SR
+  PL <-->|"metadata, queries, SAIA"| SM
+  PKG -.->|"ships with"| WA
 ```
 
 ## Splunk → application (alert handoff)
