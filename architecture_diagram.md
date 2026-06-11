@@ -14,12 +14,12 @@ flowchart LR
 
   subgraph entry ["Entry Points"]
     SDK["Devtools SDK / CLI"]
-    ManualAPI["REST APIs\n/analysis · /agents · /observability"]
+    ManualAPI["REST APIs\n/classification · /analysis · /agents · /observability"]
   end
 
   subgraph backend ["FastAPI Backend :9876"]
     Ingest["Ingest API\nPOST /alerts/splunk-ingest"]
-    Enrich["Inventory Enrichment\nusers / assets / relationships"]
+    RESTEnrich["REST Enrichment\nall job rows by sid"]
     Router{"Agentic Ops Router\nLLM classifier (exclusive)"}
 
     subgraph secPipeline ["Security Pipeline (LangGraph)"]
@@ -33,12 +33,13 @@ flowchart LR
     end
 
     subgraph obsPipeline ["Observability Pipeline"]
+      ObsEnrich["enrich_from_inventory"]
       Entity["Entity Resolution"]
       Impact["Impact Context"]
       Diagnoser["Diagnoser"]
       Responder["Responder"]
       OpsJudge["Ops Judge"]
-      Entity --> Impact --> Diagnoser --> Responder --> OpsJudge
+      ObsEnrich --> Entity --> Impact --> Diagnoser --> Responder --> OpsJudge
     end
 
     Triage["Triage Priority\nscore + verdict + queue"]
@@ -73,11 +74,12 @@ flowchart LR
   ManualAPI --> Ingest
 
   Ingest -->|"GET /jobs/{sid}/results"| REST
-  Ingest --> Enrich --> Router
+  REST --> RESTEnrich
+  Ingest --> RESTEnrich --> Router
   Router -->|"optional MCP context"| MCP
 
   Router -->|security| SecPrep
-  Router -->|observability| Entity
+  Router -->|observability| ObsEnrich
   Router -->|manual_review| Triage
 
   SecPrep --> VTApi
@@ -124,10 +126,10 @@ flowchart LR
 | **Alert handoff** | Splunk webhook → `POST /api/v1/alerts/splunk-ingest` (sid + sample row) |
 | **Full job rows** | Splunk REST `GET /services/search/v2/jobs/{sid}/results` |
 | **Multi-row ingest** | Per HTTP row analysis with storage `sid` suffix (`…-1`, `…-2`) when `TSOC_INGEST_AUTO_ANALYZE=true` |
-| **Inventory enrichment** | PostgreSQL `tsoc_users` / `tsoc_assets` / `tsoc_relationships` → identity + risk context |
 | **Classification** | LLM-only router (full alert payload + optional MCP metadata) → **Security** or **Observability** (exclusive); `manual_review` when LLM unavailable |
+| **Inventory enrichment** | After routing: PostgreSQL `tsoc_users` / `tsoc_assets` / `tsoc_relationships` → `enrich_from_inventory` + risk context inside the chosen pipeline |
 | **Security pipeline** | LangGraph: prepare → risk_engine → virustotal → Defender → Hunter → Judge → framework_mapping → investigation_questions → root_cause_spl |
-| **Observability pipeline** | Entity resolution → Impact context → Diagnoser → Responder → Ops Judge |
+| **Observability pipeline** | enrich_from_inventory → Entity resolution → Impact context → Diagnoser → Responder → Ops Judge |
 | **VirusTotal** | IOC extraction in `virustotal` graph node → VT API v3 → compact threat intel for LLM context |
 | **MCP integration** | JSON-RPC at `/services/mcp` — `splunk_get_metadata`, `splunk_run_query`, `saia_*` tools |
 | **Hunter / Judge evidence** | MCP live hunt queries + SAIA ask before LLM reasoning |

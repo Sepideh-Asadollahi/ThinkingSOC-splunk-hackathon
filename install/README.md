@@ -95,10 +95,10 @@ If nothing is detected, no prompt — a new stack is created automatically.
 
 Older installs may have left `backend_tsoc_*` volumes; the installer removes those too when resetting.
 
-### Vector embedding model download (~1.2 GB default)
+### Vector embedding model download (default `bge-base`, ~220 MB)
 
 Before starting the backend, the installer downloads the **FastEmbed** ONNX model used for SOC Chat / RAG.  
-**Default on fresh install:** `bge-base` (**medium**, ~**220 MB**). You will see:
+**Default on fresh install:** `bge-base` (**medium**, ~**220 MB**). Use `bge-large` (~1.2 GB) only when you change `TSOC_EMBEDDING_MODEL` in `backend/.env`. You will see:
 
 - A message that the download is in progress and may take a long time on slow networks  
 - A **progress bar** based on cache directory size under `/opt/.thinking-soc-cache/fastembed`  
@@ -109,8 +109,9 @@ The API answers **`GET /health` soon after start**; the embedding model continue
 If install warns on backend health, check `sudo journalctl -u tsoc-backend -n 80` or pre-download manually:
 
 ```bash
-bash scripts/download-embedding-model.sh          # ~1.2 GB (default)
+bash scripts/download-embedding-model.sh              # bge-base (~220 MB, install default)
 bash scripts/download-embedding-model.sh bge-small   # ~33 MB (slow networks)
+bash scripts/download-embedding-model.sh bge-large   # ~1.2 GB (best quality)
 ```
 
 ---

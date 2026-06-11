@@ -280,7 +280,7 @@ After investigation SPL is generated (via REST `/predict` or LiteLLM), execution
 
 | Priority | Mechanism | Config |
 |----------|-----------|--------|
-| 1 | MCP `splunk_run_query` (All Time: `earliest=0 latest=now`) | `TSOC_SPL_EXECUTE_VIA_MCP=true` |
+| 1 | MCP `splunk_run_query` (All Time: SPL `earliest=1 latest=now`; job params `earliest_time=0`) | `TSOC_SPL_EXECUTE_VIA_MCP=true` |
 | 2 | REST oneshot (fallback) | When MCP execute fails |
 
 Row limit: 50 rows per investigation question.

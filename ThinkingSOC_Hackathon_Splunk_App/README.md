@@ -5,7 +5,7 @@
 This app is intentionally minimal for the hackathon:
 
 - index definition (`thinking_soc`) for Splunk-side data/search use
-- **no** CSV lookups (inventory lives in PostgreSQL)
+- **no** active CSV lookups (inventory lives in PostgreSQL; `metadata/default.meta` may still list legacy `tsoc_identity_rules` transforms — unused by the backend)
 - custom modular alert action **ThinkingSOC_Hackathon_Splunk_App** (replaces generic Webhook in the UI)
 
 Install path:

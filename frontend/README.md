@@ -35,13 +35,16 @@ Unauthenticated visits redirect to `/login`; signed-in users go to `/dashboard`.
 | Route | Purpose |
 |-------|---------|
 | `/login` | Demo authentication |
-| `/dashboard` | Overview and navigation |
-| `/inventory` | Users & assets CRUD |
-| `/identity-rules` | Identity rule editor |
-| `/analysis` | Triage queue + stored SOC/Ops events |
+| `/dashboard` | SOC overview — KPIs, pipeline activity, platform health |
+| `/soc-chat` | SOC analyst chat (vector RAG + Text-to-SQL) |
+| `/analysis` | Triage queue + stored SOC/Ops events (`/triage` redirects here) |
 | `/analysis/investigation/[id]` | Security investigation (overview, recommended action, hunter & defender, enrichment, **Admin question** tab when org gap is suggested) |
 | `/analysis/ops-investigation/[id]` | Observability investigation detail |
-| `/splunk-connection` | LLM, MCP, integration settings |
+| `/correlation` | Graph correlation findings list |
+| `/correlation/explorer` | Neo4j graph explorer (topology / attack tree) |
+| `/inventory` | Users & assets CRUD |
+| `/relationships` | User–asset relationship map for enrichment |
+| `/splunk-connection` | LiteLLM, Splunk REST, MCP, integration settings |
 
 ## Architecture
 

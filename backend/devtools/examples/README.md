@@ -9,7 +9,7 @@ Ready-to-use JSON payloads for the SDK CLI and evaluation runner.
 | File | CLI command | Endpoint | Scenario |
 |------|-------------|----------|----------|
 | `classify.json` | `cli.py classify` | `POST /api/v1/classification/alert` | Observability — CPU spike (95%) + latency (1800 ms) on `web-prod-01` / `payment-api` |
-| `route.json` | `cli.py route` | `POST /api/v1/analysis/route` | Security — failed login for `jdoe` from `1.2.3.4`, with user/asset inventory and identity rules |
+| `route.json` | `cli.py route` | `POST /api/v1/analysis/route` | Security — failed login for `jdoe` from `1.2.3.4`, with user/asset inventory enrichment |
 | `agent.json` | `cli.py agent` | `POST /api/v1/agents/triage` | Security — same failed login with `operator_goal: "confirm lateral movement path"` |
 | `spl.json` | `cli.py spl` | `POST /api/v1/assistant/spl-suggest` | Security — generate root cause timeline SPL for auth activity on `web-prod-01` |
 | `mcp_generate.json` | `cli.py mcp-generate` | `POST /api/v1/mcp/spl-generate` | Splunk MCP SAIA — NL→SPL "Show failed login attempts for user jdoe in the last 24 hours" |

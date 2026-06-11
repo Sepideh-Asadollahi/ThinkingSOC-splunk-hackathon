@@ -1,4 +1,3 @@
-<!-- folder-readme: auto -->
 # backend/models
 
 Parent: [README.md](../README.md)
@@ -7,19 +6,23 @@ Pydantic request/response and domain contracts.
 
 ## Contents
 
-- `__init__.py`
-- `admin_org.py`
-- `agentic_ops.py`
-- `agents.py`
-- `analysis.py`
-- `assistant.py`
-- `handoff.py`
-- `identity.py`
-- `inventory.py`
-- `mcp.py`
-- `observability.py`
+| Module | Contracts |
+|--------|-----------|
+| `handoff.py` | Splunk webhook ingest shapes |
+| `agentic_ops.py` | Alert classification and routing |
+| `analysis.py` | SOC analysis request/response |
+| `observability.py` | Observability pipeline contracts |
+| `enrichment.py` | Inventory enrichment resolution |
+| `inventory.py` | Users, assets, relationships CRUD |
+| `triage.py` | Triage queue and priority |
+| `agents.py` | Agent triage orchestration |
+| `assistant.py` | SPL suggest / investigation assistant |
+| `mcp.py` | Splunk MCP tool contracts |
+| `admin_org.py` | Admin org GAP question |
+| `dashboard.py` | Dashboard overview KPIs |
+| `integration_settings.py` | Splunk connection UI settings |
 
 ## See also
 
 - [README.md](../README.md)
-- [05-codebase-map.md](../../docs/05-codebase-map.md)
+- [07-lld-low-level-design.md](../../docs/07-lld-low-level-design.md)

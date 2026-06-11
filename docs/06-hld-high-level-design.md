@@ -11,7 +11,7 @@ The system splits into two integration zones:
 | Zone | Responsibility |
 |------|----------------|
 | **Splunk** | Alert source, scheduled searches, REST job results, optional MCP Server (app 7931) |
-| **External application** | Ingest API, identity, routing, Security/Observability pipelines, storage, optional web UI |
+| **External application** | Ingest API, inventory enrichment, routing, Security/Observability pipelines, storage, Next.js analyst UI |
 
 Splunk delivers alert handoff via the **built-in Webhook Alert Action**. The application uses the alert `sid` to load full job rows through **Splunk REST**. Investigation SPL uses SAIA REST **`/predict`**; optional **Splunk MCP** runs **`splunk_run_query`** (All Time). Structured outputs persist in **PostgreSQL**.
 
@@ -29,7 +29,9 @@ flowchart LR
   Security[Security Pipeline]
   Observability[Observability Pipeline]
   Postgres[(PostgreSQL)]
-  UI[Web UI optional]
+  Qdrant[(Qdrant)]
+  Neo4j[(Neo4j)]
+  UI[Next.js Analyst UI]
 
   SplunkAlert --> Webhook
   Webhook --> Backend
@@ -41,7 +43,11 @@ flowchart LR
   Router --> Observability
   Security --> Postgres
   Observability --> Postgres
+  Postgres --> Qdrant
+  Postgres --> Neo4j
   Postgres --> UI
+  Qdrant --> UI
+  Neo4j --> UI
 ```
 
 ## 3. Major services
@@ -51,9 +57,13 @@ flowchart LR
 | Ingest API | Receives Splunk webhook payloads; normalizes handoff |
 | Splunk REST client | Fetches full job results by `sid` |
 | Splunk MCP client | JSON-RPC to `/services/mcp` (`splunk_*`, `saia_*` tools) |
-| Asset Identity | Maps alert entities to `tsoc_users` / `tsoc_assets` via rules |
+| Asset Identity | Maps alert entities to `tsoc_users` / `tsoc_assets` via built-in field maps (`alert/enrichment_resolver`) |
 | Agentic Ops Router | LLM classifies alert → **Security** or **Observability** (one pipeline) or manual review |
-| Security pipeline | Defender → Hunter → **Judge** (final verdict) |
+| Security pipeline | prepare → risk_engine → VirusTotal → Defender → Hunter → **Judge** (final verdict) |
+| Correlation graph | Neo4j alert graph + findings + Smart Attack Discovery (`/api/v1/graph`) |
+| Dashboard | Platform KPIs, triage charts, health score (`GET /dashboard/overview`) |
+| Investigation workflow | Timeline reconstruction + analyst acknowledge/escalate |
+| Integrations settings | Admin API for runtime Splunk/LiteLLM/MCP overrides |
 | Observability pipeline | Diagnoser → Responder → **Ops Judge** |
 | Assistant SPL | Analyst-ready SPL (REST `/predict`, then MCP execute; LiteLLM / rule fallback) |
 | Storage | PostgreSQL: typed JSON records + inventory tables |
@@ -71,7 +81,7 @@ flowchart LR
 7. Router selects **one** pipeline: Security **or** Observability (never both).
 8. Pipeline produces structured sections (Judge / Ops Judge is final).
 9. SPL suggestion attached for investigation.
-10. Results stored in PostgreSQL; API and future UI read back.
+10. Results stored in PostgreSQL (+ Qdrant RAG index, Neo4j graph when enabled); Next.js analyst UI and API read back.
 
 ## 5. Security pipeline (conceptual)
 
@@ -101,6 +111,9 @@ Judge is always the **final decision layer** for Security track output. Admin or
 | `tsoc_records` | Typed JSON audit trail (`splunk_ingest`, `soc_analysis`, `observability_analysis`, etc.) |
 | `tsoc_users` / `tsoc_assets` | Inventory |
 | `tsoc_relationships` | User–asset mapping for enrichment |
+| `tsoc_rag_documents` + Qdrant `tsoc_soc_rag` | SOC vector RAG embeddings |
+| `tsoc_chat_conversations` / `tsoc_chat_messages` | Persisted SOC chat |
+| `graph_findings` + Neo4j | Correlation findings and alert graph |
 
 ## 8. Scope and demo priorities
 
@@ -114,6 +127,7 @@ For judging, the demo should show:
 - Security or Observability pipeline output with final Judge verdict
 - Admin organizational GAP question on investigation UI when ownership/escalation context is missing
 - SPL suggestion for next investigation
+- Dashboard, correlation explorer, SOC chat, and triage queue in Next.js UI
 - Optional SDK/CLI and evidence pack
 
 ## 9. Related documents

@@ -12,4 +12,4 @@ Splunk integration layer providing the AI Assistant SPL generation interface and
 ## Related docs
 
 - [Integration Boundaries](../../../docs/02-integration-boundaries.md)
-- [Splunk MCP Tool Layer](../../../docs/15-splunk-mcp-tool-layer.md)
+- [Splunk MCP Integration](../../../docs/15-splunk-mcp-integration.md)

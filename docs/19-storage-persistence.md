@@ -94,6 +94,7 @@ Every row in `tsoc_records` has a `tsoc_record_type` that identifies its origin.
 | `llm_chat_audit` | `persist_llm_chat_audit_to_splunk` | Ad-hoc LLM chat usage audit |
 | `soc_investigation_*` | `persist_soc_investigation_phases` | Investigation SPL phases (raw_alert, questions, spl, results) |
 | `investigation_analyst_action` | `record_analyst_action` | Human acknowledge/escalate decision |
+| `ingest_background_error` | `persist_ingest_background_error` | Background ingest/triage failure audit |
 
 ---
 
@@ -140,7 +141,7 @@ When one Splunk search job produces multiple result rows and each row is analyze
 | `fetch_analyses_last_24h` | `COUNT(*) WHERE created_at >= NOW()-24h AND type IN (soc_analysis, observability_analysis)` | Dashboard KPI |
 | `fetch_records_last_24h` | `COUNT(*) WHERE created_at >= NOW()-24h` | Dashboard |
 | `fetch_record_counts_by_type` | `GROUP BY tsoc_record_type` | Dashboard bar chart |
-| `fetch_activity_by_day(days)` | 14-day `generate_series` with security/observability/correlation/other buckets | Dashboard timeline |
+| `fetch_activity_by_day(days)` | `generate_series` over `CURRENT_DATE` … `CURRENT_DATE - (days-1)`; rows grouped by `(created_at AT TIME ZONE 'UTC')::date` into security / observability / correlation / other (dashboard passes `days=30`) | Dashboard **Pipeline activity** chart — API `date` is `YYYY-MM-DD`; UI X-axis uses locale short date (see [16-dashboard.md](./16-dashboard.md) §3) |
 | `fetch_inventory_counts` | `COUNT(*) FROM tsoc_users`, `tsoc_assets` | Dashboard KPI |
 
 ---
@@ -196,7 +197,7 @@ Without `TSOC_POSTGRES_DSN`, all persist functions return `False` / empty result
 | Path | Role |
 |------|------|
 | `backend/services/splunk_json_store/pg.py` | Pool init, schema bootstrap, `submit_hec_event` |
-| `backend/services/splunk_json_store/persist.py` | Per-type persist helpers (12 functions) |
+| `backend/services/splunk_json_store/persist/` | Per-type persist helpers (`audit.py`, `soc.py`, `ingest.py`, `routing.py`, `observability.py`, …) |
 | `backend/services/splunk_json_store/query.py` | `search_stored_events`, `get_stored_event_by_id` |
 | `backend/services/splunk_json_store/stats.py` | Dashboard aggregation queries |
 | `backend/services/splunk_json_store/__init__.py` | Re-exports all public functions |

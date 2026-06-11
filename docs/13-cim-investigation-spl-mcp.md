@@ -14,7 +14,7 @@
 |------|-----|
 | SPL aligned with **Splunk UI** chat | REST **`/predict`** (same `write_spl` path as UI), not MCP `saia_generate_spl` |
 | Runnable answers in the product | MCP **`splunk_run_query`** (fallback: REST oneshot) |
-| **All Time** for investigation hunts | Default `earliest=0` `latest=now` on execute |
+| **All Time** for investigation hunts | SPL `earliest=1 latest=now`; REST/MCP execute uses `earliest_time=0 latest_time=now` |
 | Quality when SPL is wrong | Splunk **parser** check + LiteLLM refine on error / 0 rows (max 2 attempts) |
 
 **Not in the main path (hackathon):** CIM `tstats` post-process, `apply_cim_tstats_*`, or per-question `datamodelsimple` injection. SPL policy is **`search`** only (no `tstats` / `datamodel` in generated SPL).
@@ -39,7 +39,7 @@ sequenceDiagram
     P->>SAIA: POST /predict (write_spl)
     SAIA-->>P: SPL text
     A->>A: validate_spl (parser)
-    A->>M: execute (earliest=0 latest=now)
+    A->>M: execute (All Time: SPL earliest=1 latest=now)
     M-->>A: spl_results rows
     alt error or 0 rows (max 2 refine)
       A->>A: LiteLLM execution refine
@@ -71,7 +71,7 @@ sequenceDiagram
 |------|-----------|
 | Preferred | MCP **`splunk_run_query`** (`TSOC_SPL_EXECUTE_VIA_MCP=true`) |
 | Fallback | REST oneshot if MCP fails |
-| Time range | `TSOC_INVESTIGATION_SPL_TIME_WINDOW` (default **`earliest=0 latest=now`**) |
+| Time range | `TSOC_INVESTIGATION_SPL_TIME_WINDOW` (default **`earliest=1 latest=now`** in `config.py`; runtime All Time uses `default_investigation_time_window()` which may ignore this env) |
 | Row cap | 50 rows per question in API (MCP `row_limit`) |
 
 Shared module: `backend/services/investigation/spl_predict_pipeline.py` (also used by `backend/scripts/spl_predict_ask.py` for CLI demos).
@@ -190,7 +190,7 @@ See **SPL syntax sanitize + parser-driven refine** above for the full sanitize â
   "question": "Find related PowerShell invoke.ps1 on this host",
   "spl": "search index=botsv1 host=we8105desk ... | table _time Image ParentImage | sort _time",
   "explanation": "Generated via Splunk UI REST /predict path.",
-  "time_window": "earliest=0 latest=now",
+  "time_window": "earliest=1 latest=now",
   "notes": ["rest_predict_write_spl"],
   "validation": { "method": "splunk_parser", "valid": true },
   "spl_results": {
@@ -228,7 +228,7 @@ See **SPL syntax sanitize + parser-driven refine** above for the full sanitize â
 | `TSOC_SPL_PREDICT_TIMEOUT_SECONDS` | `90` | Poll budget for async `/predict` |
 | `TSOC_EXECUTE_INVESTIGATION_SPL` | `true` | Run MCP/REST execute; fill `spl_results` |
 | `TSOC_SPL_EXECUTE_VIA_MCP` | `true` | Prefer MCP `splunk_run_query` |
-| `TSOC_INVESTIGATION_SPL_TIME_WINDOW` | `earliest=0 latest=now` | Execute time range |
+| `TSOC_INVESTIGATION_SPL_TIME_WINDOW` | `earliest=1 latest=now` | Config default; active pipeline uses `SPL_ALL_TIME_WINDOW` in `spl_predict_pipeline.py` |
 | `TSOC_SPL_LLM_REFINE_ON_ERROR` | `true` | Parser error â†’ LiteLLM |
 | `TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS` | `2` | Post-execute refine; `0` disables |
 | `TSOC_INVESTIGATION_QUESTIONS_MAX` | `3` | Max questions per alert |
@@ -287,7 +287,7 @@ Full request/response bodies (not truncated) in backend logs:
 | `TSOC_SAIA_TRACE_LOG=true` | `tsoc.trace.saia` | SAIA pipeline + `/predict` / MCP SAIA tools |
 | `TSOC_TRACE_LOG_FILE=...` | (optional file) | Same lines also written to a dedicated file |
 
-Implementation: [`backend/services/full_trace_log.py`](../backend/services/full_trace_log.py).
+Implementation: [`backend/services/llm/full_trace_log.py`](../backend/services/llm/full_trace_log.py).
 
 ---
 

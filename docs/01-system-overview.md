@@ -76,7 +76,7 @@ flowchart TB
 | **`correlation/`** | Graph Correlation demo — Neo4j alert graph, findings, Smart Attack Discovery (`/api/v1/graph`) |
 | **PostgreSQL** | Inventory tables + typed JSON audit (`tsoc_records`) + **`graph_findings`** |
 | **Neo4j** | Alert / entity / incident graph for Correlation explorer (optional; docker-compose) |
-| **Qdrant** | Vector embeddings for SOC Chat RAG (FastEmbed; model via `TSOC_EMBEDDING_MODEL`, default `bge-large`) |
+| **Qdrant** | Vector embeddings for SOC Chat RAG (FastEmbed; model via `TSOC_EMBEDDING_MODEL`, default `bge-base` / `BAAI/bge-base-en-v1.5`) |
 | **`frontend/`** | Next.js analyst UI (dashboard, triage, analysis, correlation, SOC chat, inventory) |
 | **`setup_tool/`** | Automated venv, dependencies, Postgres, schema, inventory seed |
 
@@ -85,10 +85,11 @@ flowchart TB
 1. **Alert fires** in Splunk (scheduled search or correlation search).
 2. **Webhook** posts JSON to `POST /api/v1/alerts/splunk-ingest` with at least `sid`, `search_name`, and `result` (first row).
 3. **Normalize** — `normalize_splunk_ingest_payload()` builds `SplunkAlertIngest` with a stable `normalized` dict (`user`, `src`, `dest`, `host`, severity, etc.).
-4. **REST enrich** — `enrich_alert_from_splunk()` calls Splunk **v2** job results for the full row set attached to the handoff.
-5. **Persist ingest summary** — optional write to `tsoc_records` (`splunk_ingest`).
-6. **Background triage** (when `TSOC_INGEST_AUTO_ANALYZE=true` in `backend/.env`, default after `install.sh`) — inventory enrichment → classify → run selected pipeline(s) → admin-org GAP (Security path) → store analysis records.
-7. **Response** — `202 Accepted` when auto-analyze is on (triage runs in `BackgroundTasks`); `200` when ingest-only. Configuration is **not** overridable via URL query parameters (forbidden keys → `400`).
+4. **Row buffer** (default `TSOC_INGEST_ROW_BUFFER=true`) — webhook POSTs per `sid` are deduped and debounced (`TSOC_INGEST_ROW_BUFFER_SECONDS`, default 3s) before flush.
+5. **REST enrich** — on buffer flush (or immediately when buffering is off), `enrich_alert_from_splunk()` calls Splunk **v2** job results for the full row set.
+6. **Persist ingest summary** — optional write to `tsoc_records` (`splunk_ingest`); optional webhook→Neo4j alert upsert when correlation is enabled.
+7. **Background triage** (when `TSOC_INGEST_AUTO_ANALYZE=true` in `backend/.env`, default after `install.sh`) — inventory enrichment → classify → run **one** pipeline per row → admin-org GAP (Security path) → store analysis records.
+8. **Response** — `202 Accepted` with `status: "buffered"` (default path) or `202` after enrich when auto-analyze is on; `200` when ingest-only. Configuration is **not** overridable via URL query parameters (forbidden keys → `400`).
 
 Operators can also drive the same logic via direct API calls (`/analysis/route`, `/agents/triage`, `/analysis/run`) without a new Splunk alert.
 
@@ -98,7 +99,7 @@ Operators can also drive the same logic via direct API calls (`/analysis/route`,
 |------|-----------------|
 | `backend/main.py` | FastAPI app assembly, router mounts, startup `init_store()` |
 | `backend/api/routes/` | HTTP endpoints by domain (ingest, analysis, inventory, MCP, …) |
-| `backend/services/` | Domain logic: pipelines, classifier, identity, Splunk store |
+| `backend/services/` | Domain logic in subpackages: `alert/`, `soc_analysis/`, `triage/`, `inventory/`, `splunk_json_store/`, `platform/`, … |
 | `backend/splunk/client/` | Splunk REST (job results by `sid`) |
 | `backend/splunk/mcp/` | MCP JSON-RPC client |
 | `backend/models/` | Pydantic contracts (handoff, analysis, identity) |

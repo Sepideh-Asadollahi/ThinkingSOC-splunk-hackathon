@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 304 nodes
+Community of 316 nodes
 
-- **Size**: 304 nodes
-- **Cohesion**: 0.2852
+- **Size**: 316 nodes
+- **Cohesion**: 0.2849
 - **Dominant Language**: python
 
 ## Members
@@ -63,7 +63,7 @@ Community of 304 nodes
 | delete_asset_endpoint | Function | backend/api/routes/inventory.py | 167-175 |
 | list_relationships_endpoint | Function | backend/api/routes/inventory.py | 182-186 |
 
-*... and 254 more members.*
+*... and 266 more members.*
 
 ## Execution Flows
 
@@ -77,31 +77,31 @@ Community of 304 nodes
 - **splunk_ingest** (criticality: 0.74, depth: 3)
 - **classify_alert_endpoint** (criticality: 0.73, depth: 6)
 - **list_triage_queue** (criticality: 0.73, depth: 6)
-- *... and 31 more flows.*
+- *... and 32 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (207 edge(s))
-- `len` (106 edge(s))
-- `str` (88 edge(s))
+- `get` (217 edge(s))
+- `len` (111 edge(s))
+- `str` (91 edge(s))
 - `isinstance` (85 edge(s))
-- `info` (84 edge(s))
-- `HTTPException` (73 edge(s))
-- `warning` (62 edge(s))
-- `Depends` (45 edge(s))
-- `perf_counter` (45 edge(s))
-- `format` (42 edge(s))
-- `patch` (40 edge(s))
-- `strip` (39 edge(s))
+- `info` (85 edge(s))
+- `HTTPException` (70 edge(s))
+- `warning` (63 edge(s))
+- `patch` (46 edge(s))
+- `strip` (44 edge(s))
+- `Depends` (44 edge(s))
+- `format` (44 edge(s))
+- `perf_counter` (44 edge(s))
 - `append` (35 edge(s))
+- `list` (24 edge(s))
 - `int` (23 edge(s))
-- `list` (23 edge(s))
 
 ### Incoming
 
-- `patch` (31 edge(s))
+- `patch` (37 edge(s))
 - `backend/api/routes/inventory.py` (19 edge(s))
 - `len` (16 edge(s))
 - `backend/tests/test_alert_classifier_llm.py` (13 edge(s))
@@ -111,8 +111,8 @@ Community of 304 nodes
 - `backend/services/alert/ingest_request_trace.py` (10 edge(s))
 - `get` (10 edge(s))
 - `backend/tests/test_ingest_request_trace.py` (10 edge(s))
+- `backend/services/soc_analysis/analysis_audit.py` (9 edge(s))
 - `backend/tests/test_agent_triage_all_rows.py` (9 edge(s))
 - `run` (9 edge(s))
 - `AsyncMock` (9 edge(s))
 - `backend/api/routes/soc_chat.py` (8 edge(s))
-- `backend/api/exception_handlers.py` (8 edge(s))

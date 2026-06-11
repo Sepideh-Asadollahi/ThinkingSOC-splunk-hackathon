@@ -127,7 +127,7 @@ Helpers: `format_row_sid`, `splunk_job_sid` in `backend/services/soc_analysis/an
 
 | Mode | When | Webhook shape | Backend |
 |------|------|---------------|---------|
-| **All rows in one POST** (default with `ThinkingSOC_Hackathon_Splunk_App`) | `alert.digest_mode=true` or Splunk passes `results_file` | `result` + `results[]` (all rows from `results.csv.gz`) | Buffer collects rows → REST confirms count → **batch triage** (`triage_mode=batch_all_rest_rows`) |
+| **All rows in one POST** (default with `ThinkingSOC_Hackathon_Splunk_App`) | `alert.digest_mode=true` or Splunk passes `results_file` | `result` + `results[]` (all rows from `results.csv.gz`) | Buffer collects rows → REST confirms count → **batch triage** (`triage_mode=batch` in HTTP response) |
 | **One POST per row** | `alert.digest_mode=false` | Single `result` per HTTP call, same `sid` | Row buffer debounces POSTs → flush → batch triage |
 
 **Splunk app (`bin/thinkingsoc_hackathon.py`):** Splunk supplies `results_file=…/results.csv.gz` (gzip CSV). The action decompresses it and sends all rows in `results[]` when there are 2+. Always includes `result` (first row) for backward compatibility.
@@ -265,7 +265,7 @@ flowchart LR
 |---------|----------------|
 | Storage | `tsoc_users`, `tsoc_assets`, `tsoc_relationships` in PostgreSQL |
 | UI | External app: Inventory + Relationships pages |
-| Alert matching | Built-in field maps (`host`, `user`, `src`, …) in `enrichment_resolver.py` |
+| Alert matching | Built-in field maps (`host`, `user`, `src`, …) in `backend/services/alert/enrichment_resolver.py` (replaces legacy `tsoc_identity_rules`) |
 | Cross-link | Relationships fill missing user or asset when one side matched |
 | Output model | `EnrichmentResult` on analysis (`enrichment` field) |
 | Downstream use | `risk_context` for Security **Judge**; weak linkage triggers **admin org GAP** question suggestion |
@@ -287,7 +287,7 @@ Enrichment is **independent** of ingest transport: same logic for webhook, `POST
 |----------|---------|
 | Ingest | Optional shared secret (`TSOC_INGEST_TOKEN`); `401` if set and header missing, `403` if wrong |
 | Splunk REST | Service account token or username/password in env — never in repo |
-| LLM | API keys via LiteLLM env — backend exposes `/llm/status` without secrets |
+| LLM | API keys via LiteLLM env — backend exposes `GET /api/v1/llm/status` without secrets |
 | PostgreSQL | DSN in `.env`; schema applied by `setup.py` |
 | Splunk MCP | Splunk-side auth as configured on MCP Server |
 

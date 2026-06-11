@@ -25,7 +25,7 @@ flowchart TB
 
   subgraph services ["Domain Services"]
     CRUD["inventory/ (users, assets, relationships)"]
-    Resolver["enrichment_resolver.py"]
+    Resolver["alert/enrichment_resolver.py"]
     Loader["inventory_loader.py"]
     DefaultRels["default_relationships.py"]
     CSVSeed["csv_seed.py"]
@@ -280,7 +280,7 @@ Explicit CSV rows override auto-generated defaults on the same `(user_id, asset_
 | `tsoc_users.json` | `tsoc_users` | All rows |
 | `tsoc_assets.json` | `tsoc_assets` | All rows |
 | `tsoc_relationships.json` | `tsoc_relationships` | All rows |
-| `tsoc_identity_rules.json` | `tsoc_identity_rules` | All rows |
+| `tsoc_identity_rules.json` | `tsoc_identity_rules` | Legacy demo seed only — runtime enrichment uses built-in field maps in `alert/enrichment_resolver.py` |
 | `tsoc_records.json` | `tsoc_records` | **Up to 6 newest** by `id` |
 | `graph_findings.json` | `graph_findings` | **Newest 1** (Correlation page) |
 

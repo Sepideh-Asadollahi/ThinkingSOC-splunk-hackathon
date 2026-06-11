@@ -65,10 +65,9 @@ CREATE TABLE IF NOT EXISTS tsoc_records (
 | `id` | Auto-increment primary key |
 | `created_at` | Insert timestamp (UTC) |
 | `tsoc_record_type` | Discriminator — see record types below |
-| `sid` | Splunk search job ID (links all records for one alert) |
+| `sid` | Storage id for this record. Parent Splunk job id, or `{job_sid}-{n}` (`n` 1-based) when multi-row jobs are analyzed per row |
 | `search_name` | Splunk saved search / alert name |
 | `row_index` | Which result row in the Splunk job (0-based; per-row ingest uses `0` with a single-row slice) |
-| `sid` | Storage id; multi-row jobs use `{splunk_job_sid}-{n}` suffix (`n` 1-based) when analyzed per row |
 | `payload` | Full structured JSON — schema varies by record type |
 
 **Record types:**
@@ -86,6 +85,7 @@ CREATE TABLE IF NOT EXISTS tsoc_records (
 | `llm_chat_audit` | Ad-hoc LLM chat usage audit |
 | `soc_investigation_*` | Investigation SPL phases (raw_alert, questions, spl, results) |
 | `investigation_analyst_action` | Human acknowledge / escalate decision |
+| `ingest_background_error` | Background ingest/triage failure audit |
 
 **Indexes:**
 
@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS graph_findings (
 | **Embedding model** | FastEmbed local ONNX — preset or full id in `backend/.env` ([doc 10](./10-soc-vector-rag.md#embedding-model-selection)) |
 | **Point ID** | Deterministic UUID5 from `tsoc:{doc_id}` |
 
-**Default model (`bge-large`):** `BAAI/bge-large-en-v1.5`, 1024-dim, ~1.2 GB download.
+**Default model (`bge-base`):** `BAAI/bge-base-en-v1.5`, 768-dim, ~220 MB download.
 
 | `TSOC_EMBEDDING_MODEL` | Full id | Dim | Download |
 |------------------------|---------|-----|----------|

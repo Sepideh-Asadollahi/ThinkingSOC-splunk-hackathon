@@ -29,6 +29,7 @@ flowchart TB
       SOCChat["SOC Chat + RAG"]
       Correlation["Graph Correlation"]
       TriageQueue["Triage Queue"]
+      Dashboard["Dashboard Overview"]
       InvestSPL["Investigation SPL"]
     end
 
@@ -68,6 +69,8 @@ flowchart TB
   SOCChat --> PG
   Correlation --> Neo4j
   Correlation --> PG
+  Dashboard --> PG
+  WebUI --> Dashboard
   PG --> WebUI
 ```
 
@@ -81,40 +84,42 @@ How an alert is analyzed — from raw webhook to final Judge verdict with all La
 flowchart TD
   Alert["Splunk Alert Fires"]
   Webhook["Webhook POST /splunk-ingest"]
+  RowBuffer{"TSOC_INGEST_ROW_BUFFER=true?"}
+  Buffered202["HTTP 202 status=buffered (debounce per sid)"]
   AutoAnalyze{"TSOC_INGEST_AUTO_ANALYZE=true?"}
   Normalize["Normalize Payload (SplunkAlertIngest)"]
   RESTFetch["REST: Fetch All Job Rows by SID"]
-  IdentityResolve["Identity Resolution (tsoc_users + tsoc_assets)"]
-  RiskEngine["Risk Engine (criticality + risk scores)"]
-  VTEnrich["VirusTotal IOC Enrichment (API v3)"]
+  LoadInventory["Load Inventory Tables (tsoc_users, tsoc_assets, tsoc_relationships)"]
 
   subgraph classifier ["Agentic Ops Router"]
+    MCPContext["Optional MCP alert context"]
     LLMClassify["LLM classifier (full alert payload)"]
     ExclusiveGuard["ensure_exclusive_classification"]
     ManualReview["manual_review (needs_human_routing)"]
-    LLMClassify --> ExclusiveGuard
+    MCPContext --> LLMClassify --> ExclusiveGuard
   end
 
   subgraph secPipeline ["Security Pipeline (LangGraph)"]
     Prepare["prepare: Build Canonical Context"]
-    RiskNode["risk_engine: Compute Risk Context"]
-    VTNode["virustotal: IOC Lookup"]
+    RiskNode["risk_engine: enrichment + risk_context"]
+    VTNode["virustotal: IOC Lookup (API v3)"]
     DefenderNode["defender: Benign Advocacy (LLM)"]
     HunterNode["hunter: Investigation Expansion (LLM + MCP)"]
     JudgeNode["judge: Final Verdict (LLM + SAIA)"]
     FrameworkMap["framework_mapping: MITRE ATT&CK"]
     InvestQ["investigation_questions: Follow-up SPL"]
-    RootSPL["root_cause_spl: SPL Generation"]
+    RootSPL["root_cause_spl: SPL Assembly"]
     Prepare --> RiskNode --> VTNode --> DefenderNode --> HunterNode --> JudgeNode --> FrameworkMap --> InvestQ --> RootSPL
   end
 
   subgraph obsPipeline ["Observability Pipeline"]
+    ObsEnrich["enrich_from_inventory"]
     ObsEntity["Entity Resolution: host/service → asset"]
     ObsImpact["Impact Context: severity + criticality score"]
     Diagnoser["Diagnoser: Root Cause Hypotheses"]
     Responder["Responder: Mitigation Steps"]
     OpsJudge["Ops Judge: Final Operational Verdict"]
-    ObsEntity --> ObsImpact --> Diagnoser --> Responder --> OpsJudge
+    ObsEnrich --> ObsEntity --> ObsImpact --> Diagnoser --> Responder --> OpsJudge
   end
 
   subgraph postAnalysis ["Post-Analysis"]
@@ -124,11 +129,12 @@ flowchart TD
     Persist["Persist to PostgreSQL"]
   end
 
-  Alert --> Webhook --> AutoAnalyze
+  Alert --> Webhook --> RowBuffer
+  RowBuffer -->|yes (default)| Buffered202 --> AutoAnalyze
+  RowBuffer -->|no| AutoAnalyze
   AutoAnalyze -->|yes/background| Normalize
   AutoAnalyze -->|no/direct| Normalize
-  Normalize --> RESTFetch --> IdentityResolve --> RiskEngine --> VTEnrich
-  VTEnrich --> classifier
+  Normalize --> RESTFetch --> LoadInventory --> classifier
   classifier -->|security| secPipeline
   classifier -->|observability| obsPipeline
   classifier -->|unknown/manual_review| ManualReview
@@ -149,9 +155,9 @@ flowchart LR
   subgraph apiLayer ["API Layer (FastAPI Routes)"]
     RHealth["/health"]
     RIngest["/alerts/splunk-ingest"]
-    RAnalysis["/analysis/run, /route, /run-by-sid"]
+    RAnalysis["/classification/alert, /analysis/run, /route, /run-by-sid"]
     RAgents["/agents/triage"]
-    RObsBatch["/observability/run-by-sid"]
+    RObsBatch["/observability/run, /run-by-sid"]
     RTriage["/triage/queue"]
     RInvest["/investigation/*"]
     RInventory["/inventory/*"]
@@ -209,6 +215,8 @@ flowchart LR
   RAssistant --> SInvestigation
   RAdminOrg --> SAnalysis
   RIntegrations --> SPlatform
+  RDashboard --> SPlatform
+  RStorage --> SStore
 
   SAlert --> SplunkREST
   SGraph --> SLLM
@@ -264,10 +272,15 @@ flowchart TD
 
   subgraph recordTypes ["tsoc_records Types"]
     RTIngest["splunk_ingest"]
+    RTRoute["agentic_ops_analysis"]
+    RTEnrich["enrichment_resolve"]
     RTSoc["soc_analysis"]
     RTObs["observability_analysis"]
-    RTRoute["agentic_ops_analysis"]
-    RTIdentity["identity_resolve"]
+    RTSocAudit["soc_analysis_audit"]
+    RTSocBatch["soc_analysis_batch"]
+    RTInvest["soc_investigation_*"]
+    RTAnalyst["investigation_analyst_action"]
+    RTIngestErr["ingest_background_error"]
     RTChat["llm_chat_audit"]
     RTGap["admin_org_gap_suggest"]
   end
@@ -282,15 +295,17 @@ flowchart TD
     IncidentNodes["Incident Clusters"]
   end
 
-  SplunkWH --> NormPayload --> FullRows --> IdentityMatch --> Classification
+  SplunkWH --> NormPayload --> FullRows --> Classification
   Classification --> ManualReview --> TriageScore
   Classification --> SecResult --> TRecords
   Classification --> ObsResult --> TRecords
+  SecResult --> IdentityMatch
+  ObsResult --> IdentityMatch
   SecResult --> TriageScore
   ObsResult --> TriageScore
   TRecords --- recordTypes
 
-  UIAPI --> IdentityMatch
+  UIAPI --> Classification
   IdentityMatch --> TUsers
   IdentityMatch --> TAssets
   IdentityMatch --> TRels
@@ -378,12 +393,16 @@ sequenceDiagram
   end
 
   Note over Splunk,Backend: Phase 2 - Analysis Pipeline
-  Backend->>Backend: Classify (LLM-only router)
-  alt low confidence
-    Backend->>Analyst: manual_review + needs_human_routing
+  Backend->>PG: Load inventory tables (users, assets, relationships)
+  Backend->>Backend: Classify (LLM + optional MCP context)
+  alt manual_review / low confidence
+    Backend->>Analyst: needs_human_routing flag
+  else security track
+    Backend->>Backend: enrich_from_inventory + risk_context
+    Backend->>Backend: LangGraph Defender → Hunter → Judge
+  else observability track
+    Backend->>Backend: Entity → Impact → Diagnoser → Responder → Ops Judge
   end
-  Backend->>Backend: Identity Resolution (PG inventory)
-  Backend->>Backend: Defender LLM + Hunter LLM + Judge LLM
 
   Note over Splunk,Backend: Phase 3 - MCP Enrichment (optional)
   Backend->>MCP: splunk_get_metadata (sourcetypes)
@@ -419,11 +438,11 @@ flowchart TD
   B2["2.2 202 Accepted and background triage starts"]
   C["3. Backend normalizes to SplunkAlertIngest with stable normalized fields"]
   D["4. Backend fetches full rows by sid via Splunk REST v2"]
-  E["5. Inventory enrichment resolves user/asset identity"]
-  E1["5.1 Reads tsoc_users"]
-  E2["5.2 Reads tsoc_assets"]
-  E3["5.3 Uses tsoc_relationships to fill missing side"]
-  F{"6. Agentic Ops Router decides track"}
+  E["5. Load inventory tables from PostgreSQL"]
+  E1["5.1 tsoc_users"]
+  E2["5.2 tsoc_assets"]
+  E3["5.3 tsoc_relationships"]
+  F{"6. Agentic Ops Router decides track (LLM + optional MCP)"}
 
   G["7a. SECURITY path starts"]
   H["8a. LangGraph prepare + risk_engine"]
@@ -441,16 +460,18 @@ flowchart TD
   N3["14a.3 MCP failures are non-fatal, LLM/rule path continues"]
 
   O["7b. OBSERVABILITY path starts"]
-  P["8b. Diagnoser stage (root-cause hypotheses)"]
-  Q["9b. Responder stage (mitigation steps)"]
-  R["10b. Ops Judge stage (final operational verdict)"]
+  O1["8b. enrich_from_inventory + entity resolution"]
+  P["9b. Impact context (severity + criticality)"]
+  Q["10b. Diagnoser stage (root-cause hypotheses)"]
+  R["11b. Responder stage (mitigation steps)"]
+  R0["12b. Ops Judge stage (final operational verdict)"]
   R1["7c. MANUAL_REVIEW path (unknown/low confidence)"]
   R2["8c. Human routing flag for analyst decision"]
 
   S["15. Triage scoring calculates investigation_priority + triage_score"]
   T["16. Admin Org GAP suggests one org question when needed"]
   U["17. Persist typed records in tsoc_records"]
-  U1["17.1 record types: splunk_ingest, soc_analysis, observability_analysis, agentic_ops_analysis, identity_resolve, admin_org_gap_suggest, llm_chat_audit"]
+  U1["17.1 record types: splunk_ingest, agentic_ops_analysis, enrichment_resolve, soc_analysis, observability_analysis, soc_analysis_audit, soc_analysis_batch, soc_investigation_*, investigation_analyst_action, ingest_background_error, admin_org_gap_suggest, llm_chat_audit"]
   V["18. SOC Chat reads from Postgres + Qdrant and can query correlation findings"]
   W["19. Correlation layer stores findings in graph_findings and graph relations in Neo4j"]
   X["20. Analyst sees final output in UI: verdict, evidence, triage, SPL, correlation"]
@@ -470,7 +491,7 @@ flowchart TD
   F -->|"Unknown/manual_review"| R1 --> R2 --> S
 
   G --> H --> H1 --> I --> J --> K --> K1 --> L --> L1 --> M --> N --> N1 --> N2 --> N3 --> S
-  O --> P --> Q --> R --> S
+  O --> O1 --> P --> Q --> R --> R0 --> S
 
   S --> T --> U --> U1 --> V --> W --> X
 ```
@@ -486,7 +507,7 @@ flowchart LR
   subgraph inputPlane ["Input Plane"]
     SplunkAlerts["Splunk Alerts (saved/correlation searches)"]
     SplunkWebhook["Webhook Alert Action"]
-    ManualAPI["Manual API Calls (/analysis/route, /agents/triage, /analysis/run-by-sid, /observability/run-by-sid)"]
+    ManualAPI["Manual API Calls (/classification/alert, /analysis/route, /agents/triage, /analysis/run-by-sid, /observability/run-by-sid)"]
   end
 
   subgraph ingestionPlane ["Ingestion + Normalization"]
@@ -500,7 +521,7 @@ flowchart LR
     InventoryUsers["tsoc_users (identity + risk_score)"]
     InventoryAssets["tsoc_assets (criticality + owner)"]
     InventoryRels["tsoc_relationships (user-asset links)"]
-    Resolver["enrichment_resolver (identity confidence + matched rules)"]
+    Resolver["alert/enrichment_resolver (inventory user/asset match via built-in field maps)"]
     RiskContext["risk_context builder"]
     VTIntel["VirusTotal v3 IOC enrichment"]
   end
@@ -536,7 +557,7 @@ flowchart LR
 
   subgraph persistencePlane ["Persistence Plane"]
     TSOCRecords["tsoc_records JSONB"]
-    RecordTypes["Record types: splunk_ingest, soc_analysis, observability_analysis, agentic_ops_analysis, identity_resolve, admin_org_gap_suggest, llm_chat_audit"]
+    RecordTypes["Record types: splunk_ingest, agentic_ops_analysis, enrichment_resolve, soc_analysis, observability_analysis, soc_analysis_audit, soc_analysis_batch, soc_investigation_*, investigation_analyst_action, ingest_background_error, admin_org_gap_suggest, llm_chat_audit"]
     TriageQueue["Triage queue (triage_score, investigation_priority, review_verdict)"]
     GraphFindings["graph_findings (correlation findings)"]
     StorageAPI["Storage query endpoint: /storage/events"]
@@ -551,6 +572,7 @@ flowchart LR
 
   subgraph outputPlane ["Analyst Output Plane"]
     FrontendUI["Next.js analyst UI"]
+    DashboardAPI["Dashboard overview (/dashboard/overview)"]
     VerdictOutput["Judge/OpsJudge final verdict + rationale + next_step"]
     EvidenceOutput["Evidence refs + MCP evidence + VirusTotal findings"]
     ActionOutput["Investigation SPL + execution results + triage priority"]
@@ -605,11 +627,15 @@ flowchart LR
   QdrantStore --> SOCChat
 
   TSOCRecords --> FrontendUI
+  TSOCRecords --> DashboardAPI
   TriageQueue --> FrontendUI
+  TriageQueue --> DashboardAPI
   GraphFindings --> FrontendUI
   SOCChat --> FrontendUI
 
+  FrontendUI --> DashboardAPI
   FrontendUI --> VerdictOutput
+  DashboardAPI --> VerdictOutput
   FrontendUI --> EvidenceOutput
   FrontendUI --> ActionOutput
 ```
@@ -634,4 +660,11 @@ Key competitive strengths captured in this map:
 - [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) — router and pipeline internals
 - [06-hld-high-level-design.md](./06-hld-high-level-design.md) — high-level design
 - [07-lld-low-level-design.md](./07-lld-low-level-design.md) — low-level contracts and APIs
+- [10-soc-vector-rag.md](./10-soc-vector-rag.md) — SOC Chat RAG and Qdrant indexing
 - [12-correlation-graph-service.md](./12-correlation-graph-service.md) — graph correlation service
+- [14-inventory-service.md](./14-inventory-service.md) — inventory and enrichment resolver
+- [15-splunk-mcp-integration.md](./15-splunk-mcp-integration.md) — Splunk MCP tools and evidence
+- [16-dashboard.md](./16-dashboard.md) — dashboard KPIs, health score, and charts
+- [17-observability-pipeline.md](./17-observability-pipeline.md) — observability pipeline stages
+- [19-storage-persistence.md](./19-storage-persistence.md) — `tsoc_records` types and persistence
+- [20-investigation-workflow.md](./20-investigation-workflow.md) — investigation timeline and analyst actions

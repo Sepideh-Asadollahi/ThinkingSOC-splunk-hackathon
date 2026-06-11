@@ -9,7 +9,7 @@ The same core logic is reachable from multiple APIs:
 | Entry | Typical caller | Flow |
 |-------|----------------|------|
 | Webhook `POST /alerts/splunk-ingest` | Splunk | normalize → row buffer (default) → REST enrich → `run_post_ingest` → per-row triage (`…-1`, `…-2`) when `TSOC_INGEST_AUTO_ANALYZE=true` |
-| `POST /analysis/route` | UI / SDK | classify → run pipeline(s) → persist route record |
+| `POST /analysis/route` | UI / SDK | classify → run **one** pipeline → persist route record |
 | `POST /agents/triage` | SDK / automation | Full triage bundle (classification + pipelines + SPL hints) |
 | `POST /analysis/run` | Security-only tools | SOC pipeline with inventory load |
 | `POST /observability/run` | Ops tools | Observability pipeline |
@@ -156,7 +156,7 @@ See [11-environment-configuration.md](./11-environment-configuration.md).
 
 ## Inventory enrichment (cross-cutting)
 
-**Module:** `services/enrichment_resolver.py`  
+**Module:** `services/alert/enrichment_resolver.py`  
 **API:** `POST /api/v1/inventory/enrich`
 
 | Input | Processing | Output |
@@ -211,7 +211,7 @@ Key sections persisted and returned to clients:
 | `risk_context` | User/asset risk framing |
 | `admin_org_gap` | One suggested **admin** question when organizational context is missing ([LLD §5](./07-lld-low-level-design.md)) |
 | `framework_mapping` | ATT&CK / framework tags |
-| `investigation_questions` | Per-question SPL + optional `spl_results` (MCP SAIA + CIM `tstats`) |
+| `investigation_questions` | Per-question SPL + optional `spl_results` (REST `/predict` → MCP `splunk_run_query`, `search`-only execution path) |
 | `root_cause_spl` | Legacy single SPL field; investigation flow uses `investigation_questions` |
 | `evidence_refs` | Pointers to Splunk fields |
 | `threat_intel` | Compact VT findings (`last_analysis_stats`, reputation, tags) when enrichment ran |
@@ -239,7 +239,7 @@ Hunter MCP context is also passed into the Judge LLM user message so the verdict
 
 ### Admin organizational GAP (post-SOC)
 
-**Module:** `services/admin_org_gap.py`  
+**Module:** `services/soc_analysis/admin_org_gap.py`  
 **Trigger:** Automatically after every `run_analysis` (ingest triage, `/analysis/run`, `/analysis/route` security path, batch-by-sid).  
 **Not run** for Observability-only pipelines.
 
@@ -286,7 +286,7 @@ After the graph produces investigation **questions**, `finalize_investigation_qu
 2. **LiteLLM** fallback per question if predict fails
 3. **Rule-based `search`** if both above fail
 4. **Splunk parser** validation
-5. **MCP `splunk_run_query`** (All Time: `earliest=0` `latest=now`) — fills `spl_results`; REST oneshot fallback
+5. **MCP `splunk_run_query`** (All Time: SPL `earliest=1 latest=now`; REST/MCP job params `earliest_time=0`) — fills `spl_results`; REST oneshot fallback
 6. **Refine loop (max 2)** — on **error** or **0 rows**: LiteLLM execution refine → re-execute (`TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS`)
 
 See [13-cim-investigation-spl-mcp.md](./13-cim-investigation-spl-mcp.md) for full detail, `notes` tags, and troubleshooting.
@@ -313,7 +313,7 @@ flowchart TD
 
 ## Post-analysis Triage (priority queue)
 
-After SOC or Observability pipelines finish, **`services/triage_priority.py`** computes a **`TriageOutcome`** (DeeperSplunk-inspired) and attaches it to analysis results for sorting and review.
+After SOC or Observability pipelines finish, **`services/triage/triage_priority.py`** computes a **`TriageOutcome`** (DeeperSplunk-inspired) and attaches it to analysis results for sorting and review.
 
 **Full specification:** [08-triage-priority-layer.md](./08-triage-priority-layer.md) — scoring rules, API, persistence, UI, examples.
 
@@ -325,13 +325,13 @@ Summary:
 
 ## Agent triage orchestration
 
-**Module:** `services/agent_triage.py`  
+**Module:** `services/alert/agent_triage.py`  
 **API:** `POST /api/v1/agents/triage`
 
 Combines in one response:
 
 - Classification result  
-- Identity resolution  
+- Inventory enrichment  
 - Selected pipeline output(s)  
 - `security_triage` / `observability_triage` when pipelines ran  
 - SPL / MCP status hints  
@@ -347,7 +347,7 @@ Used by **background ingest** when `TSOC_INGEST_AUTO_ANALYZE_PIPELINE=triage`.
 | HTTP / validation | FastAPI + Pydantic | `api/`, `models/` |
 | Orchestration | LangGraph `StateGraph` | `soc_analysis_graph/graph.py` |
 | LLM calls | LiteLLM | `services/llm/litellm_service.py` ([doc 18](./18-llm-service-layer.md)) |
-| Splunk-native tools | MCP JSON-RPC | `splunk/mcp/`, `splunk_mcp_service.py` |
+| Splunk-native tools | MCP JSON-RPC | `splunk/mcp/`, `services/splunk_integration/splunk_mcp_service.py` |
 | Fallback | Template/rule-based stages when LiteLLM fails or is not configured | SOC/Obs prompt modules; classifier → `manual_review` |
 
 Prompt text lives under `services/prompts/` and SOC-specific prompt helpers.
@@ -361,7 +361,8 @@ Prompt text lives under `services/prompts/` and SOC-specific prompt helpers.
 | Admin org GAP (after SOC) | `admin_org_gap_suggest` | `attach_admin_org_gap` in SOC runner |
 | Observability run | `observability_analysis` | Observability runner |
 | Route decision | `agentic_ops_analysis` | `persist_agentic_ops_route_to_splunk` |
-| Identity call | `identity_resolve` | `persist_identity_resolve_to_splunk` |
+| Ingest background failure | `ingest_background_error` | `persist_ingest_background_error` |
+| Batch Security by sid | `soc_analysis_batch` | `soc_analysis_batch` runner |
 | LLM chat | `llm_chat_audit` | LiteLLM wrapper |
 | SOC evidence chain phase | `soc_investigation_evidence_chain` | `persist_soc_investigation_phases` |
 

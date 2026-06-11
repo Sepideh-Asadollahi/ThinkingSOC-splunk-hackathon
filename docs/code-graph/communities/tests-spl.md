@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 270 nodes
+Community of 249 nodes
 
-- **Size**: 270 nodes
-- **Cohesion**: 0.2800
+- **Size**: 249 nodes
+- **Cohesion**: 0.2886
 - **Dominant Language**: python
 
 ## Members
@@ -13,6 +13,7 @@ Community of 270 nodes
 | Name | Kind | File | Lines |
 |------|------|------|-------|
 | mcp_status_endpoint | Function | backend/api/routes/mcp.py | 28-32 |
+| mcp_spl_generate_endpoint | Function | backend/api/routes/mcp.py | 40-81 |
 | mcp_tool_call_endpoint | Function | backend/api/routes/mcp.py | 89-109 |
 | mcp_configured | Function | backend/config.py | 221-228 |
 | splunk_mcp_url_for | Function | backend/config.py | 231-237 |
@@ -29,8 +30,7 @@ Community of 270 nodes
 | McpJudgeEvidence | Class | backend/models/mcp.py | 40-46 |
 | McpStatusResponse | Class | backend/models/mcp.py | 64-71 |
 | McpToolCallResponse | Class | backend/models/mcp.py | 79-81 |
-| _merge_result_row | Function | backend/services/alert/alert_fields.py | 8-28 |
-| build_alert_fields_for_llm | Function | backend/services/alert/alert_fields.py | 31-61 |
+| McpSplGenerateResponse | Class | backend/models/mcp.py | 95-99 |
 | merge_alert_field_sample | Function | backend/services/investigation/investigation_question_context.py | 68-87 |
 | _fields_from_orig_search | Function | backend/services/investigation/investigation_question_context.py | 90-97 |
 | _truncate_val | Function | backend/services/investigation/investigation_question_context.py | 100-104 |
@@ -63,7 +63,7 @@ Community of 270 nodes
 | refine_spl_with_llm_on_error | Function | backend/services/investigation/spl_mcp_review.py | 357-441 |
 | refine_root_cause_spl_until_valid | Function | backend/services/investigation/spl_mcp_review.py | 444-503 |
 
-*... and 220 more members.*
+*... and 199 more members.*
 
 ## Execution Flows
 
@@ -83,36 +83,36 @@ Community of 270 nodes
 
 ### Outgoing
 
-- `get` (151 edge(s))
-- `append` (132 edge(s))
-- `strip` (108 edge(s))
-- `isinstance` (105 edge(s))
-- `format` (96 edge(s))
-- `str` (89 edge(s))
-- `len` (66 edge(s))
+- `get` (126 edge(s))
+- `append` (107 edge(s))
+- `isinstance` (84 edge(s))
+- `str` (82 edge(s))
+- `format` (80 edge(s))
+- `strip` (77 edge(s))
+- `len` (62 edge(s))
+- `info` (35 edge(s))
 - `getattr` (35 edge(s))
-- `info` (33 edge(s))
-- `lower` (29 edge(s))
-- `join` (27 edge(s))
-- `list` (24 edge(s))
 - `bool` (22 edge(s))
+- `lower` (22 edge(s))
+- `list` (22 edge(s))
 - `model_copy` (22 edge(s))
 - `patch` (22 edge(s))
+- `dumps` (21 edge(s))
 
 ### Incoming
 
 - `patch` (22 edge(s))
 - `backend/services/soc_analysis/soc_analysis_root_cause_spl.py` (15 edge(s))
-- `len` (15 edge(s))
 - `backend/services/llm/full_trace_log.py` (14 edge(s))
 - `backend/splunk/mcp/hunter_judge_context.py` (14 edge(s))
+- `len` (14 edge(s))
 - `backend/services/investigation/spl_mcp_review.py` (12 edge(s))
 - `model_copy` (12 edge(s))
 - `backend/services/investigation/spl_predict_pipeline.py` (10 edge(s))
 - `lower` (10 edge(s))
-- `get` (10 edge(s))
 - `backend/tests/test_splunk_live_mcp_saia.py` (10 edge(s))
+- `get` (9 edge(s))
 - `backend/services/investigation/investigation_questions_spl.py` (8 edge(s))
-- `backend/splunk/mcp/saia/parse.py` (8 edge(s))
+- `backend/models/mcp.py` (7 edge(s))
 - `backend/services/soc_analysis/soc_analysis_prompts.py` (7 edge(s))
-- `backend/services/soc_rag/compact_alert.py` (7 edge(s))
+- `object` (7 edge(s))

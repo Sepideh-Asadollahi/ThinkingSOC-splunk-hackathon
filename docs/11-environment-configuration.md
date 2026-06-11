@@ -9,7 +9,7 @@ Runtime settings for the hackathon demo are loaded from **environment variables*
 
 **Never commit** `.env`, `.env.local`, or real API keys. Field names match [`backend/config.py`](../backend/config.py) (`Settings` via pydantic-settings, `UPPER_SNAKE_CASE`).
 
-Some built-in keys can be overridden at runtime through the **Integrations** API (`services/integration_settings.py`); env / `.env` remains the bootstrap default.
+Some built-in keys can be overridden at runtime through the **Integrations** API (`services/platform/integration_settings.py`); env / `.env` remains the bootstrap default.
 
 **URL query parameters cannot override configuration.** The backend returns HTTP `400` if a request includes env-style query keys (e.g. `?auto_analyze=true`, `?TSOC_INGEST_AUTO_ANALYZE=false`). Use `backend/.env` or admin integration settings only.
 
@@ -159,8 +159,12 @@ See [02-integration-boundaries.md](./02-integration-boundaries.md) for webhook a
 | `TSOC_INGEST_ROW_BUFFER_SECONDS` | `3.0` | Seconds after the last POST for a `sid` before flush (0.5–60). |
 | `TSOC_INGEST_LOG_RAW_WEBHOOK_BODY` | `true` | Log full Splunk webhook JSON (`ingest_webhook_raw_json` + pretty multiline) to backend console. |
 | `TSOC_INGEST_TOKEN` | *(empty)* | Optional shared secret for Bearer auth on ingest routes. See [TSOC_INGEST_TOKEN](#tsoc_ingest_token-optional-ingest-auth) below. |
+| `TSOC_ADMIN_TOKEN` | *(empty)* | Optional admin bearer for `/integrations/settings` and other admin-only routes (`check_admin_bearer`). Separate from ingest token. |
 | `TSOC_ALERT_LOG_PATH` | — | Append each enriched payload as one JSON line per file. |
 | `TSOC_CLASSIFIER_LLM` | `true` | Classify alerts via LLM (full payload). |
+| `TSOC_RATE_LIMIT_ENABLED` | `true` | In-process rate limit on sensitive routes (analysis, agents, integrations, soc-chat). |
+| `TSOC_RATE_LIMIT_WINDOW_SECONDS` | `60` | Rate limit sliding window (seconds). |
+| `TSOC_RATE_LIMIT_MAX_REQUESTS` | `60` | Max requests per window per client IP. |
 
 **Security:** `RejectConfigQueryParamsMiddleware` (`backend/middleware/reject_config_query.py`) rejects requests whose query string contains env-style configuration keys (including legacy `auto_analyze` / `async_mode`). Use this section and admin integration settings only — never URL query overrides.
 
@@ -329,8 +333,8 @@ Investigation uses **`search` only** (no `tstats` / `datamodel` in the active pi
 | `TSOC_VECTOR_ENABLE` | `true` | Use Qdrant for semantic retrieval when reachable. |
 | `QDRANT_URL` | `http://127.0.0.1:6333` | Qdrant HTTP API. |
 | `QDRANT_COLLECTION` | `tsoc_soc_rag` | Collection name for alert/analysis embeddings. |
-| `TSOC_EMBEDDING_MODEL` | `bge-large` | FastEmbed embedding model — see table below. |
-| `TSOC_EMBEDDING_DIM` | `1024` | Informational; runtime dim is derived from the model. |
+| `TSOC_EMBEDDING_MODEL` | `BAAI/bge-base-en-v1.5` (`bge-base`) | FastEmbed embedding model — see table below. |
+| `TSOC_EMBEDDING_DIM` | `768` | Informational; runtime dim is derived from the model. |
 | `TSOC_FASTEMBED_CACHE_DIR` | `/opt/.thinking-soc-cache/fastembed` | ONNX cache directory (`Settings`). |
 | `FASTEMBED_CACHE_PATH` | (same) | Alias read by `embeddings.py` if `TSOC_FASTEMBED_CACHE_DIR` unset. |
 | `TSOC_RAG_SIMILAR_MAX` | `3` | Similar past alerts injected into analysis (max 5). |
@@ -344,11 +348,11 @@ Investigation uses **`search` only** (no `tstats` / `datamodel` in the active pi
 
 Copy `backend/.env.example` → `backend/.env` and set **one** value. Full guide: [docs/10-soc-vector-rag.md — Embedding model selection](10-soc-vector-rag.md#embedding-model-selection).
 
-| Value in `.env` | Also accepted | Full FastEmbed id | Download | Dim |
-|-----------------|---------------|-------------------|----------|-----|
-| `bge-small` | `small` | `BAAI/bge-small-en-v1.5` | ~33 MB | 384 |
-| `bge-base` | `base` | `BAAI/bge-base-en-v1.5` | ~220 MB | 768 |
-| `bge-large` | `large` | `BAAI/bge-large-en-v1.5` | ~1.2 GB | 1024 |
+| Value in `.env` | Also accepted | Full FastEmbed id | Download | Dim | Notes |
+|-----------------|---------------|-------------------|----------|-----|-------|
+| `bge-small` | `small` | `BAAI/bge-small-en-v1.5` | ~33 MB | 384 | Fastest download |
+| `bge-base` | `base` | `BAAI/bge-base-en-v1.5` | ~220 MB | 768 | **Default** in `config.py` / `.env.example` |
+| `bge-large` | `large` | `BAAI/bge-large-en-v1.5` | ~1.2 GB | 1024 | Best semantic match |
 
 You may use the **full id** column instead of a preset. After a change: restart the API, then backfill if Qdrant dimension changed (`TSOC_RAG_BACKFILL_ON_STARTUP` or `POST /api/v1/soc/rag/backfill`). Check active model: `GET /api/v1/soc/chat/status` → `embedding_model`, `embedding_dim`, `embedding_model_options`.
 

@@ -20,11 +20,11 @@ flowchart TB
   end
 
   subgraph domain [Domain services]
-    ING[ingest + alert_pipeline]
-    ID[identity_resolver]
+    ING[ingest + alert/alert_pipeline]
+    ENR[alert/enrichment_resolver]
     CLS[classifier + MCP enrich]
     PIP[soc / observability pipelines]
-    STO[splunk_json_store]
+    STO[splunk_json_store/]
   end
 
   subgraph integration [Integration]
@@ -45,16 +45,16 @@ flowchart TB
   R --> MW
   R --> DEP
   R --> ING
-  R --> ID
+  R --> ENR
   R --> CLS
   R --> PIP
   ING --> REST
+  ENR --> PG
   CLS --> MCP
   PIP --> LLM
   PIP --> MCP
   STO --> PG
   STO --> QD
-  ID --> PG
   PIP --> VT
   PG --> N4
 ```
@@ -74,7 +74,7 @@ flowchart TB
 | Splunk | Webhook + REST + optional MCP | Alert source, job results, native AI tools |
 | Ingest API | FastAPI | Accept handoff, normalize, trigger enrich |
 | REST client | `httpx` / Splunk SDK | Load full job rows by `sid` (v2 API) |
-| Identity service | PostgreSQL + resolver | Map alerts to users/assets |
+| Inventory enrichment | PostgreSQL + `alert/enrichment_resolver` | Map alerts to users/assets via built-in field maps |
 | Router | LLM classifier + optional MCP metadata | Select **Security** or **Observability** (exclusive) |
 | Security pipeline | LangGraph (`soc_analysis_graph`) | Defender → Hunter → **Judge** |
 | Observability pipeline | LangGraph / service modules | Diagnoser → Responder → **Ops Judge** |
@@ -91,18 +91,25 @@ flowchart TB
 sequenceDiagram
   participant C as Client Splunk
   participant I as ingest.py
+  participant BUF as ingest_accumulator
   participant P as alert_pipeline
   participant S as splunk_json_store
   participant B as ingest_background
 
   C->>I: POST splunk-ingest
   I->>I: normalize_splunk_ingest_payload
-  I->>P: enrich_alert_from_splunk
-  P-->>I: enriched dict + splunk_results
+  alt TSOC_INGEST_ROW_BUFFER=true (default)
+    I->>BUF: accumulate rows per sid
+    I-->>C: 202 Accepted status=buffered
+    BUF->>P: flush → enrich_alert_from_splunk
+  else buffer off
+    I->>P: enrich_alert_from_splunk
+    P-->>I: enriched dict + splunk_results
+  end
   alt TSOC_INGEST_AUTO_ANALYZE=true
-    I-->>C: 202 Accepted
     I->>B: BackgroundTasks run_post_ingest
     B->>S: persist_splunk_ingest_summary + triage
+    I-->>C: 202 Accepted (non-buffered path)
   else ingest-only
     I->>S: persist_splunk_ingest_summary
     I-->>C: 200 + enrichment JSON
@@ -112,11 +119,11 @@ sequenceDiagram
 | Phase | Module(s) | Output |
 |-------|-----------|--------|
 | Normalize | `models/handoff.py` | `SplunkAlertIngest` |
-| Enrich | `services/alert_pipeline.py` | `splunk_results[]`, metadata |
-| Store ingest | `services/splunk_json_store.py` | `tsoc_records` type `splunk_ingest` |
-| Agent triage (orchestration) | `services/ingest_background.py`, `agent_triage.py` | Classify + pipelines + route records |
-| Post-analysis triage (priority) | `services/triage_priority.py`, `api/routes/triage.py` | `TriageOutcome` on analysis + `GET /triage/queue` — see [08-triage-priority-layer.md](./08-triage-priority-layer.md) |
-| Admin org GAP (Security only) | `services/admin_org_gap.py` | `admin_org_gap` on `SocAnalysisResult` + `admin_org_gap_suggest` audit — see [07-lld-low-level-design.md](./07-lld-low-level-design.md) §5 |
+| Enrich | `services/alert/alert_pipeline.py` | `splunk_results[]`, metadata |
+| Store ingest | `services/splunk_json_store/` | `tsoc_records` type `splunk_ingest` |
+| Agent triage (orchestration) | `services/alert/ingest_background.py`, `services/alert/agent_triage.py` | Classify + pipelines + route records |
+| Post-analysis triage (priority) | `services/triage/triage_priority.py`, `api/routes/triage.py` | `TriageOutcome` on analysis + `GET /triage/queue` — see [08-triage-priority-layer.md](./08-triage-priority-layer.md) |
+| Admin org GAP (Security only) | `services/soc_analysis/admin_org_gap.py` | `admin_org_gap` on `SocAnalysisResult` + `admin_org_gap_suggest` audit — see [07-lld-low-level-design.md](./07-lld-low-level-design.md) §5 |
 
 ## Request lifecycle (API-driven path)
 
@@ -129,7 +136,11 @@ Operators and SDK clients can skip Splunk and call:
 | `POST /analysis/run` | Security pipeline with inventory load |
 | `POST /admin-org/gap-suggest` | Organizational GAP question (also runs automatically after SOC analysis) |
 | `POST /agents/triage` | Full agent-style orchestration response |
-| `POST /identity/resolve` | Identity only |
+| `POST /inventory/enrich` | Inventory enrichment only |
+| `GET /dashboard/overview` | Platform KPIs and health |
+| `GET/POST /investigation/records/{id}/…` | Investigation timeline and analyst actions |
+| `GET/POST /integrations/settings` | Runtime integration overrides (admin token) |
+| `GET /api/v1/graph/*` | Correlation graph (when `TSOC_CORRELATION_ENABLED=true`) |
 
 Same domain services as ingest — **no duplicate pipeline implementations** per entry point.
 
@@ -157,8 +168,11 @@ Configuration is environment-driven (`backend/.env` from `.env.example`):
 | `tsoc_records` | Append-only JSON audit (`tsoc_record_type`, `sid`, `payload`) |
 | `tsoc_users`, `tsoc_assets` | Inventory CRUD |
 | `tsoc_relationships` | User–asset links for enrichment |
+| `tsoc_rag_documents` | SOC vector RAG document index (PostgreSQL) |
+| `tsoc_chat_conversations`, `tsoc_chat_messages` | Persisted SOC chat sessions |
+| `graph_findings` | Correlation findings (PostgreSQL; schema via correlation startup) |
 
-Record types include: `splunk_ingest`, `soc_analysis`, `observability_analysis`, `agentic_ops_analysis`, `identity_resolve`, `llm_chat_audit`, `admin_org_gap_suggest`.
+Record types include: `splunk_ingest`, `agentic_ops_analysis`, `enrichment_resolve`, `soc_analysis`, `soc_analysis_audit`, `soc_analysis_batch`, `observability_analysis`, `ingest_background_error`, `admin_org_gap_suggest`, `llm_chat_audit`, `investigation_analyst_action`, `soc_investigation_*` (phase shards), `soc_investigation_evidence_chain`.
 
 Indexes support query by `sid` and `tsoc_record_type` + time — see `backend/db/schema.sql`.
 

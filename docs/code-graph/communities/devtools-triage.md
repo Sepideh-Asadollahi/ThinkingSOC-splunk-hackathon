@@ -2,16 +2,18 @@
 
 ## Overview
 
-Community of 87 nodes
+Community of 88 nodes
 
-- **Size**: 87 nodes
-- **Cohesion**: 0.3642
+- **Size**: 88 nodes
+- **Cohesion**: 0.3409
 - **Dominant Language**: python
 
 ## Members
 
 | Name | Kind | File | Lines |
 |------|------|------|-------|
+| dashboard_overview | Function | backend/api/routes/dashboard.py | 21-51 |
+| list_triage_queue | Function | backend/api/routes/triage.py | 25-66 |
 | AsyncTsocSdkClient | Class | backend/devtools/async_client.py | 37-283 |
 | __init__ | Function | backend/devtools/async_client.py | 38-51 |
 | _headers | Function | backend/devtools/async_client.py | 53-56 |
@@ -60,44 +62,42 @@ Community of 87 nodes
 | mcp_call_tool | Function | backend/devtools/client.py | 173-178 |
 | run_analysis | Function | backend/devtools/client.py | 182-187 |
 | run_analysis_by_sid | Function | backend/devtools/client.py | 189-194 |
-| search_events | Function | backend/devtools/client.py | 198-209 |
-| get_event | Function | backend/devtools/client.py | 211-213 |
 
-*... and 37 more members.*
+*... and 38 more members.*
 
 ## Execution Flows
 
-- **run_analysis** (criticality: 0.76, depth: 6)
 - **dashboard_overview** (criticality: 0.74, depth: 8)
 - **list_triage_queue** (criticality: 0.73, depth: 6)
-- **run_observability_analysis** (criticality: 0.71, depth: 5)
-- **compute_triage_from_judge_verdict** (criticality: 0.55, depth: 4)
-- **compute_triage_from_ops_judge** (criticality: 0.55, depth: 4)
 - **dashboard_overview** (criticality: 0.38, depth: 3)
 - **dashboard_overview** (criticality: 0.38, depth: 3)
 - **classify_alert** (criticality: 0.37, depth: 2)
 - **route_analysis** (criticality: 0.37, depth: 2)
-- *... and 36 more flows.*
+- **run_agent_triage** (criticality: 0.37, depth: 2)
+- **suggest_spl** (criticality: 0.37, depth: 2)
+- **mcp_generate_spl** (criticality: 0.37, depth: 2)
+- **mcp_call_tool** (criticality: 0.37, depth: 2)
+- *... and 32 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
 - `get` (24 edge(s))
-- `format` (20 edge(s))
+- `format` (22 edge(s))
 - `int` (15 edge(s))
 - `patch` (11 edge(s))
-- `BaseModel` (10 edge(s))
 - `json` (9 edge(s))
+- `BaseModel` (9 edge(s))
 - `raise_for_status` (8 edge(s))
 - `TsocTimeoutError` (8 edge(s))
 - `model_validate` (7 edge(s))
 - `acquire` (7 edge(s))
+- `perf_counter` (6 edge(s))
+- `backend/api/http_rid.py::http_rid` (6 edge(s))
+- `len` (5 edge(s))
 - `max` (5 edge(s))
 - `isinstance` (5 edge(s))
-- `fetchval` (5 edge(s))
-- `AsyncClient` (4 edge(s))
-- `range` (4 edge(s))
 
 ### Incoming
 
@@ -111,8 +111,8 @@ Community of 87 nodes
 - `range` (2 edge(s))
 - `len` (2 edge(s))
 - `issubset` (2 edge(s))
+- `backend/api/routes/dashboard.py` (1 edge(s))
+- `backend/api/routes/triage.py` (1 edge(s))
 - `backend/devtools/async_client.py` (1 edge(s))
 - `backend/devtools/client.py` (1 edge(s))
-- `backend/models/triage.py` (1 edge(s))
-- `backend/services/triage/triage_priority.py::compute_triage_outcome` (1 edge(s))
-- `backend/api/routes/dashboard.py::dashboard_overview` (1 edge(s))
+- `backend/services/platform/system_resources.py` (1 edge(s))

@@ -92,7 +92,8 @@ Verify after seed:
 ```bash
 docker exec tsoc-postgres psql -U tsoc -d tsoc -tAc "SELECT COUNT(*) FROM tsoc_users;"
 docker exec tsoc-postgres psql -U tsoc -d tsoc -tAc "SELECT COUNT(*) FROM tsoc_records;"
-# Expect 7 users and 4 records for the bundled moment snapshot
+# pg_dump restore: expect 7 users and many tsoc_records (full demo dump).
+# JSON snapshot fallback only: up to 4 newest tsoc_records rows in postgres_snapshot/
 ```
 
 ---

@@ -33,7 +33,7 @@ Configured in `backend/.env`. Presets in `embeddings.py` → `EMBEDDING_MODEL_PR
 | Preset | Alias | Full id | Download | Dim |
 |--------|-------|---------|----------|-----|
 | `bge-small` | `small` | `BAAI/bge-small-en-v1.5` | ~33 MB | 384 |
-| `bge-base` | `base` | `BAAI/bge-base-en-v1.5` | ~220 MB | 768 |
+| `bge-base` | `base` | `BAAI/bge-base-en-v1.5` | ~220 MB | 768 | **Default** |
 | `bge-large` | `large` | `BAAI/bge-large-en-v1.5` | ~1.2 GB | 1024 |
 
 See [Embedding model selection](../../../docs/10-soc-vector-rag.md#embedding-model-selection) and commented options in [`backend/.env.example`](../../.env.example).

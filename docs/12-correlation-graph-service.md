@@ -631,7 +631,7 @@ curl -s -X POST http://127.0.0.1:9876/api/v1/graph/internal/correlate \
 
 ## 12. SOC Chat integration
 
-SOC Chat (`/chat` in the UI, `POST /api/v1/soc/chat`) can answer questions about correlation data without opening the Graph Explorer.
+SOC Chat (`/soc-chat` in the UI, `POST /api/v1/soc/chat`) can answer questions about correlation data without opening the Graph Explorer.
 
 ### Data paths
 

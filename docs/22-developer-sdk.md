@@ -495,17 +495,17 @@ Returns SOC dashboard KPIs, triage statistics, activity timeline, and integratio
 |-------|------|-------------|
 | `kpis.total_records` | `int` | Total stored records |
 | `kpis.analyses_24h` | `int` | Analyses in last 24 hours |
-| `kpis.health_score` | `float` | System health score |
+| `health_score` | `int` | Integration readiness score (0–100, top-level field) |
 | `track_split` | `TrackSplit` | Count by security / observability (legacy `both` may appear in old data) |
-| `integrations` | `DashboardIntegrations` | Splunk/MCP/Postgres config status |
+| `integrations` | `DashboardIntegrations` | `postgres`, `llm`, `mcp`, `neo4j` booleans |
 
 **Example:**
 
 ```python
 overview = client.dashboard_overview()
-print(f"Health: {overview.kpis.health_score}%")
-print(f"Splunk configured: {overview.integrations.splunk_configured}")
-print(f"MCP configured: {overview.integrations.mcp_configured}")
+print(f"Health: {overview.health_score}%")
+print(f"Postgres: {overview.integrations.postgres}")
+print(f"MCP: {overview.integrations.mcp}")
 ```
 
 ---
@@ -645,7 +645,7 @@ Chronological investigation steps for an alert tied to a stored record. Traces t
 ```python
 timeline = client.investigation_timeline(42)
 for step in timeline["steps"]:
-    print(step["phase"], step.get("timestamp"))
+    print(step["title"], step["record_type"], step.get("created_at"))
 ```
 
 ---
@@ -879,7 +879,7 @@ Ready-to-use JSON files in [`backend/devtools/examples/`](../backend/devtools/ex
 | File | Endpoint | Scenario |
 |------|----------|----------|
 | `classify.json` | `/classification/alert` | Observability — CPU spike + latency on `web-prod-01` |
-| `route.json` | `/analysis/route` | Security — failed login with user/asset enrichment + identity rules |
+| `route.json` | `/analysis/route` | Security — failed login with user/asset inventory enrichment |
 | `agent.json` | `/agents/triage` | Security — full triage with operator goal "confirm lateral movement" |
 | `spl.json` | `/assistant/spl-suggest` | Security — root cause timeline for auth activity |
 | `mcp_generate.json` | `/mcp/spl-generate` | SAIA NL→SPL — "Show failed login attempts for user jdoe" |
@@ -905,7 +905,7 @@ The SDK provides **direct programmatic access** to Splunk capabilities:
 | **RAG over Splunk data** | `soc_chat()` | AI investigation chat grounded in indexed Splunk alerts and analyses |
 | **Investigation lifecycle** | `investigation_timeline()`, `analyst_actions()`, `add_analyst_action()` | Chronological tracing + human-in-the-loop gate |
 | **Triage prioritization** | `triage_queue()` | Priority-sorted analyst queue from analyzed Splunk alerts |
-| **Dual pipeline** | `run_analysis()` + `run_observability()` | Security and Observability parallel pipelines |
+| **Separate pipeline endpoints** | `run_analysis()` **or** `run_observability()` | Router selects **one** track per alert; SDK exposes each pipeline separately |
 | **Webhook alert action** | Separate ingest endpoint | SDK wraps downstream analysis triggered by alerts |
 
 This makes the SDK a **complete programmatic interface** to the ThinkingSOC platform, demonstrating **Splunk Developer Tools** usage across REST API v2 data retrieval, MCP Server tool invocation, SAIA AI-assisted SPL generation, RAG-powered investigation, and the full alert-to-triage lifecycle.

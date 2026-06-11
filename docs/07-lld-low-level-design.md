@@ -21,9 +21,13 @@ Splunk install target (typical): `/opt/splunk/etc/apps/ThinkingSOC_Hackathon_Spl
 
 ```text
 ThinkingSOC_Hackathon_Splunk_App/
+├── bin/
+│   └── thinkingsoc_hackathon.py    # modular alert action
 ├── default/
 │   ├── app.conf
-│   └── indexes.conf
+│   ├── alert_actions.conf
+│   ├── indexes.conf
+│   └── data/ui/alerts/thinkingsoc_hackathon.html
 └── metadata/
     └── default.meta
 
@@ -32,7 +36,7 @@ backend/data/demo/
 │   ├── tsoc_users.json
 │   ├── tsoc_assets.json
 │   ├── tsoc_relationships.json
-│   ├── tsoc_identity_rules.json
+│   ├── tsoc_identity_rules.json   # legacy demo seed only — enrichment uses built-in field maps
 │   ├── tsoc_records.json   # up to 6 newest rows by id
 │   └── graph_findings.json # newest correlation finding
 └── tsoc_*.csv             # fallback + scenario packs
@@ -89,7 +93,7 @@ On first demo seed (`install.sh` / `setup.py` / empty PostgreSQL), **`restore_po
 
 ### Enrichment pipeline (alert → risk context)
 
-1. **`enrich_from_inventory()`** (`services/enrichment_resolver.py`) matches alert `normalized` fields to `tsoc_users` / `tsoc_assets` (built-in field map).
+1. **`enrich_from_inventory()`** (`services/alert/enrichment_resolver.py`) matches alert `normalized` fields to `tsoc_users` / `tsoc_assets` (built-in field map).
 2. If only **user** or only **asset** is resolved, **`tsoc_relationships`** fills the missing side (highest criticality asset or highest user `risk_score` when multiple links exist).
 3. SOC / Observability runners call **`build_risk_context()`** with resolved ids + full inventory rows → `risk_context` string (criticality, risk scores, department) fed to LangGraph / Judge.
 4. **`POST /inventory/enrich`** exposes the same logic for UI/tests; analysis persists `enrichment` on `SocAnalysisResult`.
@@ -149,7 +153,7 @@ Splunk may return multiple statistics/events for one search (e.g. `| stats … |
 | `risk_context` | User/asset risk context |
 | `framework_mapping` | MITRE or similar (when available) |
 | `evidence_refs` | References to Splunk fields / data |
-| `investigation_questions` | List of `{ question, spl, cim_datamodel, explanation, time_window, pivots, notes, validation, spl_results }` — per-question CIM model + MCP SAIA + `tstats` ([13](./13-cim-investigation-spl-mcp.md)) |
+| `investigation_questions` | List of `{ question, spl, cim_datamodel, explanation, time_window, pivots, notes, validation, spl_results }` — per-question REST `/predict` + MCP `splunk_run_query` (`search`-only execution; `cim_datamodel` is optional metadata) ([13](./13-cim-investigation-spl-mcp.md)) |
 | `root_cause_spl` | Legacy single SPL object (assistant/triage); SOC UI prefers `investigation_questions` |
 | `threat_intel` | Optional compact VirusTotal findings ([09-virustotal-threat-intel.md](./09-virustotal-threat-intel.md)) |
 | `triage` | Post-analysis priority queue outcome ([08-triage-priority-layer.md](./08-triage-priority-layer.md)) |
@@ -175,7 +179,7 @@ After every successful Security analysis (`run_analysis`), the backend runs **ad
 
 **Standalone API:** `POST /api/v1/admin-org/gap-suggest` — same logic with alert + optional Defender/Hunter/Judge excerpts (for tools that do not run the full SOC graph).
 
-**Implementation:** `services/admin_org_gap.py` (`rule_based_admin_org_gap`, `suggest_admin_org_gap`, `attach_admin_org_gap`); prompt `services/prompts/prompt_admin_org_gap_system.md`.
+**Implementation:** `services/soc_analysis/admin_org_gap.py` (`rule_based_admin_org_gap`, `suggest_admin_org_gap`, `attach_admin_org_gap`); prompt `services/prompts/prompt_admin_org_gap_system.md`.
 
 ### Observability (`observability_analysis`)
 
@@ -219,7 +223,7 @@ sequenceDiagram
 
 ## 7. HTTP API surface (`/api/v1`)
 
-All paths are relative to the FastAPI app base URL (default `http://127.0.0.1:8000`).
+All paths are relative to the FastAPI app base URL (default `http://127.0.0.1:9876` per `TSOC_HTTP_PORT`).
 
 ### Ingest and health
 
@@ -238,7 +242,10 @@ All paths are relative to the FastAPI app base URL (default `http://127.0.0.1:80
 | `POST` | `/analysis/run` | Security pipeline |
 | `POST` | `/analysis/run-by-sid` | Batch Security analysis by `sid` |
 | `POST` | `/observability/run` | Observability pipeline |
+| `POST` | `/observability/run-by-sid` | Batch Observability analysis by `sid` |
 | `POST` | `/agents/triage` | Classify + run **one** pipeline + triage bundle |
+| `GET` | `/triage/queue` | Priority-sorted analyst queue (`track`, `limit`) |
+| `POST` | `/admin-org/gap-suggest` | Suggest one organizational GAP question for an admin |
 
 ### Alert classification contract
 
@@ -255,8 +262,6 @@ All paths are relative to the FastAPI app base URL (default `http://127.0.0.1:80
 **LLM input:** full JSON payload (`search_name`, `sid`, `normalized`, all `splunk_results`, optional `splunk_mcp`). See [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) § Agentic router.
 
 **Routing rule:** `/analysis/route` and `/agents/triage` use `if security` / `elif observability` — never run both pipelines for one alert.
-| `GET` | `/triage/queue` | Priority-sorted analyst queue (`track`, `limit`) |
-| `POST` | `/admin-org/gap-suggest` | Suggest one organizational GAP question for an admin (also runs automatically after SOC analysis) |
 
 ### Inventory
 
@@ -277,8 +282,10 @@ All paths are relative to the FastAPI app base URL (default `http://127.0.0.1:80
 |--------|------|------|
 | `POST` | `/assistant/spl-suggest` | Generate suggested SPL |
 | `GET` | `/mcp/status` | MCP connectivity and `saia_available` |
-| `POST` | `/mcp/...` | MCP tool proxies (see `backend/api/routes/mcp.py`) |
-| `GET` | `/storage/events` | Read `tsoc_records` |
+| `POST` | `/mcp/spl-generate` | Debug SAIA SPL generation |
+| `POST` | `/mcp/tools/call` | Generic MCP tool proxy |
+| `GET` | `/storage/events` | List `tsoc_records` (filter by `sid`, `record_type`) |
+| `GET` | `/storage/events/{record_id}` | Single record by PostgreSQL id |
 | `GET` | `/llm/status` | LiteLLM configuration status |
 | `POST` | `/llm/chat` | Direct LLM chat (audit logged) |
 | `GET` | `/soc/chat/status` | Postgres + Qdrant health, document count, correlation Neo4j flag |
@@ -288,6 +295,34 @@ All paths are relative to the FastAPI app base URL (default `http://127.0.0.1:80
 | `DELETE` | `/soc/chat/conversations/{id}` | Delete conversation and messages |
 | `POST` | `/soc/chat` | Chat body: `messages` + optional `conversation_id`; persists turns; routes narrative → RAG or statistical → Text-to-SQL |
 | `POST` | `/soc/rag/backfill` | Re-index from `tsoc_records` + inventory + **correlation** (Neo4j + `graph_findings`) |
+
+### Dashboard, investigation, integrations
+
+| Method | Path | Role |
+|--------|------|------|
+| `GET` | `/dashboard/overview` | Platform KPIs, triage charts, health score |
+| `GET` | `/investigation/records/{record_id}/timeline` | Chronological investigation steps |
+| `GET` | `/investigation/records/{record_id}/analyst-actions` | List analyst acknowledge/escalate actions |
+| `POST` | `/investigation/records/{record_id}/analyst-actions` | Record analyst action |
+| `GET` | `/integrations/settings` | List integration overrides (admin bearer) |
+| `GET` | `/integrations/settings/{setting_id}` | Get one setting |
+| `POST` | `/integrations/settings` | Create setting |
+| `PATCH` | `/integrations/settings/{setting_id}` | Update setting |
+| `DELETE` | `/integrations/settings/{setting_id}` | Delete setting |
+
+### Correlation graph (`TSOC_CORRELATION_ENABLED=true`)
+
+Mounted at `/api/v1/graph` via `services/correlation_integration.py`:
+
+| Method | Path | Role |
+|--------|------|------|
+| `GET` | `/graph/health` | Neo4j + Postgres connectivity |
+| `GET` | `/graph/findings` | List correlation findings |
+| `GET` | `/graph/findings/{finding_id}` | Finding detail |
+| `GET` | `/graph/topology/{finding_id}` | Graph topology for explorer |
+| `GET` | `/graph/attack-tree/{finding_id}` | Attack tree view |
+| `POST` | `/graph/analysis/discover-attack-paths` | Smart Attack Discovery |
+| `POST` | `/graph/internal/correlate` | Internal correlate hook |
 
 Route modules: `backend/api/routes/`. OpenAPI: `/docs` when the API is running.
 
@@ -301,10 +336,13 @@ Examples persisted in `payload` JSONB:
 | `soc_analysis` | Security pipeline output |
 | `observability_analysis` | Observability pipeline output |
 | `agentic_ops_analysis` | Combined router / triage output |
-| `identity_resolve` | Identity resolution audit |
+| `enrichment_resolve` | Inventory enrichment audit (`POST /inventory/enrich`) |
+| `ingest_background_error` | Background ingest/triage failure audit |
+| `soc_analysis_batch` | Batch Security analysis by `sid` summary |
+| `soc_analysis_audit` | Pipeline timing, tokens, model metadata |
+| `investigation_analyst_action` | Human acknowledge/escalate decision |
 | `llm_chat_audit` | LLM call audit |
 | `admin_org_gap_suggest` | Admin org-gap request/response audit (also embedded on `soc_analysis` as `analysis.admin_org_gap`) |
-| `soc_chat_audit` | SOC chat query audit (optional, future) |
 | `soc_investigation_evidence_chain` | Investigation phase record with the same `evidence_chain` object for timeline/audit |
 
 SOC vector RAG: table `tsoc_rag_documents`, Qdrant collection `tsoc_soc_rag` — [10-soc-vector-rag.md](./10-soc-vector-rag.md). `soc_analysis` may include `similar_alert_context` when RAG is enabled.
@@ -331,15 +369,22 @@ DDL is created on first use by `services/soc_rag/chat_store.py` (`ensure_chat_sc
 
 ## 10. UI scope (external app)
 
-Intended pages (implementation may be partial in `frontend/`):
+Implemented pages in `frontend/app/(app)/`:
 
 | Page | Purpose |
 |------|---------|
+| `dashboard` | Platform overview KPIs and health |
 | `inventory` | Users and assets |
 | `relationships` | User–asset mapping UI |
-| `analysis` | Pipeline results and integrated triage queue (priority table + investigation detail) |
-| `analysis/investigation/[id]` | Security investigation tabs — includes **Admin** tab / overview card when `admin_org_gap.should_suggest_question` is true, and **Evidence chain** tab when `analysis.evidence_chain` is present |
-| `splunk_connection` | Integration settings (Splunk REST, MCP, LiteLLM, …) |
+| `analysis` | Pipeline results and integrated triage queue |
+| `analysis/investigation/[id]` | Security investigation tabs — **Admin** and **Evidence chain** when present |
+| `analysis/ops-investigation/[id]` | Observability investigation detail |
+| `triage` | Priority-sorted analyst queue |
+| `correlation` | Graph correlation explorer |
+| `correlation/explorer` | Graph Explorer detail view |
+| `soc-chat` | SOC chat with RAG + Text-to-SQL |
+| `splunk-connection` | Integration settings (Splunk REST, MCP, LiteLLM, …) |
+
 No product UI is implemented inside Splunk Web for this hackathon.
 
 ### TriageOutcome (post-analysis)

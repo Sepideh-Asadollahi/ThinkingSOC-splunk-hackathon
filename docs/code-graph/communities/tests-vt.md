@@ -2,16 +2,24 @@
 
 ## Overview
 
-Community of 77 nodes
+Community of 95 nodes
 
-- **Size**: 77 nodes
-- **Cohesion**: 0.3784
+- **Size**: 95 nodes
+- **Cohesion**: 0.3280
 - **Dominant Language**: python
 
 ## Members
 
 | Name | Kind | File | Lines |
 |------|------|------|-------|
+| work | Function | backend/services/soc_analysis_graph/nodes_canonical.py | 72-93 |
+| _analyst_verdict_from_vt_stats | Function | backend/services/threat_intel/threat_intel_compact.py | 20-28 |
+| _compact_vt_ioc_display_entry | Function | backend/services/threat_intel/threat_intel_compact.py | 31-72 |
+| _compact_vt_ioc_entry | Function | backend/services/threat_intel/threat_intel_compact.py | 75-110 |
+| _is_significant_finding | Function | backend/services/threat_intel/threat_intel_compact.py | 113-130 |
+| _count_checked_iocs | Function | backend/services/threat_intel/threat_intel_compact.py | 133-145 |
+| _build_note | Function | backend/services/threat_intel/threat_intel_compact.py | 148-164 |
+| compact_threat_intel_for_analysis | Function | backend/services/threat_intel/threat_intel_compact.py | 167-221 |
 | is_public_ip | Function | backend/services/threat_intel/virustotal.py | 153-176 |
 | _norm_key | Function | backend/services/threat_intel/virustotal.py | 179-180 |
 | _split_mv | Function | backend/services/threat_intel/virustotal.py | 183-188 |
@@ -46,48 +54,41 @@ Community of 77 nodes
 | normalize_total_votes | Function | backend/services/threat_intel/virustotal_schema.py | 69-72 |
 | extract_vt_object | Function | backend/services/threat_intel/virustotal_schema.py | 75-97 |
 | build_vt_summary | Function | backend/services/threat_intel/virustotal_schema.py | 100-136 |
+| stats_imply_malicious | Function | backend/services/threat_intel/virustotal_schema.py | 139-140 |
+| stats_imply_suspicious | Function | backend/services/threat_intel/virustotal_schema.py | 143-144 |
 | vt_ip_response | Function | backend/tests/fixtures/virustotal_api.py | 8-28 |
 | vt_domain_response | Function | backend/tests/fixtures/virustotal_api.py | 31-51 |
 | vt_file_response | Function | backend/tests/fixtures/virustotal_api.py | 54-78 |
 | vt_url_response | Function | backend/tests/fixtures/virustotal_api.py | 81-102 |
-| TestIsPublicIp | Class | backend/tests/test_virustotal.py | 29-42 |
-| test_public_ipv4 | Test | backend/tests/test_virustotal.py | 30-32 |
-| test_private_and_special | Test | backend/tests/test_virustotal.py | 34-38 |
-| test_invalid | Test | backend/tests/test_virustotal.py | 40-42 |
-| TestUrlHelpers | Class | backend/tests/test_virustotal.py | 45-58 |
-| test_url_id_base64_matches_vt_spec | Test | backend/tests/test_virustotal.py | 46-49 |
-| test_host_from_url | Test | backend/tests/test_virustotal.py | 51-53 |
-| test_maybe_domain | Test | backend/tests/test_virustotal.py | 55-58 |
-| TestExtractIocs | Class | backend/tests/test_virustotal.py | 61-126 |
-| test_empty_when_max_zero | Test | backend/tests/test_virustotal.py | 62-64 |
-| test_priority_hash_before_ip_when_trimmed | Test | backend/tests/test_virustotal.py | 66-74 |
-| test_src_dest_hostname_not_domain_only_public_ip | Test | backend/tests/test_virustotal.py | 76-80 |
+| test_compact_filters_clean_iocs | Test | backend/tests/test_threat_intel_compact.py | 6-33 |
+| test_compact_keeps_malicious_iocs | Test | backend/tests/test_threat_intel_compact.py | 36-75 |
 
-*... and 27 more members.*
+*... and 45 more members.*
 
 ## Execution Flows
 
+- **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **work** (criticality: 0.72, depth: 5)
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (23 edge(s))
-- `format` (16 edge(s))
-- `isinstance` (15 edge(s))
-- `len` (12 edge(s))
+- `get` (90 edge(s))
+- `isinstance` (33 edge(s))
+- `format` (21 edge(s))
+- `len` (20 edge(s))
+- `append` (12 edge(s))
+- `str` (12 edge(s))
 - `AsyncMock` (12 edge(s))
 - `strip` (11 edge(s))
 - `MagicMock` (10 edge(s))
 - `model_copy` (9 edge(s))
 - `info` (8 edge(s))
-- `append` (8 edge(s))
+- `int` (7 edge(s))
 - `lower` (7 edge(s))
 - `startswith` (7 edge(s))
-- `str` (6 edge(s))
-- `warning` (4 edge(s))
-- `quote` (4 edge(s))
+- `list` (4 edge(s))
 
 ### Incoming
 
@@ -96,13 +97,13 @@ Community of 77 nodes
 - `MagicMock` (10 edge(s))
 - `backend/tests/test_virustotal.py` (9 edge(s))
 - `model_copy` (9 edge(s))
-- `backend/tests/test_virustotal_schema.py` (7 edge(s))
-- `backend/services/threat_intel/virustotal_schema.py` (5 edge(s))
+- `backend/tests/test_virustotal_schema.py` (9 edge(s))
+- `backend/services/threat_intel/threat_intel_compact.py` (7 edge(s))
+- `backend/services/threat_intel/virustotal_schema.py` (7 edge(s))
+- `backend/tests/test_threat_intel_compact.py` (6 edge(s))
 - `backend/tests/fixtures/virustotal_api.py` (4 edge(s))
+- `len` (4 edge(s))
 - `patch` (4 edge(s))
+- `backend/services/soc_analysis_graph/nodes_canonical.py` (3 edge(s))
 - `configured` (2 edge(s))
 - `domain_report` (2 edge(s))
-- `any` (2 edge(s))
-- `ip_report` (2 edge(s))
-- `backend/services/soc_analysis_graph/nodes_canonical.py::work` (1 edge(s))
-- `rstrip` (1 edge(s))

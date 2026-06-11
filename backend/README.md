@@ -46,7 +46,7 @@ Copy `.env.example` to `.env` and set Splunk credentials, PostgreSQL DSN, and op
 
 ### LiteLLM (`.env`)
 
-All LLM calls go through **LiteLLM** (`services/litellm_service.py`). Configure model, keys, timeout, and token limits in **`backend/.env`** (see `.env.example`): `LITELLM_MODEL`, `LITELLM_API_KEY` / `LITELLM_API_BASE`, `LITELLM_TIMEOUT_SECONDS`, `LITELLM_ANALYSIS_MAX_TOKENS`, `LITELLM_ANALYSIS_TEMPERATURE`, optional `LITELLM_CHAT_DEFAULT_TEMPERATURE`. SOC/Observability pipelines always attempt LiteLLM; on failure they fall back to rule-based stages. `GET /api/v1/llm/status` returns non-secret settings. Structure: [../docs/04-agents-and-pipelines.md](../docs/04-agents-and-pipelines.md).
+All LLM calls go through **LiteLLM** (`services/llm/litellm_service.py`). Configure model, keys, timeout, and token limits in **`backend/.env`** (see `.env.example`): `LITELLM_MODEL`, `LITELLM_API_KEY` / `LITELLM_API_BASE`, `LITELLM_TIMEOUT_SECONDS`, `LITELLM_ANALYSIS_MAX_TOKENS`, `LITELLM_ANALYSIS_TEMPERATURE`, optional `LITELLM_CHAT_DEFAULT_TEMPERATURE`. SOC/Observability pipelines always attempt LiteLLM; on failure they fall back to rule-based stages. `GET /api/v1/llm/status` returns non-secret settings. Structure: [../docs/04-agents-and-pipelines.md](../docs/04-agents-and-pipelines.md).
 
 **Storage (PostgreSQL):** backend writes ingest/analysis/audit JSON records into PostgreSQL (`TSOC_POSTGRES_DSN`).
 
@@ -100,7 +100,7 @@ Live Splunk tests are separately marked `splunk_live` and require `TSOC_RUN_SPLU
 
 - `GET /health`
 - `POST /api/v1/alerts/splunk-ingest` — JSON handoff from Splunk alert action (`result` + optional `results[]`; Bearer if `TSOC_INGEST_TOKEN` set). Returns `202` when `TSOC_INGEST_AUTO_ANALYZE=true` (default), else `200`. **Configuration is not overridable via URL query parameters.** Multi-row jobs: row buffer per `sid` → REST enrich → **sequential per-row triage** (storage `sid` suffix `-1`, `-2`, …); see [docs/02-integration-boundaries.md](../docs/02-integration-boundaries.md).
-- `POST /api/v1/classification/alert` — classify alert into `security|observability|both|unknown` (optional `sid` enrichment)
+- `POST /api/v1/classification/alert` — LLM classify into `security|observability|unknown` → `recommended_pipeline` is `security`, `observability`, or `manual_review` (exclusive — never both pipelines; optional `sid` enrichment)
 - `GET /api/v1/llm/status` — LiteLLM config surface (no secrets); see [docs/04-agents-and-pipelines.md](../docs/04-agents-and-pipelines.md)
 - `POST /api/v1/llm/chat` — chat completion via LiteLLM (`messages` array); same Bearer rule as ingest when `TSOC_INGEST_TOKEN` is set
 - `POST /api/v1/assistant/spl-suggest` — SPL via REST `/predict` (UI path), MCP execute (All Time), LiteLLM/rule fallback — [docs/13-cim-investigation-spl-mcp.md](../docs/13-cim-investigation-spl-mcp.md)
@@ -143,7 +143,7 @@ cd backend && docker compose up -d   # postgres + qdrant
 |--------|----------|-----|----------|
 | `bge-small` | ~33 MB | 384 | Dev, slow internet |
 | `bge-base` | ~220 MB | 768 | Balance |
-| `bge-large` | ~1.2 GB | 1024 | Default / demo |
+| `bge-large` | ~1.2 GB | 1024 | Best quality; slow download |
 
 Pre-download: `bash scripts/download-embedding-model.sh bge-small`. After switching models, restart the API and run backfill if Qdrant dimension changed.
 

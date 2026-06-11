@@ -2,117 +2,117 @@
 
 ## Overview
 
-Community of 150 nodes
+Community of 113 nodes
 
-- **Size**: 150 nodes
-- **Cohesion**: 0.2875
+- **Size**: 113 nodes
+- **Cohesion**: 0.1973
 - **Dominant Language**: python
 
 ## Members
 
 | Name | Kind | File | Lines |
 |------|------|------|-------|
+| ChatCompletionResponse | Class | backend/api/routes/llm.py | 38-42 |
+| llm_chat | Function | backend/api/routes/llm.py | 65-136 |
+| soc_chat | Function | backend/api/routes/soc_chat.py | 186-240 |
 | AdminOrgGapSuggestRequest | Class | backend/models/admin_org.py | 10-23 |
 | AdminOrgGapSuggestResponse | Class | backend/models/admin_org.py | 26-32 |
-| FrameworkMappingItem | Class | backend/models/analysis.py | 15-20 |
-| JudgeVerdict | Class | backend/models/analysis.py | 23-32 |
-| HunterSection | Class | backend/models/analysis.py | 35-43 |
-| EvidenceChain | Class | backend/models/analysis.py | 134-141 |
-| SocAnalysisResult | Class | backend/models/analysis.py | 144-184 |
-| AnalysisRunRequest | Class | backend/models/analysis.py | 187-203 |
-| EnrichmentResult | Class | backend/models/enrichment.py | 10-15 |
-| McpAlertContext | Class | backend/models/mcp.py | 49-61 |
-| EntityResolution | Class | backend/models/observability.py | 13-18 |
-| TriageFactor | Class | backend/models/triage.py | 14-22 |
-| TriageReport | Class | backend/models/triage.py | 25-36 |
-| _norm_str | Function | backend/services/alert/enrichment_resolver.py | 33-36 |
-| _rows_matching_exact | Function | backend/services/alert/enrichment_resolver.py | 39-56 |
-| _pick_asset_row | Function | backend/services/alert/enrichment_resolver.py | 59-69 |
-| _pick_user_row | Function | backend/services/alert/enrichment_resolver.py | 72-75 |
-| _match_assets | Function | backend/services/alert/enrichment_resolver.py | 78-95 |
-| _match_users | Function | backend/services/alert/enrichment_resolver.py | 98-120 |
-| _asset_criticality_rank | Function | backend/services/alert/enrichment_resolver.py | 123-127 |
-| _user_risk_rank | Function | backend/services/alert/enrichment_resolver.py | 130-137 |
-| _pick_relationship_for_user | Function | backend/services/alert/enrichment_resolver.py | 140-153 |
-| _pick_relationship_for_asset | Function | backend/services/alert/enrichment_resolver.py | 156-169 |
-| _apply_relationships | Function | backend/services/alert/enrichment_resolver.py | 172-209 |
-| enrich_from_inventory | Function | backend/services/alert/enrichment_resolver.py | 212-256 |
-| _norm | Function | backend/services/observability_analysis/entity.py | 12-13 |
-| _find_asset_by_host_or_ip | Function | backend/services/observability_analysis/entity.py | 16-23 |
-| build_entity_resolution | Function | backend/services/observability_analysis/entity.py | 26-60 |
+| RootCauseHypothesis | Class | backend/models/observability.py | 29-33 |
+| DiagnoserSection | Class | backend/models/observability.py | 36-38 |
+| ResponderSection | Class | backend/models/observability.py | 41-43 |
+| OpsJudgeVerdict | Class | backend/models/observability.py | 46-52 |
+| _truncate_saia_prompt | Function | backend/services/investigation/saia_prompt_prepare.py | 24-30 |
+| _compact_alert_for_prepare | Function | backend/services/investigation/saia_prompt_prepare.py | 33-65 |
+| _prepare_user_message | Function | backend/services/investigation/saia_prompt_prepare.py | 68-92 |
+| prepare_saia_prompt_with_llm | Function | backend/services/investigation/saia_prompt_prepare.py | 95-149 |
+| _cap_max_tokens | Function | backend/services/llm/litellm_service.py | 14-18 |
+| LiteLLMNotConfiguredError | Class | backend/services/llm/litellm_service.py | 21-22 |
+| LiteLLMProviderError | Class | backend/services/llm/litellm_service.py | 25-37 |
+| __init__ | Function | backend/services/llm/litellm_service.py | 28-37 |
+| provider_error_http_status | Function | backend/services/llm/litellm_service.py | 40-49 |
+| _connection_indicators | Function | backend/services/llm/litellm_service.py | 52-67 |
+| _map_litellm_exception | Function | backend/services/llm/litellm_service.py | 70-135 |
+| _normalize_messages | Function | backend/services/llm/litellm_service.py | 138-148 |
+| litellm_chat_completion | Function | backend/services/llm/litellm_service.py | 151-258 |
+| saia_mcp_prompt_max_chars | Function | backend/services/llm/llm_context_budget.py | 52-54 |
+| _append_thinking | Function | backend/services/llm/thinking_content.py | 45-48 |
+| _extract_thinking_blocks | Function | backend/services/llm/thinking_content.py | 51-67 |
+| _strip_tag_blocks | Function | backend/services/llm/thinking_content.py | 70-84 |
+| split_thinking_and_answer | Function | backend/services/llm/thinking_content.py | 87-114 |
+| split_litellm_message | Function | backend/services/llm/thinking_content.py | 117-161 |
+| _to_float | Function | backend/services/observability_analysis/diagnoser.py | 10-16 |
+| _build_searches | Function | backend/services/observability_analysis/diagnoser.py | 19-27 |
+| build_diagnoser | Function | backend/services/observability_analysis/diagnoser.py | 30-101 |
+| build_ops_judge | Function | backend/services/observability_analysis/judge.py | 8-46 |
+| _context_json | Function | backend/services/observability_analysis/llm.py | 19-20 |
+| _llm_json_response | Function | backend/services/observability_analysis/llm.py | 23-33 |
+| _to_diagnoser | Function | backend/services/observability_analysis/llm.py | 36-58 |
+| _to_responder | Function | backend/services/observability_analysis/llm.py | 61-70 |
+| _to_ops_judge | Function | backend/services/observability_analysis/llm.py | 73-82 |
+| build_diagnoser_llm | Function | backend/services/observability_analysis/llm.py | 85-89 |
+| build_responder_llm | Function | backend/services/observability_analysis/llm.py | 92-96 |
+| build_ops_judge_llm | Function | backend/services/observability_analysis/llm.py | 99-103 |
+| _load_prompt_file | Function | backend/services/observability_analysis/observability_prompts.py | 14-15 |
+| load_observability_diagnoser_system_prompt | Function | backend/services/observability_analysis/observability_prompts.py | 18-19 |
+| load_observability_responder_system_prompt | Function | backend/services/observability_analysis/observability_prompts.py | 22-23 |
+| load_observability_ops_judge_system_prompt | Function | backend/services/observability_analysis/observability_prompts.py | 26-27 |
+| build_responder | Function | backend/services/observability_analysis/responder.py | 8-27 |
 | _truncate | Function | backend/services/soc_analysis/admin_org_gap.py | 54-60 |
 | _alert_text_blob | Function | backend/services/soc_analysis/admin_org_gap.py | 63-80 |
 | _host_label | Function | backend/services/soc_analysis/admin_org_gap.py | 83-92 |
 | _detect_process_org_gap | Function | backend/services/soc_analysis/admin_org_gap.py | 95-111 |
 | _weak_identity | Function | backend/services/soc_analysis/admin_org_gap.py | 114-115 |
-| rule_based_admin_org_gap | Function | backend/services/soc_analysis/admin_org_gap.py | 118-161 |
-| build_admin_org_gap_request | Function | backend/services/soc_analysis/admin_org_gap.py | 164-181 |
-| attach_admin_org_gap | Function | backend/services/soc_analysis/admin_org_gap.py | 184-193 |
-| _fallback_response | Function | backend/services/soc_analysis/admin_org_gap.py | 196-207 |
-| suggest_admin_org_gap | Function | backend/services/soc_analysis/admin_org_gap.py | 210-287 |
-| build_analysis_output | Function | backend/services/soc_analysis/analysis_audit.py | 149-170 |
-| _parse_hunter_mcp | Function | backend/services/soc_analysis/assembly.py | 25-31 |
-| _parse_judge_mcp | Function | backend/services/soc_analysis/assembly.py | 34-40 |
-| assemble_from_langgraph | Function | backend/services/soc_analysis/assembly.py | 43-126 |
-| build_fallback_soc_result | Function | backend/services/soc_analysis/fallback_result.py | 23-98 |
-| _norm_framework | Function | backend/services/soc_analysis/framework_mapping.py | 23-24 |
-| is_mitre_framework | Function | backend/services/soc_analysis/framework_mapping.py | 27-29 |
-| is_kill_chain_framework | Function | backend/services/soc_analysis/framework_mapping.py | 32-34 |
-| parse_framework_mapping_items | Function | backend/services/soc_analysis/framework_mapping.py | 37-61 |
-| default_dual_framework_fallback | Function | backend/services/soc_analysis/framework_mapping.py | 64-80 |
-| _infer_kill_chain_phase | Function | backend/services/soc_analysis/framework_mapping.py | 83-97 |
-| ensure_mitre_and_kill_chain | Function | backend/services/soc_analysis/framework_mapping.py | 100-137 |
 
-*... and 100 more members.*
+*... and 63 more members.*
 
 ## Execution Flows
 
 - **admin_org_gap_suggest** (criticality: 0.80, depth: 5)
+- **assistant_spl_suggest** (criticality: 0.77, depth: 9)
 - **assemble_from_langgraph** (criticality: 0.77, depth: 8)
 - **run_analysis** (criticality: 0.76, depth: 6)
 - **agent_triage_endpoint** (criticality: 0.76, depth: 8)
+- **soc_chat** (criticality: 0.75, depth: 5)
 - **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
-- **dashboard_overview** (criticality: 0.74, depth: 8)
-- **list_triage_queue** (criticality: 0.73, depth: 6)
-- **work** (criticality: 0.72, depth: 5)
-- **build_fallback_soc_result** (criticality: 0.71, depth: 5)
-- **run_soc_analysis_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
-- *... and 7 more flows.*
+- **work** (criticality: 0.74, depth: 6)
+- **classify_alert_endpoint** (criticality: 0.73, depth: 6)
+- **review_spl_from_mcp_with_llm** (criticality: 0.73, depth: 5)
+- *... and 8 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
-- `get` (185 edge(s))
-- `format` (59 edge(s))
-- `append` (53 edge(s))
-- `isinstance` (50 edge(s))
-- `str` (49 edge(s))
-- `patch` (25 edge(s))
-- `strip` (24 edge(s))
-- `len` (24 edge(s))
-- `lower` (18 edge(s))
-- `BaseModel` (13 edge(s))
-- `any` (13 edge(s))
-- `model_validate` (10 edge(s))
-- `int` (9 edge(s))
-- `join` (9 edge(s))
-- `replace` (8 edge(s))
+- `get` (82 edge(s))
+- `str` (74 edge(s))
+- `strip` (61 edge(s))
+- `len` (50 edge(s))
+- `format` (50 edge(s))
+- `info` (38 edge(s))
+- `append` (37 edge(s))
+- `isinstance` (27 edge(s))
+- `lower` (22 edge(s))
+- `warning` (18 edge(s))
+- `getattr` (17 edge(s))
+- `join` (15 edge(s))
+- `int` (12 edge(s))
+- `perf_counter` (10 edge(s))
+- `HTTPException` (9 edge(s))
 
 ### Incoming
 
-- `patch` (25 edge(s))
-- `backend/services/triage/triage_priority.py` (20 edge(s))
-- `backend/services/alert/enrichment_resolver.py` (12 edge(s))
 - `backend/services/soc_analysis/admin_org_gap.py` (10 edge(s))
-- `backend/tests/test_triage_priority.py` (10 edge(s))
-- `backend/tests/test_admin_org_gap.py` (9 edge(s))
-- `backend/tests/test_enrichment_resolver.py` (9 edge(s))
-- `backend/services/soc_analysis/framework_mapping.py` (7 edge(s))
-- `backend/services/threat_intel/threat_intel_compact.py` (7 edge(s))
-- `len` (7 edge(s))
-- `backend/models/analysis.py` (6 edge(s))
-- `any` (6 edge(s))
-- `backend/tests/test_threat_intel_compact.py` (6 edge(s))
-- `lower` (5 edge(s))
-- `get` (5 edge(s))
+- `backend/services/llm/litellm_service.py` (8 edge(s))
+- `backend/services/observability_analysis/llm.py` (8 edge(s))
+- `backend/services/soc_analysis/soc_analysis_json.py` (8 edge(s))
+- `lower` (8 edge(s))
+- `backend/tests/test_soc_analysis_json.py` (7 edge(s))
+- `backend/services/soc_rag/chat.py` (6 edge(s))
+- `backend/services/soc_rag/sql_chat/answer.py` (6 edge(s))
+- `backend/services/soc_rag/sql_chat/generate.py` (6 edge(s))
+- `backend/tests/test_admin_org_gap.py` (6 edge(s))
+- `backend/services/llm/thinking_content.py` (5 edge(s))
+- `patch` (5 edge(s))
+- `backend/models/observability.py` (4 edge(s))
+- `backend/services/investigation/saia_prompt_prepare.py` (4 edge(s))
+- `backend/services/observability_analysis/observability_prompts.py` (4 edge(s))

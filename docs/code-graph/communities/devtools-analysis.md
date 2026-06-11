@@ -2,10 +2,10 @@
 
 ## Overview
 
-Community of 67 nodes
+Community of 61 nodes
 
-- **Size**: 67 nodes
-- **Cohesion**: 0.5019
+- **Size**: 61 nodes
+- **Cohesion**: 0.4917
 - **Dominant Language**: python
 
 ## Members
@@ -63,28 +63,27 @@ Community of 67 nodes
 | search_events | Function | backend/devtools/client.py | 198-209 |
 | get_event | Function | backend/devtools/client.py | 211-213 |
 
-*... and 17 more members.*
+*... and 11 more members.*
 
 ## Execution Flows
 
-- **run_routed_analysis_endpoint** (criticality: 0.74, depth: 7)
-- **mcp_tool_call_endpoint** (criticality: 0.71, depth: 2)
-- **run_soc_analysis_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
-- **run_observability_batch_by_sid_endpoint** (criticality: 0.71, depth: 4)
-- **run_observability_analysis** (criticality: 0.71, depth: 5)
-- **mcp_spl_generate_endpoint** (criticality: 0.65, depth: 2)
 - **dashboard_overview** (criticality: 0.38, depth: 3)
 - **dashboard_overview** (criticality: 0.38, depth: 3)
 - **classify_alert** (criticality: 0.37, depth: 2)
 - **route_analysis** (criticality: 0.37, depth: 2)
-- *... and 36 more flows.*
+- **run_agent_triage** (criticality: 0.37, depth: 2)
+- **suggest_spl** (criticality: 0.37, depth: 2)
+- **mcp_generate_spl** (criticality: 0.37, depth: 2)
+- **mcp_call_tool** (criticality: 0.37, depth: 2)
+- **run_analysis** (criticality: 0.37, depth: 2)
+- **run_analysis_by_sid** (criticality: 0.37, depth: 2)
+- *... and 30 more flows.*
 
 ## Dependencies
 
 ### Outgoing
 
 - `format` (20 edge(s))
-- `BaseModel` (9 edge(s))
 - `raise_for_status` (8 edge(s))
 - `json` (8 edge(s))
 - `TsocTimeoutError` (8 edge(s))
@@ -95,22 +94,13 @@ Community of 67 nodes
 - `post` (4 edge(s))
 - `TsocApiError` (4 edge(s))
 - `Client` (4 edge(s))
+- `BaseModel` (3 edge(s))
 - `rstrip` (2 edge(s))
 - `int` (2 edge(s))
 - `float` (2 edge(s))
 
 ### Incoming
 
-- `backend/api/routes/mcp.py::mcp_spl_generate_endpoint` (2 edge(s))
-- `backend/models/mcp.py` (2 edge(s))
-- `backend/models/observability.py` (2 edge(s))
 - `backend/devtools/async_client.py` (1 edge(s))
 - `backend/devtools/client.py` (1 edge(s))
-- `backend/api/routes/analysis.py::run_routed_analysis_endpoint` (1 edge(s))
-- `backend/models/agentic_ops.py` (1 edge(s))
-- `backend/models/analysis.py` (1 edge(s))
-- `backend/services/soc_analysis/soc_analysis_batch.py::run_analysis_batch_by_sid` (1 edge(s))
-- `backend/api/routes/mcp.py::mcp_tool_call_endpoint` (1 edge(s))
-- `backend/services/observability_analysis/runner.py::run_observability_analysis` (1 edge(s))
-- `backend/services/observability_analysis/observability_analysis_batch.py::run_observability_batch_by_sid` (1 edge(s))
 - `backend/services/soc_rag/models.py` (1 edge(s))

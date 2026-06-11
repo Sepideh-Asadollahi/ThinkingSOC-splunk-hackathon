@@ -1,12 +1,12 @@
 # ThinkingSOC Agentic Ops Router
 
-Splunk **10+** alert handoff → external FastAPI backend → identity resolution → **Security / Observability** agent pipelines → **Judge** verdict and structured outputs (PostgreSQL). Optional **Next.js** analyst UI for the hackathon demo.
+Splunk **10+** alert handoff → external FastAPI backend → **Agentic Ops Router** (exclusive Security or Observability) → multi-agent pipelines with inventory-aware reasoning → **Judge** verdict and structured outputs (PostgreSQL). Optional **Next.js** analyst UI for the hackathon demo.
 
 | Resource | Description |
 |----------|-------------|
 | [Installation](#installation) | **Start here** — automatic install (recommended) or manual steps |
 | [Architecture diagram](#architecture-diagram) | System integration (Mermaid, in README) · [full doc](architecture_diagram.md) |
-| [docs/](docs/README.md) | HLD, LLD, agents, integration boundaries |
+| [docs/](docs/README.md) | HLD, LLD, agents, integration boundaries · [architecture views](docs/architecture-views.md) |
 | [Developer SDK & CLI](docs/22-developer-sdk.md) | Typed Python SDK, CLI, evaluation runner |
 | [Submission & evidence pack](submission/README.md) | Devpost evidence scripts; judging criteria mapping (local: `project-engineering/github-extras/08-judging-evidence.md`) |
 | [docs/code-graph/graph.html](docs/code-graph/graph.html) | Interactive codebase graph |
@@ -30,12 +30,12 @@ flowchart LR
 
   subgraph entry ["Entry Points"]
     SDK["Devtools SDK / CLI"]
-    ManualAPI["REST APIs\n/analysis · /agents · /observability"]
+    ManualAPI["REST APIs\n/classification · /analysis · /agents · /observability"]
   end
 
   subgraph backend ["FastAPI Backend :9876"]
     Ingest["Ingest API\nPOST /alerts/splunk-ingest"]
-    Enrich["Inventory Enrichment\nusers / assets / relationships"]
+    RESTEnrich["REST Enrichment\nall job rows by sid"]
     Router{"Agentic Ops Router\nLLM classifier (exclusive)"}
 
     subgraph secPipeline ["Security Pipeline (LangGraph)"]
@@ -49,12 +49,13 @@ flowchart LR
     end
 
     subgraph obsPipeline ["Observability Pipeline"]
+      ObsEnrich["enrich_from_inventory"]
       Entity["Entity Resolution"]
       Impact["Impact Context"]
       Diagnoser["Diagnoser"]
       Responder["Responder"]
       OpsJudge["Ops Judge"]
-      Entity --> Impact --> Diagnoser --> Responder --> OpsJudge
+      ObsEnrich --> Entity --> Impact --> Diagnoser --> Responder --> OpsJudge
     end
 
     Triage["Triage Priority\nscore + verdict + queue"]
@@ -89,11 +90,12 @@ flowchart LR
   ManualAPI --> Ingest
 
   Ingest -->|"GET /jobs/{sid}/results"| REST
-  Ingest --> Enrich --> Router
+  REST --> RESTEnrich
+  Ingest --> RESTEnrich --> Router
   Router -->|"optional MCP context"| MCP
 
   Router -->|security| SecPrep
-  Router -->|observability| Entity
+  Router -->|observability| ObsEnrich
   Router -->|manual_review| Triage
 
   SecPrep --> VTApi
@@ -138,8 +140,8 @@ flowchart LR
 | **Alert handoff** | Splunk webhook → `POST /api/v1/alerts/splunk-ingest` (`sid` + sample row) |
 | **Full context** | Splunk REST v2 loads all job rows by `sid` |
 | **Routing** | LLM-only Agentic Ops Router → **Security** or **Observability** (exclusive); `manual_review` when unclear |
-| **Security analysis** | LangGraph: prepare → risk_engine → virustotal → Defender → Hunter → Judge → SPL |
-| **Observability analysis** | Entity → Impact → Diagnoser → Responder → Ops Judge |
+| **Security analysis** | After routing: inventory enrichment → LangGraph: prepare → risk_engine → virustotal → Defender → Hunter → Judge → SPL |
+| **Observability analysis** | After routing: enrich_from_inventory → Entity → Impact → Diagnoser → Responder → Ops Judge |
 | **Splunk AI tools** | MCP (`splunk_run_query`, `saia_*`) + SAIA `/predict` for investigation SPL |
 | **Persistence** | PostgreSQL `tsoc_records` + Qdrant (RAG) + Neo4j (correlation graph) |
 
@@ -148,7 +150,7 @@ flowchart LR
 ### Architecture highlights
 
 - **Full-context analysis:** alert `sid` is expanded to full Splunk job rows (not only the first webhook row).
-- **Context-aware decisions:** inventory enrichment (`users/assets/relationships`) is applied before verdicting.
+- **Context-aware decisions:** inventory enrichment (`users/assets/relationships`) runs inside the chosen pipeline (after routing), before verdicting.
 - **Exclusive routing:** each alert goes to **Security** or **Observability** (or `manual_review` when unclear) — never both pipelines at once.
 - **Autonomous Splunk reasoning:** MCP + SAIA `/predict` are used for evidence gathering and investigation SPL.
 - **Actionable outputs:** final verdict, triage priority, investigation SPL, and analyst-ready evidence.
@@ -1135,7 +1137,7 @@ curl -sS -X POST http://127.0.0.1:9876/api/v1/alerts/splunk-ingest \
 | UI → **Triage** | New item with priority and verdict |
 | UI → **Analysis** | Defender / Hunter / Judge phases (when LLM enabled) |
 | UI → **Dashboard** / **SOC Chat** | Stored events (after ingest + optional background triage) |
-| Postgres | `docker exec tsoc-postgres psql -U tsoc -d tsoc -c "SELECT record_type, created_at FROM tsoc_records ORDER BY created_at DESC LIMIT 5;"` |
+| Postgres | `docker exec tsoc-postgres psql -U tsoc -d tsoc -c "SELECT tsoc_record_type, created_at FROM tsoc_records ORDER BY created_at DESC LIMIT 5;"` |
 
 Background analysis after ingest is **on by default** (`TSOC_INGEST_AUTO_ANALYZE=true` in `backend/.env`; returns HTTP 202). Set to `false` to ingest-only. Not overridable via URL. See [docs/11-environment-configuration.md](docs/11-environment-configuration.md).
 
@@ -1330,10 +1332,10 @@ thinking-soc-splunk-hackathon/
 │   │   ├── platform/                 #     Platform utilities (admin org, dashboard)
 │   │   ├── prompts/                  #     Agent prompt templates
 │   │   ├── soc_analysis/             #     Security pipeline (Hunter/Defender/Judge)
-│   │   ├── soc_analysis_graph/       #     Graph-backed SOC analysis
+│   │   ├── soc_analysis_graph/       #     LangGraph SOC analysis orchestration
 │   │   ├── soc_rag/                  #     Qdrant RAG + Text-to-SQL chat
 │   │   ├── splunk_integration/       #     Splunk REST helpers
-│   │   ├── splunk_json_store/        #     Splunk KV store integration
+│   │   ├── splunk_json_store/        #     PostgreSQL JSONB persistence (tsoc_records)
 │   │   ├── threat_intel/             #     VirusTotal IOC enrichment
 │   │   └── triage/                   #     Triage priority scoring
 │   ├── splunk/                       #   Splunk client, MCP, datamodel catalog
@@ -1341,7 +1343,7 @@ thinking-soc-splunk-hackathon/
 │   │   ├── datamodel/                #     CIM datamodel definitions
 │   │   └── mcp/                      #     MCP + SAIA /predict integration
 │   ├── devtools/                     #   SDK client & evaluation helpers
-│   ├── tests/                        #   Pytest suite (75+ test modules)
+│   ├── tests/                        #   Pytest suite (85+ test modules)
 │   ├── db/                           #   PostgreSQL schema (schema.sql)
 │   ├── data/demo/                    #   Full pg_dump backup, JSON snapshot, CSV fallback packs
 │   ├── scripts/                      #   Dev scripts (seed, enrich, predict)

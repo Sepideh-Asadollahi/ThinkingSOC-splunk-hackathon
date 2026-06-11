@@ -104,7 +104,7 @@ Do not put demo **data** under `docs/` — that folder is for architecture and d
 
 ## System in one paragraph
 
-Splunk **10+** fires an alert and sends a **webhook** with `sid` and a sample row. The **FastAPI backend** loads full job results via **REST**, enriches alerts from **PostgreSQL inventory** (users, assets, relationships), **classifies** the alert into Security and/or Observability tracks, runs **LangGraph pipelines** with **LiteLLM** (and optional **Splunk MCP** for metadata, Hunter/Judge live evidence, and investigation SPL execute), and persists structured JSON in **PostgreSQL**. The Splunk app is webhook + index only (no CSV lookups). The product UI is external (`frontend/`).
+Splunk **10+** fires an alert and sends a **webhook** with `sid` and a sample row. The **FastAPI backend** loads full job results via **REST**, enriches alerts from **PostgreSQL inventory** (users, assets, relationships), **classifies** each alert into exactly **one** track (Security, Observability, or `manual_review` — never both pipelines), then runs the selected **LangGraph pipeline** with **LiteLLM** (and optional **Splunk MCP** for metadata, Hunter/Judge live evidence, and investigation SPL execute), and persists structured JSON in **PostgreSQL**. The Splunk app is webhook + index only (no CSV lookups). The product UI is external (`frontend/`).
 
 ## Conventions in these documents
 

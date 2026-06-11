@@ -9,8 +9,8 @@ Core alert processing pipeline. Receives Splunk webhook payloads, enriches them 
 | File | Description |
 |------|-------------|
 | `alert_pipeline.py` | Fetches Splunk search results via REST and enriches alert payloads |
-| `alert_classifier.py` | Rule-based hybrid classifier for Security vs Observability routing |
-| `alert_classifier_llm.py` | Optional LiteLLM fallback when rule-based confidence is low |
+| `alert_classifier.py` | Fallback when LiteLLM is unavailable → `manual_review` (`needs_human_routing=true`) |
+| `alert_classifier_llm.py` | LLM-only router (full alert payload + MCP metadata) → exclusive Security or Observability |
 | `alert_mcp_enrichment.py` | MCP metadata enrichment before classification |
 | `alert_fields.py` | Flattens Splunk alert/result rows for LLM system context |
 | `enrichment_resolver.py` | Resolves inventory rows and user–asset relationships for alerts |

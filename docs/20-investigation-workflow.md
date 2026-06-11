@@ -28,7 +28,7 @@ flowchart LR
     Record["record_analyst_action\n(acknowledge / escalate)"]
   end
 
-  subgraph store [("PostgreSQL")]
+  subgraph store ["PostgreSQL"]
     Records["tsoc_records\n(all pipeline outputs)"]
     Actions["tsoc_records\ntype=investigation_analyst_action"]
   end
@@ -153,6 +153,8 @@ The `recommended_step_at_action` is automatically extracted from the analysis re
 ---
 
 ## 3. API endpoints
+
+**Auth:** all three routes use `check_ingest_bearer` — when `TSOC_INGEST_TOKEN` is set in `backend/.env`, requests need `Authorization: Bearer <token>`. The Next.js UI proxy adds this automatically after login.
 
 ### `GET /api/v1/investigation/records/{record_id}/timeline`
 

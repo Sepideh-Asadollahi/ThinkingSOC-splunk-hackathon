@@ -352,5 +352,5 @@ backend/services/soc_analysis_graph/
 
 ## Related documents
 
-- [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) — pipeline overview (VT runs in Hunter stage)  
+- [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) — pipeline overview (VT runs in `virustotal` graph node, after `risk_engine`)  
 - [11-environment-configuration.md](./11-environment-configuration.md) — `VIRUSTOTAL_*` env vars

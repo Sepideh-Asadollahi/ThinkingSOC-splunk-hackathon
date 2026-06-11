@@ -19,4 +19,5 @@ Each `demo/` subdirectory contains `tsoc_users.csv`, `tsoc_assets.csv`, and `tso
 
 ## Related docs
 
-- [docs/14-inventory-asset-service.md](../../docs/14-inventory-asset-service.md)
+- [docs/14-inventory-service.md](../../docs/14-inventory-service.md)
+- [docs/24-demo-postgresql-data.md](../../docs/24-demo-postgresql-data.md)

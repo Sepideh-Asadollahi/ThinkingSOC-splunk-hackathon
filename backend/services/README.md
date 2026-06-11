@@ -1,49 +1,35 @@
-<!-- folder-readme: auto -->
 # backend/services
 
 Parent: [README.md](../README.md)
 
-Domain logic: ingest enrichment, inventory enrichment, pipelines, storage.
+Domain logic: ingest, classification, inventory enrichment, Security/Observability pipelines, triage, investigation SPL, SOC RAG, threat intel, and PostgreSQL persistence.
 
-## Contents
+## Packages
 
-- [`inventory/`](./inventory/)
-- [`observability_analysis/`](./observability_analysis/)
-- [`prompts/`](./prompts/)
-- [`soc_analysis/`](./soc_analysis/)
-- [`soc_analysis_graph/`](./soc_analysis_graph/)
-- `__init__.py`
-- `admin_org_gap.py`
-- `agent_triage.py`
-- `alert_classifier.py`
-- `alert_classifier_llm.py`
-- `alert_mcp_enrichment.py`
-- `alert_pipeline.py`
-- `enrichment_resolver.py`
-- `inventory_loader.py`
-- `ingest_background.py`
-- `inventory_store.py`
-- `litellm_service.py`
-- `observability_analysis_batch.py`
-- `observability_prompts.py`
-- `soc_analysis_batch.py`
-- `soc_analysis_canonical.py`
-- `soc_analysis_json.py`
-- `soc_analysis_prompts.py`
-- `soc_analysis_risk.py`
-- `soc_analysis_root_cause_spl.py`
-- `soc_verdict.py`
-- `spl_mcp_review.py`
-- `splunk_ai_assistant.py`
-- `splunk_json_store.py`
-- `splunk_mcp_service.py`
-- `virustotal.py` — IOC extraction and VT API v3 client
-- `virustotal_schema.py` — official VT response envelope / summary parsing
-- `threat_intel_compact.py` — compact `findings` for LLM and API
+| Package | Role |
+|---------|------|
+| [`alert/`](./alert/) | Webhook ingest, LLM classifier, MCP enrichment, agent triage, graph correlation hooks |
+| [`inventory/`](./inventory/) | Users, assets, relationships, CSV seed, enrichment resolver |
+| [`soc_analysis/`](./soc_analysis/) | Security pipeline runner (Defender / Hunter / Judge assembly) |
+| [`soc_analysis_graph/`](./soc_analysis_graph/) | LangGraph nodes and state for the Security pipeline |
+| [`observability_analysis/`](./observability_analysis/) | Observability pipeline (Entity → Impact → Diagnoser → Responder → Ops Judge) |
+| [`investigation/`](./investigation/) | Investigation SPL, SAIA `/predict`, MCP execute, analyst workflow |
+| [`triage/`](./triage/) | Post-analysis priority scoring and analyst queue |
+| [`soc_rag/`](./soc_rag/) | Qdrant + FastEmbed RAG, SOC chat, Text-to-SQL |
+| [`threat_intel/`](./threat_intel/) | VirusTotal API v3 enrichment and compact TI payloads |
+| [`splunk_integration/`](./splunk_integration/) | Splunk AI Assistant and MCP service helpers |
+| [`splunk_json_store/`](./splunk_json_store/) | PostgreSQL JSONB persistence (`tsoc_records`) |
+| [`llm/`](./llm/) | LiteLLM wrapper, context budget, thinking extraction |
+| [`platform/`](./platform/) | Dashboard KPIs, integration settings, host metrics |
+| [`demo/`](./demo/) | PostgreSQL moment snapshot restore |
+| [`prompts/`](./prompts/) | LLM system prompts (classifier, Hunter, Judge, SPL refine, …) |
 
-**Docs:** [09-virustotal-threat-intel.md](../../docs/09-virustotal-threat-intel.md)
+## Root modules
+
+- `correlation_integration.py` — mounts Neo4j graph API at `/api/v1/graph/*`
 
 ## See also
 
 - [README.md](../README.md)
 - [05-codebase-map.md](../../docs/05-codebase-map.md)
+- [04-agents-and-pipelines.md](../../docs/04-agents-and-pipelines.md)

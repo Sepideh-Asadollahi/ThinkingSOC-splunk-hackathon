@@ -6,7 +6,7 @@ Demo data is loaded in this order:
 
 0. **`postgres_dump/tsoc_demo.sql`** — **primary**: full `pg_dump` backup of the demo DB. `install.sh` restores it with `psql` (`DROP` + recreate every table with data), so a new server is an exact replica — inventory, **all** `tsoc_records`, **all** `graph_findings`, **all** `tsoc_rag_documents`. Capture: `bash scripts/backup-demo-db.sh`; restore: `bash scripts/restore-demo-db.sh`.
 1. **`postgres_snapshot/`** — JSON fallback (moment snapshot) when the dump is absent and `manifest.json` is present:
-   - **Full** Asset + Identity: `tsoc_users`, `tsoc_assets`, `tsoc_relationships`, `tsoc_identity_rules`
+   - **Full** Asset + Identity: `tsoc_users`, `tsoc_assets`, `tsoc_relationships`, `tsoc_identity_rules` (legacy table — enrichment uses built-in field maps, not this table)
    - **Up to 6 newest** `tsoc_records` by `id` (latest analysis moment only)
    - **Newest 1** `graph_findings` row (Correlation page)
 2. **CSV fallback** — `tsoc_*.csv` at repo root and scenario subdirectories (see below).

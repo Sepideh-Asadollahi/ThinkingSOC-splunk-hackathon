@@ -12,10 +12,10 @@ How to navigate the repository using the **code graph**, directory layout, and k
 
 | Metric | Value |
 |--------|------:|
-| Indexed files | 140 |
-| Nodes | 677 |
-| Edges | 4,952 |
-| Communities | 22 |
+| Indexed files | 419 |
+| Nodes | 2,675 |
+| Edges | 22,608 |
+| Communities | 89 |
 | Languages | Python, SQL |
 
 **Indexed paths:** `backend/`, `ThinkingSOC_Hackathon_Splunk_App/`, tests. Excluded: `node_modules`, `.venv`, `frontend/`, `project-engineering/`, generated caches.
@@ -25,6 +25,8 @@ Regenerate after large refactors:
 ```bash
 bash scripts/build-code-graph.sh
 ```
+
+**Note:** Community wiki pages under `code-graph/communities/` are auto-generated snapshots and may list stale flat paths (`services/triage_priority.py` vs `services/triage/triage_priority.py`). Hand-written docs in `docs/*.md` and per-package `README.md` files are authoritative. See [code-graph/README.md](code-graph/README.md).
 
 ## How to use the interactive graph
 
@@ -48,21 +50,21 @@ flowchart TD
   end
 
   subgraph services ["Domain Services"]
-    Pipeline["alert_pipeline.py"]
-    Classifier["alert_classifier*.py"]
-    Enrichment["enrichment_resolver.py"]
+    Pipeline["alert/alert_pipeline.py"]
+    Classifier["alert/alert_classifier*.py"]
+    Enrichment["alert/enrichment_resolver.py"]
     SOCGraph["soc_analysis_graph/"]
     ObsAnalysis["observability_analysis/"]
-    Triage["triage_priority.py"]
-    AdminGap["admin_org_gap.py"]
-    Store["splunk_json_store.py"]
-    InvLoader["inventory_loader.py"]
+    Triage["triage/triage_priority.py"]
+    AdminGap["soc_analysis/admin_org_gap.py"]
+    Store["splunk_json_store/"]
+    InvLoader["inventory/inventory_loader.py"]
   end
 
   subgraph integration ["Integration"]
     REST["splunk/client/"]
     MCP_C["splunk/mcp/"]
-    LiteLLM["litellm_service.py"]
+    LiteLLM["llm/litellm_service.py"]
   end
 
   subgraph data ["Data"]
@@ -98,27 +100,33 @@ flowchart TD
 
 | Directory | Primary concern | Start reading |
 |-----------|-----------------|---------------|
-| `backend/api/routes/ingest.py` | Webhook ingest, env-driven auto triage | First for Splunk handoff |
+| `backend/api/routes/ingest.py` | Webhook ingest, row buffer, env-driven auto triage | First for Splunk handoff |
 | `backend/middleware/reject_config_query.py` | Block config overrides via URL query | Security edge |
 | `backend/api/routes/analysis.py` | Classify, route, SOC run-by-sid | Router + pipelines |
 | `backend/api/routes/agents.py` | Triage orchestration | End-to-end agent response |
+| `backend/api/routes/dashboard.py` | Platform overview KPIs | Analyst dashboard |
+| `backend/api/routes/investigation.py` | Timeline + analyst actions | Human-in-the-loop |
+| `backend/api/routes/integrations.py` | Integration settings CRUD | Post-install overrides |
 | `backend/api/routes/inventory.py` | Users, assets, relationships CRUD + enrich | Inventory admin |
-| `backend/api/routes/mcp.py` | MCP status and proxies | Splunk MCP integration |
-| `backend/services/alert_pipeline.py` | REST enrich | After ingest normalize |
+| `backend/api/routes/mcp.py` | MCP status, SPL generate, tool proxy | Splunk MCP integration |
+| `backend/api/routes/soc_chat.py` | SOC chat + RAG | Analyst chat |
+| `backend/services/alert/alert_pipeline.py` | REST enrich | After ingest normalize / buffer flush |
+| `backend/services/alert/ingest_accumulator.py` | Per-sid row buffer + dedup | Default ingest path |
 | `backend/services/alert/alert_classifier_llm.py` | Routing | LLM-only Security vs Observability (exclusive) |
 | `backend/services/alert/alert_classifier.py` | Routing | `manual_review` fallback when LLM unavailable |
-| `backend/services/enrichment_resolver.py` | Enrichment engine | Alert → user/asset via inventory |
-| `backend/services/inventory_loader.py` | PostgreSQL load | Pipeline inventory source |
+| `backend/services/alert/enrichment_resolver.py` | Enrichment engine | Alert → user/asset via inventory |
+| `backend/services/inventory/inventory_loader.py` | PostgreSQL load | Pipeline inventory source |
 | `backend/services/soc_analysis_graph/` | SOC LangGraph | Defender/Hunter/Judge |
 | `backend/services/observability_analysis/` | Ops pipeline | Diagnoser/Responder/Ops Judge |
-| `backend/services/splunk_json_store.py` | PostgreSQL records | All persistence |
+| `backend/services/splunk_json_store/` | PostgreSQL records | All persistence |
+| `backend/services/correlation_integration.py` | Neo4j graph API mount | `/api/v1/graph/*` |
 | `backend/splunk/client/` | REST job results | Splunk 10+ v2 API |
 | `backend/splunk/mcp/` | MCP JSON-RPC | SAIA / metadata / Hunter-Judge evidence |
 | `backend/models/` | Contracts | Handoff + analysis shapes |
 | `backend/devtools/` | SDK + CLI | External automation |
 | `backend/data/demo/` | Demo snapshot + CSV | PostgreSQL seed when tables empty (`install.sh` / `setup.py`) |
 
-Per-folder **`README.md`** files list immediate children — run `python3 scripts/generate-folder-readmes.py` to refresh indexes.
+Per-folder **`README.md`** files under `backend/`, `frontend/`, `correlation/`, and the Splunk app describe local layout and entry points. Update them when you add or rename major packages or routes.
 
 ## Major communities (structural areas)
 
@@ -153,10 +161,12 @@ Flows are ranked by graph **criticality** (how central the path is to the system
 middleware/reject_config_query.py  (reject config query params → 400)
 routes/ingest.py::splunk_ingest
   → models/handoff.py::normalize_splunk_ingest_payload
-  → services/alert_pipeline.py::enrich_alert_from_splunk
+  → services/alert/alert_pipeline.py::enrich_alert_from_splunk
        → splunk/client (REST results)
+  → when TSOC_INGEST_ROW_BUFFER=true (default): 202 status=buffered immediately
+  → buffer flush → enrich_alert_from_splunk
   → when TSOC_INGEST_AUTO_ANALYZE=true: BackgroundTasks run_post_ingest
-       → services/ingest_background.py → agent_triage.py
+       → services/alert/ingest_background.py → services/alert/agent_triage.py
   → else: persist_splunk_ingest_summary only
 ```
 
@@ -164,11 +174,11 @@ routes/ingest.py::splunk_ingest
 
 ```
 routes/analysis.py (run or route)
-  → services/inventory_loader.py::load_inventory_tables
-  → services/soc_analysis.py::run_analysis
+  → services/inventory/inventory_loader.py::load_inventory_tables
+  → services/soc_analysis/runner.py::run_analysis
        → services/soc_analysis_graph/graph.py::run_soc_analysis_langgraph
             → nodes: prepare → risk_engine → … → judge → root_cause_spl
-       → services/admin_org_gap.py::attach_admin_org_gap
+       → services/soc_analysis/admin_org_gap.py::attach_admin_org_gap
   → splunk_json_store (persist soc_analysis + admin_org_gap_suggest)
 ```
 
@@ -206,10 +216,10 @@ OpenAPI at `/docs` when the API is running lists request/response JSON schemas.
 
 | Path | Role |
 |------|------|
-| `backend/data/demo/postgres_snapshot/` | Moment demo JSON (full inventory + 4 records) |
+| `backend/data/demo/postgres_snapshot/` | JSON fallback demo (inventory + up to 4 newest `tsoc_records`); primary seed is `postgres_dump/tsoc_demo.sql` |
 | `backend/data/demo/*.csv` | CSV fallback seed when snapshot manifest absent |
 | `default/indexes.conf` | Demo index definition |
-| No `bin/customalertaction` | Webhook only |
+| `bin/thinkingsoc_hackathon.py` + `default/alert_actions.conf` | Modular alert action (not generic Webhook) |
 
 ## Related documents
 

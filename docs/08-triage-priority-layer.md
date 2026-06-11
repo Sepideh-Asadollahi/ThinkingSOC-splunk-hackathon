@@ -9,8 +9,8 @@ This document describes the **analyst triage layer**: how ThinkingSOC turns pipe
 
 | Term | What it is | Entry point |
 |------|------------|-------------|
-| **Agent triage** | Orchestration: classify → run Security and/or Observability pipelines → SPL hints | `POST /api/v1/agents/triage`, `services/agent_triage.py` |
-| **Post-analysis triage** (this doc) | Priority scoring **after** Judge/Ops Judge completes | `services/triage_priority.py`, `TriageOutcome` |
+| **Agent triage** | Orchestration: classify → run **one** pipeline (Security **or** Observability) → SPL hints | `POST /api/v1/agents/triage`, `services/alert/agent_triage.py` |
+| **Post-analysis triage** (this doc) | Priority scoring **after** Judge/Ops Judge completes | `services/triage/triage_priority.py`, `TriageOutcome` |
 
 Agent triage **includes** post-analysis triage in its response (`security_triage`, `observability_triage`).
 
@@ -33,7 +33,7 @@ flowchart TD
   end
   subgraph pipelines [Pipelines]
     SOC[SOC LangGraph: Defender → Hunter → Judge]
-    OBS[Observability: Diagnoser → Responder → Ops Judge]
+    OBS[Observability: Entity → Impact → Diagnoser → Responder → Ops Judge]
   end
   subgraph triage [Post-analysis triage]
     TP[triage_priority.compute_triage_outcome]
@@ -79,7 +79,7 @@ Embedded on:
 - `ObservabilityAnalysisResult.triage`
 - `AgentTriageResponse.security_triage` / `observability_triage`
 
-## Scoring rules (`services/triage_priority.py`)
+## Scoring rules (`services/triage/triage_priority.py`)
 
 ### Step 1 — Map Judge verdict → `review_verdict`
 
@@ -146,8 +146,8 @@ Score is clamped to `[0, 100]`.
 |----------|----------|
 | `services/soc_analysis/runner.py` | After `SocAnalysisResult`, attach `triage` (inventory rows for risk bonus) |
 | `services/observability_analysis/runner.py` | After `ObservabilityAnalysisResult`, attach `triage` (impact level) |
-| `services/agent_triage.py` | Recompute with **classification** context; re-persist `soc_analysis` / `observability_analysis` so queue reflects router signals |
-| `services/analysis_audit.py` | `build_analysis_output` includes triage fields for audit rows |
+| `services/alert/agent_triage.py` | Recompute with **classification** context; re-persist `soc_analysis` / `observability_analysis` so queue reflects router signals |
+| `services/soc_analysis/analysis_audit.py` | `build_analysis_output` includes triage fields for audit rows |
 | `splunk_json_store/persist/soc.py` | Top-level `triage` on `soc_analysis` payload |
 | `splunk_json_store/persist/observability.py` | Top-level `triage` on `observability_analysis` payload |
 

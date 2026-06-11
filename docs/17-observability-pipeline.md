@@ -128,15 +128,14 @@ Final operational verdict derived from the top diagnosis hypothesis and impact c
 
 ```mermaid
 flowchart TD
-  Check{"LiteLLM configured?"}
-  Rules["Rule-based\nDiagnoser → Responder → Judge\n(deterministic, always works)"]
-  LLM["LLM-powered\nbuild_diagnoser_llm → build_responder_llm → build_ops_judge_llm"]
-  Fallback["Exception? → fall back to rule-based"]
+  Rules["Rule-based baseline\nbuild_diagnoser → build_responder → build_ops_judge"]
+  LLM["LLM path (always attempted)\nbuild_diagnoser_llm → build_responder_llm → build_ops_judge_llm"]
+  Fallback["LiteLLM exception → keep rule-based outputs"]
   Result["ObservabilityAnalysisResult"]
 
-  Check -->|true| Rules --> Result
-  Check -->|false| LLM --> Result
-  LLM -->|error| Fallback --> Rules
+  Rules --> LLM
+  LLM -->|success| Result
+  LLM -->|error| Fallback --> Result
 ```
 
 Each LLM stage:

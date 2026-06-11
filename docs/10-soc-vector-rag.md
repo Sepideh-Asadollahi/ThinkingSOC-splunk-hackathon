@@ -10,7 +10,7 @@ Splunk-grounded retrieval for (1) **SOC analyst chat** and (2) **similar past al
 |-----------|------|
 | **PostgreSQL** | Source of truth (`tsoc_rag_documents`, `tsoc_records`) |
 | **[Qdrant](https://github.com/qdrant/qdrant)** | Semantic vector search |
-| **FastEmbed** | Local embeddings — model selected via `TSOC_EMBEDDING_MODEL` (default `bge-large`) |
+| **FastEmbed** | Local embeddings — model selected via `TSOC_EMBEDDING_MODEL` (default `bge-base` / `BAAI/bge-base-en-v1.5`) |
 | **LiteLLM** | Chat answers over retrieved context |
 
 ## Architecture
@@ -81,8 +81,8 @@ Set **`TSOC_EMBEDDING_MODEL`** in `backend/.env` (copy from [`backend/.env.examp
 | `.env` value (preset) | Alias | Resolves to (full id) | ONNX download | Vector dim | When to use |
 |----------------------|-------|------------------------|---------------|------------|-------------|
 | `bge-small` | `small` | `BAAI/bge-small-en-v1.5` | ~33 MB | 384 | Dev, CI, slow or metered internet |
-| `bge-base` | `base` | `BAAI/bge-base-en-v1.5` | ~220 MB | 768 | Balance between download size and retrieval quality |
-| `bge-large` | `large` | `BAAI/bge-large-en-v1.5` | ~1.2 GB | 1024 | **Default** — production / demo, best semantic match |
+| `bge-base` | `base` | `BAAI/bge-base-en-v1.5` | ~220 MB | 768 | **Default** — balance between download size and retrieval quality |
+| `bge-large` | `large` | `BAAI/bge-large-en-v1.5` | ~1.2 GB | 1024 | Best semantic match (larger download) |
 
 You may also set the **full HuggingFace id** directly (same three models):
 
@@ -100,7 +100,7 @@ Preset names are case-insensitive (`bge-small` and `BGE-SMALL` are equivalent).
 TSOC_EMBEDDING_MODEL=bge-small
 ```
 
-**Production default (best quality):**
+**Higher quality (larger download):**
 
 ```env
 TSOC_EMBEDDING_MODEL=bge-large
@@ -139,8 +139,8 @@ curl -s http://127.0.0.1:9876/api/v1/soc/chat/status | jq '{embedding_model, emb
 | `TSOC_VECTOR_ENABLE` | `true` | Use Qdrant for semantic search |
 | `QDRANT_URL` | `http://127.0.0.1:6333` | Qdrant HTTP API |
 | `QDRANT_COLLECTION` | `tsoc_soc_rag` | Collection name |
-| `TSOC_EMBEDDING_MODEL` | `bge-large` | FastEmbed preset or full model id — see [Embedding model selection](#embedding-model-selection) |
-| `TSOC_EMBEDDING_DIM` | `1024` | Informational; runtime dim is derived from the model |
+| `TSOC_EMBEDDING_MODEL` | `BAAI/bge-base-en-v1.5` (`bge-base`) | FastEmbed preset or full model id — see [Embedding model selection](#embedding-model-selection) |
+| `TSOC_EMBEDDING_DIM` | `768` | Informational; runtime dim is derived from the model |
 | `TSOC_FASTEMBED_CACHE_DIR` | `/opt/.thinking-soc-cache/fastembed` | ONNX cache directory |
 | `FASTEMBED_CACHE_PATH` | (same) | Alias if `TSOC_FASTEMBED_CACHE_DIR` unset |
 | `TSOC_RAG_SIMILAR_MAX` | `3` | Similar alerts injected into analysis |
@@ -432,7 +432,7 @@ If classification is **not** statistical (explain verdict, MITRE, how to investi
 - Pre-download without starting the API:
 
 ```bash
-bash scripts/download-embedding-model.sh           # uses .env (default bge-large ~1.2GB)
+bash scripts/download-embedding-model.sh           # uses .env (default bge-base ~220MB)
 bash scripts/download-embedding-model.sh bge-small   # ~33MB for slow networks
 ```
 

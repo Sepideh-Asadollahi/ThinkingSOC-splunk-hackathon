@@ -13,6 +13,7 @@ Utility scripts for the ThinkingSOC backend. Requires `backend/.venv` and a runn
 
 | File | Purpose |
 |------|---------|
+| `export_demo_postgres_snapshot.py` | Export live PostgreSQL demo snapshot (`postgres_snapshot/` + manifest) |
 | `enrich_attacks_correlation.py` | Build enriched webhook payloads for the ATTACKS demo (inventory + graph correlation) |
 | `enrich_botsv1_sample.py` | Seed BOTSv1 inventory and enrich the BOTSv1 Sysmon webhook sample |
 | `seed_botsv1_osk_inventory.py` | Seed PostgreSQL inventory for the BOTSv1 osk.exe Sysmon scenario |
