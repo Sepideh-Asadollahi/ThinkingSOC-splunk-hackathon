@@ -44,9 +44,8 @@ def main() -> None:
 
     # ── Step 0: Health & connectivity ──
     print("\n[Step 0] Health & connectivity checks")
-    _pp("Backend health", client.health())
-    _pp("MCP status", client.mcp_status())
-    _pp("SOC chat status", client.soc_chat_status())
+    _pp("Doctor (full connectivity)", client.doctor())
+    _pp("LLM status", client.llm_status())
 
     alert = {
         "normalized": {
@@ -67,19 +66,20 @@ def main() -> None:
     _pp("Classification", cls)
     print(f"\n  → Track: {cls.track}  Confidence: {cls.confidence}")
 
-    # ── Step 2: Full agent triage ──
-    print("\n[Step 2] Agent triage (classify + analyze + score)")
-    triage = client.run_agent_triage({
+    # ── Step 2: Full agent triage (or chained investigate) ──
+    print("\n[Step 2] Full investigation chain (classify → triage → SPL → MCP)")
+    investigation = client.run_full_investigation({
         **alert,
         "operator_goal": "confirm lateral movement path",
         "users": users,
         "assets": assets,
     })
-    _pp("Agent triage", triage)
-    print(f"\n  → Summary: {(triage.agent_summary or '')[:200]}")
-    print(f"  → Actions: {triage.next_actions[:3]}")
+    _pp("Full investigation", investigation)
+    triage_summary = (investigation.get("triage") or {}).get("agent_summary") or ""
+    print(f"\n  → Summary: {triage_summary[:200]}")
+    print(f"  → MCP connected: {(investigation.get('mcp_status') or {}).get('connected')}")
 
-    # ── Step 3: SPL suggestion ──
+    # ── Step 3: SPL suggestion (standalone) ──
     print("\n[Step 3] SPL suggestion for investigation")
     spl = client.suggest_spl({
         **alert,
@@ -90,7 +90,7 @@ def main() -> None:
     if spl.root_cause_spl:
         print(f"  → SPL: {spl.root_cause_spl.spl[:200]}")
 
-    # ── Step 4: MCP SPL generation ──
+    # ── Step 4: MCP SPL generation & SAIA ask ──
     print("\n[Step 4] Splunk MCP SAIA — natural language → SPL")
     try:
         mcp_spl = client.mcp_generate_spl({
@@ -98,6 +98,11 @@ def main() -> None:
             "index": "main",
         })
         _pp("MCP SPL generation", mcp_spl)
+        saia = client.mcp_saia_ask(
+            "What indexes contain authentication events?",
+            additional_context="Alert user=jdoe host=web-prod-01",
+        )
+        _pp("MCP SAIA ask", saia.model_dump(mode="json"))
     except Exception as e:
         print(f"  → MCP unavailable: {e}")
 

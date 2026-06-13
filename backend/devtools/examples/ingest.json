@@ -1,0 +1,23 @@
+{
+  "sid": "1749825600.12345",
+  "search_name": "Suspicious auth failed login alert",
+  "app": "ThinkingSOC_Hackathon_Splunk_App",
+  "owner": "admin",
+  "results": [
+    {
+      "_time": "2026-06-13T12:00:00Z",
+      "host": "web-prod-01",
+      "user": "jdoe",
+      "src": "1.2.3.4",
+      "dest": "10.0.0.10",
+      "action": "failure"
+    }
+  ],
+  "normalized": {
+    "host": "web-prod-01",
+    "user": "jdoe",
+    "src": "1.2.3.4",
+    "dest": "10.0.0.10",
+    "action": "failure"
+  }
+}

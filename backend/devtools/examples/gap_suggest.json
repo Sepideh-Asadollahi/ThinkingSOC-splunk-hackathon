@@ -1,0 +1,15 @@
+{
+  "normalized": {
+    "host": "web-prod-01",
+    "user": "jdoe",
+    "src": "1.2.3.4"
+  },
+  "search_name": "Suspicious auth failed login alert",
+  "judge_verdict": "true_positive",
+  "judge_rationale": "Multiple failed logins from unusual IP",
+  "inventory_user": {
+    "user_id": "jdoe",
+    "department": "IT",
+    "risk_score": 3
+  }
+}

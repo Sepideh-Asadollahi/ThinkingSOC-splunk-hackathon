@@ -3,6 +3,7 @@
     {
       "name": "security_failed_login",
       "expected_track": "security",
+      "mcp_query": "Show failed login attempts for user jdoe in the last 24 hours",
       "search_name": "Suspicious auth failed login alert",
       "operator_goal": "confirm lateral movement path",
       "normalized": {

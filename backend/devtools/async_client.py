@@ -4,16 +4,31 @@ from __future__ import annotations
 
 import asyncio
 import os
-from typing import Any, Dict, Optional, Type, TypeVar, Union
+from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 import httpx
 from pydantic import BaseModel
 
+from models.admin_org import AdminOrgGapSuggestRequest, AdminOrgGapSuggestResponse
 from models.agentic_ops import AlertClassificationRequest, AlertClassificationResult, AnalysisRouteRequest, AnalysisRouteResponse
 from models.agents import AgentTriageRequest, AgentTriageResponse
 from models.analysis import AnalysisBatchBySidRequest, AnalysisBatchBySidResponse, AnalysisRunRequest, SocAnalysisResult
 from models.assistant import SplAssistantSuggestRequest, SplAssistantSuggestResponse
 from models.dashboard import DashboardOverview
+from models.enrichment import EnrichRequest, EnrichmentResult
+from models.handoff import SplunkAlertIngest
+from models.integration_settings import IntegrationSettingCreate, IntegrationSettingRecord, IntegrationSettingUpdate
+from models.inventory import (
+    AssetCreate,
+    AssetRecord,
+    AssetUpdate,
+    RelationshipCreate,
+    RelationshipRecord,
+    RelationshipUpdate,
+    UserCreate,
+    UserRecord,
+    UserUpdate,
+)
 from models.mcp import McpSplGenerateRequest, McpSplGenerateResponse, McpToolCallRequest, McpToolCallResponse
 from models.observability import (
     ObservabilityAnalysisResult,
@@ -21,9 +36,17 @@ from models.observability import (
     ObservabilityBatchBySidResponse,
     ObservabilityRunRequest,
 )
-from services.soc_rag.models import SocChatRequest, SocChatResponse
+from services.soc_rag.models import (
+    SocChatConversationDetail,
+    SocChatConversationSummary,
+    SocChatCreateConversationRequest,
+    SocChatRequest,
+    SocChatResponse,
+)
 
-from .errors import TsocApiError, TsocAuthError, TsocNotFoundError, TsocTimeoutError
+from .errors import TsocApiError, TsocAuthError, TsocNotFoundError, TsocSdkError, TsocTimeoutError
+from .transport import async_delete_json, async_delete_no_content, async_get_json_list, async_patch_json_model
+from .workflows import build_doctor_report, build_full_investigation_result
 
 ReqModel = Union[
     AlertClassificationRequest,
@@ -179,6 +202,88 @@ class AsyncTsocSdkClient:
         """POST /api/v1/mcp/tools/call — Invoke any Splunk MCP tool by name."""
         return await self._post_model("/api/v1/mcp/tools/call", body, McpToolCallResponse)
 
+    async def mcp_run_query(
+        self,
+        search_query: str,
+        *,
+        extra_arguments: Optional[Dict[str, Any]] = None,
+    ) -> McpToolCallResponse:
+        """Run SPL via Splunk MCP ``splunk_run_query``."""
+        arguments: Dict[str, Any] = {"search_query": search_query}
+        if extra_arguments:
+            arguments.update(extra_arguments)
+        return await self.mcp_call_tool({"tool_name": "splunk_run_query", "arguments": arguments})
+
+    async def mcp_saia_ask(
+        self,
+        question: str,
+        *,
+        additional_context: Optional[str] = None,
+    ) -> McpToolCallResponse:
+        """Ask Splunk SAIA via MCP ``saia_ask_splunk_question``."""
+        arguments: Dict[str, Any] = {"prompt": question}
+        if additional_context is not None:
+            arguments["additional_context"] = additional_context
+        return await self.mcp_call_tool({"tool_name": "saia_ask_splunk_question", "arguments": arguments})
+
+    # ----- Webhook ingest -----
+
+    async def ingest_alert(
+        self,
+        body: Union[SplunkAlertIngest, Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """POST /api/v1/alerts/splunk-ingest — Splunk alert action webhook (requires Bearer token)."""
+        return await self._post_raw("/api/v1/alerts/splunk-ingest", body)
+
+    # ----- LLM status -----
+
+    async def llm_status(self) -> Dict[str, Any]:
+        """GET /api/v1/llm/status — LiteLLM configuration (no secrets returned)."""
+        return await self._get_raw("/api/v1/llm/status")
+
+    async def doctor(self) -> Dict[str, Any]:
+        """Connectivity check: health + MCP + LLM + SOC chat + graph + inventory."""
+        graph_health: Optional[Dict[str, Any]] = None
+        inventory_status: Optional[Dict[str, Any]] = None
+        try:
+            graph_health = await self.graph_health()
+        except TsocSdkError:
+            graph_health = {"status": "unavailable"}
+        try:
+            inventory_status = await self.inventory_status()
+        except TsocSdkError:
+            inventory_status = {"postgres_configured": False}
+        return build_doctor_report(
+            health=await self.health(),
+            mcp_status=await self.mcp_status(),
+            llm_status=await self.llm_status(),
+            soc_chat_status=await self.soc_chat_status(),
+            graph_health=graph_health,
+            inventory_status=inventory_status,
+        )
+
+    async def run_full_investigation(
+        self,
+        body: Union[AgentTriageRequest, Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """Chain classify → triage → SPL suggest → MCP status for demo/CI."""
+        payload = self._to_payload(body)
+        classification = await self.classify_alert(payload)
+        triage = await self.run_agent_triage(payload)
+        spl_body = {
+            "search_name": payload.get("search_name"),
+            "normalized": payload.get("normalized") or {},
+            "objective": payload.get("operator_goal") or "collect root cause evidence",
+        }
+        spl = await self.suggest_spl(spl_body)
+        mcp = await self.mcp_status()
+        return build_full_investigation_result(
+            classification=classification,
+            triage=triage,
+            spl=spl,
+            mcp_status=mcp,
+        )
+
     # ----- Splunk REST analysis -----
 
     async def run_analysis(
@@ -246,6 +351,244 @@ class AsyncTsocSdkClient:
     async def soc_chat_status(self) -> Dict[str, Any]:
         """GET /api/v1/soc/chat/status — RAG backend status (Postgres, Qdrant, document count)."""
         return await self._get_raw("/api/v1/soc/chat/status")
+
+    async def list_soc_chat_conversations(
+        self,
+        *,
+        limit: Optional[int] = None,
+    ) -> List[SocChatConversationSummary]:
+        """GET /api/v1/soc/chat/conversations — List stored chat sessions."""
+        return await async_get_json_list(
+            url="{0}/api/v1/soc/chat/conversations".format(self.base_url),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            out_model=SocChatConversationSummary,
+            params={"limit": limit},
+        )
+
+    async def create_soc_chat_conversation(
+        self,
+        body: Union[SocChatCreateConversationRequest, Dict[str, Any], None] = None,
+    ) -> SocChatConversationSummary:
+        """POST /api/v1/soc/chat/conversations — Create a new chat session."""
+        payload = self._to_payload(body or {})
+        return await self._post_model("/api/v1/soc/chat/conversations", payload, SocChatConversationSummary)
+
+    async def get_soc_chat_conversation(self, conversation_id: str) -> SocChatConversationDetail:
+        """GET /api/v1/soc/chat/conversations/{id} — Fetch conversation with messages."""
+        return await self._get_model(
+            "/api/v1/soc/chat/conversations/{0}".format(conversation_id),
+            SocChatConversationDetail,
+        )
+
+    async def delete_soc_chat_conversation(self, conversation_id: str) -> Dict[str, Any]:
+        """DELETE /api/v1/soc/chat/conversations/{id} — Remove a chat session."""
+        return await async_delete_json(
+            url="{0}/api/v1/soc/chat/conversations/{1}".format(self.base_url, conversation_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+        )
+
+    async def gap_suggest(
+        self,
+        body: Union[AdminOrgGapSuggestRequest, Dict[str, Any]],
+    ) -> AdminOrgGapSuggestResponse:
+        """POST /api/v1/admin-org/gap-suggest — Suggest organizational knowledge gap question."""
+        return await self._post_model("/api/v1/admin-org/gap-suggest", body, AdminOrgGapSuggestResponse)
+
+    async def inventory_status(self) -> Dict[str, Any]:
+        """GET /api/v1/inventory/status — PostgreSQL inventory backend status."""
+        return await self._get_raw("/api/v1/inventory/status")
+
+    async def list_inventory_users(self) -> List[UserRecord]:
+        return await async_get_json_list(
+            url="{0}/api/v1/inventory/users".format(self.base_url),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            out_model=UserRecord,
+        )
+
+    async def create_inventory_user(self, body: Union[UserCreate, Dict[str, Any]]) -> UserRecord:
+        return await self._post_model("/api/v1/inventory/users", body, UserRecord)
+
+    async def get_inventory_user(self, user_id: str) -> UserRecord:
+        return await self._get_model("/api/v1/inventory/users/{0}".format(user_id), UserRecord)
+
+    async def update_inventory_user(
+        self,
+        user_id: str,
+        body: Union[UserUpdate, Dict[str, Any]],
+    ) -> UserRecord:
+        return await async_patch_json_model(
+            url="{0}/api/v1/inventory/users/{1}".format(self.base_url, user_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            body=body,
+            out_model=UserRecord,
+        )
+
+    async def delete_inventory_user(self, user_id: str) -> None:
+        await async_delete_no_content(
+            url="{0}/api/v1/inventory/users/{1}".format(self.base_url, user_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+        )
+
+    async def list_inventory_assets(self) -> List[AssetRecord]:
+        return await async_get_json_list(
+            url="{0}/api/v1/inventory/assets".format(self.base_url),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            out_model=AssetRecord,
+        )
+
+    async def create_inventory_asset(self, body: Union[AssetCreate, Dict[str, Any]]) -> AssetRecord:
+        return await self._post_model("/api/v1/inventory/assets", body, AssetRecord)
+
+    async def get_inventory_asset(self, asset_id: str) -> AssetRecord:
+        return await self._get_model("/api/v1/inventory/assets/{0}".format(asset_id), AssetRecord)
+
+    async def update_inventory_asset(
+        self,
+        asset_id: str,
+        body: Union[AssetUpdate, Dict[str, Any]],
+    ) -> AssetRecord:
+        return await async_patch_json_model(
+            url="{0}/api/v1/inventory/assets/{1}".format(self.base_url, asset_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            body=body,
+            out_model=AssetRecord,
+        )
+
+    async def delete_inventory_asset(self, asset_id: str) -> None:
+        await async_delete_no_content(
+            url="{0}/api/v1/inventory/assets/{1}".format(self.base_url, asset_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+        )
+
+    async def list_inventory_relationships(self) -> List[RelationshipRecord]:
+        return await async_get_json_list(
+            url="{0}/api/v1/inventory/relationships".format(self.base_url),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            out_model=RelationshipRecord,
+        )
+
+    async def create_inventory_relationship(
+        self,
+        body: Union[RelationshipCreate, Dict[str, Any]],
+    ) -> RelationshipRecord:
+        return await self._post_model("/api/v1/inventory/relationships", body, RelationshipRecord)
+
+    async def get_inventory_relationship(self, relationship_id: str) -> RelationshipRecord:
+        return await self._get_model(
+            "/api/v1/inventory/relationships/{0}".format(relationship_id),
+            RelationshipRecord,
+        )
+
+    async def update_inventory_relationship(
+        self,
+        relationship_id: str,
+        body: Union[RelationshipUpdate, Dict[str, Any]],
+    ) -> RelationshipRecord:
+        return await async_patch_json_model(
+            url="{0}/api/v1/inventory/relationships/{1}".format(self.base_url, relationship_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            body=body,
+            out_model=RelationshipRecord,
+        )
+
+    async def delete_inventory_relationship(self, relationship_id: str) -> None:
+        await async_delete_no_content(
+            url="{0}/api/v1/inventory/relationships/{1}".format(self.base_url, relationship_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+        )
+
+    async def enrich_inventory(
+        self,
+        body: Union[EnrichRequest, Dict[str, Any]],
+    ) -> EnrichmentResult:
+        return await self._post_model("/api/v1/inventory/enrich", body, EnrichmentResult)
+
+    async def list_integrations(self) -> List[IntegrationSettingRecord]:
+        return await async_get_json_list(
+            url="{0}/api/v1/integrations/settings".format(self.base_url),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            out_model=IntegrationSettingRecord,
+        )
+
+    async def get_integration(self, setting_id: str) -> IntegrationSettingRecord:
+        return await self._get_model(
+            "/api/v1/integrations/settings/{0}".format(setting_id),
+            IntegrationSettingRecord,
+        )
+
+    async def create_integration(
+        self,
+        body: Union[IntegrationSettingCreate, Dict[str, Any]],
+    ) -> IntegrationSettingRecord:
+        return await self._post_model("/api/v1/integrations/settings", body, IntegrationSettingRecord)
+
+    async def update_integration(
+        self,
+        setting_id: str,
+        body: Union[IntegrationSettingUpdate, Dict[str, Any]],
+    ) -> IntegrationSettingRecord:
+        return await async_patch_json_model(
+            url="{0}/api/v1/integrations/settings/{1}".format(self.base_url, setting_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            body=body,
+            out_model=IntegrationSettingRecord,
+        )
+
+    async def delete_integration(self, setting_id: str) -> None:
+        await async_delete_no_content(
+            url="{0}/api/v1/integrations/settings/{1}".format(self.base_url, setting_id),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+        )
+
+    async def graph_health(self) -> Dict[str, Any]:
+        return await self._get_raw("/api/v1/graph/health")
+
+    async def graph_findings(
+        self,
+        *,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        finding_type: Optional[str] = None,
+        exclude_finding_type: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        return await self._get_raw("/api/v1/graph/findings", {
+            "limit": limit,
+            "offset": offset,
+            "finding_type": finding_type,
+            "exclude_finding_type": exclude_finding_type,
+        })
+
+    async def graph_get_finding(self, finding_id: str) -> Dict[str, Any]:
+        return await self._get_raw("/api/v1/graph/findings/{0}".format(finding_id))
+
+    async def graph_finding_graph_data(self, finding_id: str) -> Dict[str, Any]:
+        return await self._get_raw("/api/v1/graph/findings/{0}/graph-data".format(finding_id))
+
+    async def graph_topology(self, identifier: str) -> Dict[str, Any]:
+        return await self._get_raw("/api/v1/graph/topology/{0}".format(identifier))
+
+    async def graph_attack_tree(self, identifier: str) -> Dict[str, Any]:
+        return await self._get_raw("/api/v1/graph/attack-tree/{0}".format(identifier))
+
+    async def graph_discover_attack_paths(self, body: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        return await self._post_raw("/api/v1/graph/analysis/discover-attack-paths", body or {})
+
+    async def graph_operation_status(self, operation_id: str) -> Dict[str, Any]:
+        return await self._get_raw("/api/v1/graph/analysis/operations/{0}/status".format(operation_id))
 
     # ----- Investigation -----
 

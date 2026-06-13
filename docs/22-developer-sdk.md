@@ -13,6 +13,8 @@ Typed Python SDK, CLI, and evaluation runner for programmatic access to the Thin
 | Sync client | `client.py` | `TsocSdkClient` — blocking HTTP calls with retry |
 | Async client | `async_client.py` | `AsyncTsocSdkClient` — `asyncio`-native variant |
 | CLI | `cli.py` | Command-line wrapper for all SDK methods |
+| Workflows | `workflows.py` | Shared helpers (`doctor` report, full investigation packaging) |
+| Transport | `transport.py` | Shared HTTP helpers (list GET, PATCH, DELETE) |
 | Evaluation runner | `evaluate.py` | Score agent outputs against a scenario matrix |
 | Exceptions | `errors.py` | Typed error hierarchy (`TsocAuthError`, `TsocApiError`, …) |
 | Examples | `examples/` | Ready-to-use JSON payloads for each endpoint |
@@ -70,6 +72,37 @@ Token resolution order:
 3. No token (requests sent without `Authorization` header)
 
 The token must match the `TSOC_INGEST_TOKEN` configured in `backend/.env`.
+
+**Admin endpoints** (`/integrations/settings`) accept `TSOC_ADMIN_TOKEN` when set; otherwise the same ingest token is used (backend fallback).
+
+**Graph endpoints** (`/api/v1/graph/*`) may require `TSOC_CORRELATION_BEARER_TOKEN` when configured in the correlation service.
+
+---
+
+## Complete method index
+
+Every public backend API used in the hackathon demo is wrapped. Sync and async clients expose the same methods (`await` for async).
+
+| Category | SDK method | HTTP |
+|----------|------------|------|
+| **Classification** | `classify_alert` | `POST /classification/alert` |
+| **Analysis** | `route_analysis`, `run_analysis`, `run_analysis_by_sid` | `/analysis/*` |
+| **Observability** | `run_observability`, `run_observability_by_sid` | `/observability/*` |
+| **Agents** | `run_agent_triage`, `run_full_investigation` | `/agents/triage` + chain |
+| **SPL** | `suggest_spl` | `/assistant/spl-suggest` |
+| **Webhook** | `ingest_alert` | `POST /alerts/splunk-ingest` |
+| **MCP** | `mcp_status`, `mcp_generate_spl`, `mcp_call_tool`, `mcp_run_query`, `mcp_saia_ask` | `/mcp/*` |
+| **LLM** | `llm_status` | `GET /llm/status` |
+| **Connectivity** | `doctor`, `health` | multi-endpoint helper |
+| **SOC Chat** | `soc_chat`, `soc_chat_status`, `list_soc_chat_conversations`, `create_soc_chat_conversation`, `get_soc_chat_conversation`, `delete_soc_chat_conversation` | `/soc/chat/*` |
+| **Investigation** | `investigation_timeline`, `analyst_actions`, `add_analyst_action` | `/investigation/*` |
+| **Triage** | `triage_queue` | `GET /triage/queue` |
+| **Storage** | `search_events`, `get_event` | `/storage/events` |
+| **Dashboard** | `dashboard_overview` | `GET /dashboard/overview` |
+| **Admin GAP** | `gap_suggest` | `POST /admin-org/gap-suggest` |
+| **Inventory** | `inventory_status`, `list/create/get/update/delete_inventory_*`, `enrich_inventory` | `/inventory/*` |
+| **Integrations** | `list/get/create/update/delete_integration` | `/integrations/settings` |
+| **Graph** | `graph_health`, `graph_findings`, `graph_get_finding`, `graph_finding_graph_data`, `graph_topology`, `graph_attack_tree`, `graph_discover_attack_paths`, `graph_operation_status` | `/api/v1/graph/*` |
 
 ---
 
@@ -359,6 +392,138 @@ print(indexes.result)
 
 ---
 
+#### `mcp_run_query(search_query, *, extra_arguments=None) → McpToolCallResponse`
+
+Convenience wrapper around `mcp_call_tool` for `splunk_run_query`.
+
+```python
+result = client.mcp_run_query(
+    "search index=main host=web-prod-01 | stats count by user"
+)
+print(result.result)
+```
+
+---
+
+#### `mcp_saia_ask(question, *, additional_context=None) → McpToolCallResponse`
+
+Convenience wrapper for MCP `saia_ask_splunk_question` (Splunk AI Assistant Q&A).
+
+```python
+answer = client.mcp_saia_ask(
+    "What indexes contain authentication events?",
+    additional_context="Alert user=jdoe host=web-prod-01",
+)
+print(answer.result)
+```
+
+---
+
+#### `ingest_alert(body) → dict`
+
+**Endpoint:** `POST /api/v1/alerts/splunk-ingest`
+
+Submits the same payload the Splunk modular alert action sends. Triggers enrichment, optional background analysis, graph upsert, and RAG indexing. **Requires Bearer token.**
+
+**Input:** `SplunkAlertIngest` or dict — `sid`, `search_name`, `results`, `normalized`, etc.
+
+**Output (202 when auto-analyze):**
+
+| Field | Description |
+|-------|-------------|
+| `ok` | Request accepted |
+| `status` | `"accepted"` when background job queued |
+| `job_id` | Background task UUID |
+| `sid` | Splunk job ID |
+| `auto_analyze` | Whether analysis pipeline runs async |
+
+**Example:**
+
+```python
+result = client.ingest_alert({
+    "sid": "1749825600.12345",
+    "search_name": "Suspicious auth failed login alert",
+    "normalized": {"host": "web-prod-01", "user": "jdoe", "src": "1.2.3.4"},
+    "results": [{"host": "web-prod-01", "user": "jdoe", "action": "failure"}],
+})
+print(result.get("job_id"), result.get("auto_analyze"))
+```
+
+Example payload: [`backend/devtools/examples/ingest.json`](../backend/devtools/examples/ingest.json)
+
+---
+
+#### `llm_status() → dict`
+
+**Endpoint:** `GET /api/v1/llm/status`
+
+Returns LiteLLM configuration (model id, whether API key/base are set). **Never returns secret values.**
+
+```python
+status = client.llm_status()
+print(status["litellm_model"], status["litellm_api_key_configured"])
+```
+
+---
+
+#### `doctor() → dict`
+
+Multi-endpoint connectivity check for demo/CI readiness. Calls `health`, `mcp_status`, `llm_status`, `soc_chat_status`, `graph_health`, and `inventory_status` (graph/inventory failures are captured, not fatal).
+
+**Output fields:**
+
+| Field | Description |
+|-------|-------------|
+| `ok` | Backend health is `"ok"` |
+| `ready_for_demo` | Backend + MCP connected + LLM configured |
+| `checks` | Per-subsystem booleans (`backend`, `mcp`, `llm`, `soc_chat`, `graph`, `inventory`) |
+| `raw` | Full JSON from each underlying endpoint |
+
+```python
+report = client.doctor()
+print(report["ready_for_demo"])
+print(report["checks"]["mcp"]["saia_available"])
+```
+
+CLI equivalent: `python backend/devtools/cli.py doctor`
+
+---
+
+#### `run_full_investigation(body) → dict`
+
+Helper that chains four SDK calls (no new backend endpoint):
+
+1. `classify_alert`
+2. `run_agent_triage`
+3. `suggest_spl` (objective from `operator_goal`)
+4. `mcp_status`
+
+**Input:** Same shape as `run_agent_triage` (`normalized`, `search_name`, `operator_goal`, inventory fields, …).
+
+**Output:**
+
+```python
+{
+  "classification": { ... },
+  "triage": { ... },
+  "spl": { ... },
+  "mcp_status": { ... }
+}
+```
+
+```python
+result = client.run_full_investigation({
+    "search_name": "Suspicious auth failed login alert",
+    "operator_goal": "confirm lateral movement path",
+    "normalized": {"host": "web-prod-01", "user": "jdoe"},
+    "users": [{"user_id": "jdoe", "risk_score": 3}],
+})
+print(result["classification"]["track"])
+print(result["triage"]["agent_summary"])
+```
+
+---
+
 #### `run_analysis(body) → SocAnalysisResult`
 
 **Endpoint:** `POST /api/v1/analysis/run`
@@ -632,6 +797,140 @@ print(status.get("embedding_model"), status.get("embedding_dim"))
 
 ---
 
+print(status.get("embedding_model"), status.get("embedding_dim"))
+```
+
+---
+
+#### SOC Chat session methods
+
+| Method | Endpoint |
+|--------|----------|
+| `list_soc_chat_conversations(limit=100)` | `GET /soc/chat/conversations` |
+| `create_soc_chat_conversation(body)` | `POST /soc/chat/conversations` |
+| `get_soc_chat_conversation(conversation_id)` | `GET /soc/chat/conversations/{id}` |
+| `delete_soc_chat_conversation(conversation_id)` | `DELETE /soc/chat/conversations/{id}` |
+
+```python
+conversations = client.list_soc_chat_conversations(limit=20)
+new_chat = client.create_soc_chat_conversation({"title": "Failed login investigation"})
+detail = client.get_soc_chat_conversation(new_chat.id)
+
+# Continue conversation in soc_chat()
+reply = client.soc_chat({
+    "conversation_id": new_chat.id,
+    "messages": [{"role": "user", "content": "Summarize jdoe activity"}],
+})
+client.delete_soc_chat_conversation(new_chat.id)
+```
+
+---
+
+#### `gap_suggest(body) → AdminOrgGapSuggestResponse`
+
+**Endpoint:** `POST /api/v1/admin-org/gap-suggest`
+
+Detects organizational knowledge gaps and proposes **one question** for an administrator (LiteLLM or rule fallback).
+
+**Input fields:** `normalized`, `sid`, `search_name`, optional SOC excerpts (`defender_text`, `hunter_text`, `judge_verdict`, `inventory_user`, …).
+
+**Output fields:** `should_suggest_question`, `gap_summary`, `question_for_admin`, `notes`.
+
+Example payload: [`gap_suggest.json`](../backend/devtools/examples/gap_suggest.json)
+
+```python
+gap = client.gap_suggest({
+    "normalized": {"user": "jdoe", "host": "web-prod-01"},
+    "judge_verdict": "true_positive",
+})
+if gap.should_suggest_question:
+    print(gap.question_for_admin)
+```
+
+---
+
+#### Inventory methods
+
+| Method | Endpoint |
+|--------|----------|
+| `inventory_status()` | `GET /inventory/status` |
+| `list_inventory_users()` | `GET /inventory/users` |
+| `create_inventory_user(body)` | `POST /inventory/users` |
+| `get_inventory_user(user_id)` | `GET /inventory/users/{id}` |
+| `update_inventory_user(user_id, body)` | `PATCH /inventory/users/{id}` |
+| `delete_inventory_user(user_id)` | `DELETE /inventory/users/{id}` |
+| `list_inventory_assets()` | `GET /inventory/assets` |
+| `create_inventory_asset(body)` | `POST /inventory/assets` |
+| `get_inventory_asset(asset_id)` | `GET /inventory/assets/{id}` |
+| `update_inventory_asset(asset_id, body)` | `PATCH /inventory/assets/{id}` |
+| `delete_inventory_asset(asset_id)` | `DELETE /inventory/assets/{id}` |
+| `list_inventory_relationships()` | `GET /inventory/relationships` |
+| `create_inventory_relationship(body)` | `POST /inventory/relationships` |
+| `get_inventory_relationship(relationship_id)` | `GET /inventory/relationships/{id}` |
+| `update_inventory_relationship(relationship_id, body)` | `PATCH /inventory/relationships/{id}` |
+| `delete_inventory_relationship(relationship_id)` | `DELETE /inventory/relationships/{id}` |
+| `enrich_inventory(body) → EnrichmentResult` | `POST /inventory/enrich` |
+
+Typed models: `UserRecord`, `AssetRecord`, `RelationshipRecord`, `EnrichmentResult` from `models/inventory.py` and `models/enrichment.py`.
+
+```python
+users = client.list_inventory_users()
+enriched = client.enrich_inventory({
+    "normalized": {"host": "web-prod-01", "user": "jdoe"},
+})
+print(enriched.resolved_user_id, enriched.confidence)
+```
+
+Example payload: [`inventory_enrich.json`](../backend/devtools/examples/inventory_enrich.json)
+
+---
+
+#### Integration settings methods
+
+| Method | Endpoint |
+|--------|----------|
+| `list_integrations()` | `GET /integrations/settings` |
+| `get_integration(setting_id)` | `GET /integrations/settings/{id}` |
+| `create_integration(body)` | `POST /integrations/settings` |
+| `update_integration(setting_id, body)` | `PATCH /integrations/settings/{id}` |
+| `delete_integration(setting_id)` | `DELETE /integrations/settings/{id}` |
+
+Requires admin bearer when `TSOC_ADMIN_TOKEN` is set. Returns `IntegrationSettingRecord` (secrets may be masked).
+
+```python
+settings = client.list_integrations()
+for row in settings:
+    print(row.id, row.category, row.configured)
+```
+
+---
+
+#### Graph / correlation methods
+
+| Method | Endpoint |
+|--------|----------|
+| `graph_health()` | `GET /graph/health` |
+| `graph_findings(limit, offset, finding_type, …)` | `GET /graph/findings` |
+| `graph_get_finding(finding_id)` | `GET /graph/findings/{id}` |
+| `graph_finding_graph_data(finding_id)` | `GET /graph/findings/{id}/graph-data` |
+| `graph_topology(identifier)` | `GET /graph/topology/{id}` |
+| `graph_attack_tree(identifier)` | `GET /graph/attack-tree/{id}` |
+| `graph_discover_attack_paths(body)` | `POST /graph/analysis/discover-attack-paths` (202) |
+| `graph_operation_status(operation_id)` | `GET /graph/analysis/operations/{id}/status` |
+
+```python
+health = client.graph_health()
+print(health["neo4j"], health["postgres"])
+
+findings = client.graph_findings(limit=10)
+op = client.graph_discover_attack_paths({"limit_to_latest_alerts": 5})
+status = client.graph_operation_status(op["operation_id"])
+```
+
+Example payload: [`graph_discover.json`](../backend/devtools/examples/graph_discover.json)
+
+---
+
 #### `investigation_timeline(record_id) → dict`
 
 **Endpoint:** `GET /api/v1/investigation/records/{record_id}/timeline`
@@ -760,59 +1059,114 @@ python backend/devtools/cli.py --help
 | `--timeout` | `120.0` | HTTP timeout (seconds) |
 | `--retries` | `2` | Retry count |
 
-### Commands
+### Commands by category
+
+#### Analysis & triage
 
 ```bash
-# Classify an alert
 python backend/devtools/cli.py classify --body backend/devtools/examples/classify.json
-
-# Route analysis (classify + full pipeline)
 python backend/devtools/cli.py route --body backend/devtools/examples/route.json
-
-# Agent triage (full agentic flow)
 python backend/devtools/cli.py agent --body backend/devtools/examples/agent.json
-
-# SPL suggestion
 python backend/devtools/cli.py spl --body backend/devtools/examples/spl.json
-
-# MCP status check (no body needed)
-python backend/devtools/cli.py mcp-status
-
-# Generate SPL via Splunk MCP SAIA (NL → SPL)
-python backend/devtools/cli.py mcp-generate --body backend/devtools/examples/mcp_generate.json
-
-# Invoke any Splunk MCP tool directly
-python backend/devtools/cli.py mcp-tool --body backend/devtools/examples/mcp_tool_call.json
-
-# Batch analysis by Splunk SID (REST v2 job results)
+python backend/devtools/cli.py run-analysis --body backend/devtools/examples/agent.json
 python backend/devtools/cli.py run-by-sid --body backend/devtools/examples/run_by_sid.json
-
-# Observability analysis (Diagnoser + Responder + OpsJudge)
 python backend/devtools/cli.py obs-run --body backend/devtools/examples/classify.json
-
-# Observability batch by SID
 python backend/devtools/cli.py obs-by-sid --body backend/devtools/examples/run_by_sid.json
+python backend/devtools/cli.py investigate --body backend/devtools/examples/agent.json
+python backend/devtools/cli.py gap-suggest --body backend/devtools/examples/gap_suggest.json
+```
 
-# SOC Chat (RAG investigation)
-python backend/devtools/cli.py soc-chat --body backend/devtools/examples/soc_chat.json
+#### Webhook, connectivity & LLM
 
-# SOC Chat status
-python backend/devtools/cli.py chat-status
-
-# Investigation timeline
-python backend/devtools/cli.py timeline --record-id 42
-
-# Triage queue
-python backend/devtools/cli.py triage --track security --limit 10
-
-# SOC dashboard overview
-python backend/devtools/cli.py dashboard
-
-# Health check
+```bash
+python backend/devtools/cli.py ingest --body backend/devtools/examples/ingest.json
 python backend/devtools/cli.py health
+python backend/devtools/cli.py doctor
+python backend/devtools/cli.py llm-status
+python backend/devtools/cli.py dashboard
+```
+
+#### Splunk MCP
+
+```bash
+python backend/devtools/cli.py mcp-status
+python backend/devtools/cli.py mcp-generate --body backend/devtools/examples/mcp_generate.json
+python backend/devtools/cli.py mcp-tool --body backend/devtools/examples/mcp_tool_call.json
+python backend/devtools/cli.py mcp-query --spl "search index=main | head 10"
+python backend/devtools/cli.py mcp-ask --question "What indexes have auth events?"
+```
+
+#### SOC Chat
+
+```bash
+python backend/devtools/cli.py soc-chat --body backend/devtools/examples/soc_chat.json
+python backend/devtools/cli.py chat-status
+python backend/devtools/cli.py chat-conversations
+python backend/devtools/cli.py chat-conversation-create --title "Investigation"
+python backend/devtools/cli.py chat-conversation-get --conversation-id <uuid>
+python backend/devtools/cli.py chat-conversation-delete --conversation-id <uuid>
+```
+
+#### Investigation & storage
+
+```bash
+python backend/devtools/cli.py timeline --record-id 42
+python backend/devtools/cli.py analyst-actions --record-id 42
+python backend/devtools/cli.py analyst-action-add --record-id 42 --body action.json
+python backend/devtools/cli.py triage --track security --limit 10
+python backend/devtools/cli.py search-events --record-type soc_analysis --limit 5
+python backend/devtools/cli.py get-event --record-id 99
+```
+
+#### Inventory
+
+```bash
+python backend/devtools/cli.py inventory-status
+python backend/devtools/cli.py inventory-users
+python backend/devtools/cli.py inventory-user-get --user-id jdoe
+python backend/devtools/cli.py inventory-user-create --body user.json
+python backend/devtools/cli.py inventory-user-update --user-id jdoe --body patch.json
+python backend/devtools/cli.py inventory-user-delete --user-id jdoe
+python backend/devtools/cli.py inventory-assets
+python backend/devtools/cli.py inventory-asset-get --asset-id srv-web-01
+python backend/devtools/cli.py inventory-relationships
+python backend/devtools/cli.py inventory-enrich --body backend/devtools/examples/inventory_enrich.json
+```
+
+#### Integrations (admin)
+
+```bash
+python backend/devtools/cli.py integrations-list
+python backend/devtools/cli.py integration-get --setting-id litellm_model
+python backend/devtools/cli.py integration-create --body setting.json
+python backend/devtools/cli.py integration-update --setting-id my_key --body patch.json
+python backend/devtools/cli.py integration-delete --setting-id my_key
+```
+
+#### Graph / correlation
+
+```bash
+python backend/devtools/cli.py graph-health
+python backend/devtools/cli.py graph-findings --limit 10 --offset 0
+python backend/devtools/cli.py graph-finding --finding-id <id>
+python backend/devtools/cli.py graph-finding-data --finding-id <id>
+python backend/devtools/cli.py graph-topology --identifier <id>
+python backend/devtools/cli.py graph-attack-tree --identifier <id>
+python backend/devtools/cli.py graph-discover --body backend/devtools/examples/graph_discover.json
+python backend/devtools/cli.py graph-operation --operation-id <uuid>
 ```
 
 All commands output JSON to stdout.
+
+### End-to-end demo script
+
+```bash
+cd backend
+python devtools/examples/demo_e2e.py
+# or: python devtools/examples/demo_e2e.py --base-url http://127.0.0.1:9876 --token "$TSOC_INGEST_TOKEN"
+```
+
+Exercises: `doctor()` → `run_full_investigation()` → `mcp_generate_spl()` → `mcp_saia_ask()` → dashboard → triage → SOC chat.
 
 ---
 
@@ -823,8 +1177,11 @@ Runs predefined scenarios against the backend and produces an objective quality 
 ```bash
 python backend/devtools/evaluate.py \
   --matrix backend/devtools/examples/eval_matrix.json \
+  --check-mcp \
   --out eval_report.json
 ```
+
+Add `--check-mcp` to score MCP SAIA SPL generation per scenario when `mcp_query` is set in the matrix.
 
 ### Scoring rubric (per scenario, 100 points max)
 
@@ -836,6 +1193,28 @@ python backend/devtools/evaluate.py \
 | Pipeline output | 20 | Expected pipeline result present |
 | SPL quality | 20 | Contains `search` keyword, length >= 30 chars |
 
+### Connectivity score (report-level, 100 points max)
+
+Always computed via `client.doctor()`:
+
+| Check | Points |
+|-------|--------|
+| Backend health | 25 |
+| MCP connected | 35 |
+| SAIA available | 15 |
+| LLM configured | 15 |
+| SOC chat enabled | 10 |
+| Graph health | 5 |
+| Inventory Postgres | 5 |
+
+### MCP SAIA score (`--check-mcp`, per scenario, 100 points max)
+
+| Check | Points |
+|-------|--------|
+| Source is `splunk_mcp_saia` | 40 |
+| Valid SPL returned | 40 |
+| Explanation present | 20 |
+
 ### Report output
 
 ```json
@@ -844,12 +1223,25 @@ python backend/devtools/evaluate.py \
   "max_score": 200,
   "total_score": 180,
   "score_percent": 90.0,
+  "connectivity": {
+    "score": 100,
+    "max_score": 100,
+    "ready_for_demo": true,
+    "details": { "backend_ok": true, "mcp_ok": true, "saia_available": true },
+    "doctor": { "ok": true, "checks": { ... } }
+  },
+  "mcp_saia": {
+    "scenario_count": 1,
+    "total_score": 100,
+    "score_percent": 100.0
+  },
   "results": [
     {
       "scenario_index": 0,
       "scenario_name": "security_failed_login",
       "score": 100,
-      "details": { "track_match": true, "confidence_ok": true, ... }
+      "details": { "track_match": true, "confidence_ok": true },
+      "mcp": { "score": 100, "source": "splunk_mcp_saia" }
     }
   ]
 }
@@ -882,12 +1274,16 @@ Ready-to-use JSON files in [`backend/devtools/examples/`](../backend/devtools/ex
 | `route.json` | `/analysis/route` | Security — failed login with user/asset inventory enrichment |
 | `agent.json` | `/agents/triage` | Security — full triage with operator goal "confirm lateral movement" |
 | `spl.json` | `/assistant/spl-suggest` | Security — root cause timeline for auth activity |
+| `ingest.json` | `/alerts/splunk-ingest` | Splunk webhook — failed login alert payload |
+| `gap_suggest.json` | `/admin-org/gap-suggest` | Organizational gap question for jdoe failed login |
+| `inventory_enrich.json` | `/inventory/enrich` | Match alert host/user to inventory |
+| `graph_discover.json` | `/graph/analysis/discover-attack-paths` | Start async attack-path discovery |
 | `mcp_generate.json` | `/mcp/spl-generate` | SAIA NL→SPL — "Show failed login attempts for user jdoe" |
 | `mcp_tool_call.json` | `/mcp/tools/call` | Raw MCP — run `splunk_run_query` with stats aggregation |
 | `run_by_sid.json` | `/analysis/run-by-sid` | Splunk REST — batch-analyze job results by SID |
 | `soc_chat.json` | `/soc/chat` | RAG chat — ask about recent security findings |
-| `eval_matrix.json` | `evaluate.py` | 2-scenario matrix (security + observability) with scoring expectations |
-| `demo_e2e.py` | End-to-end | Full pipeline demo: health → classify → triage → SPL → MCP → chat |
+| `eval_matrix.json` | `evaluate.py` | 2-scenario matrix + optional `mcp_query` for SAIA scoring |
+| `demo_e2e.py` | End-to-end | Full pipeline: doctor → investigate → MCP → chat |
 
 ---
 
@@ -898,17 +1294,21 @@ The SDK provides **direct programmatic access** to Splunk capabilities:
 | Splunk capability | SDK method | Integration path |
 |-------------------|------------|-----------------|
 | **Splunk REST API v2** (job results) | `run_analysis_by_sid()`, `run_observability_by_sid()` | Backend fetches results via `GET /services/search/v2/jobs/{sid}/results` |
-| **Splunk MCP Server** (tool execution) | `mcp_call_tool()` | JSON-RPC `tools/call` to any registered MCP tool (`splunk_run_query`, `get_indexes`, etc.) |
+| **Splunk MCP Server** (tool execution) | `mcp_call_tool()`, `mcp_run_query()` | JSON-RPC `tools/call` to any registered MCP tool |
 | **Splunk MCP SAIA** (NL → SPL) | `mcp_generate_spl()` | `saia_generate_spl` + optimize + explain pipeline |
+| **Splunk MCP SAIA** (Q&A) | `mcp_saia_ask()` | `saia_ask_splunk_question` with alert context |
 | **SAIA REST `/predict`** | `suggest_spl()` | `POST /servicesNS/.../predict` with MCP execute fallback |
-| **Splunk MCP status** | `mcp_status()` | Connectivity + tool inventory + SAIA availability |
-| **RAG over Splunk data** | `soc_chat()` | AI investigation chat grounded in indexed Splunk alerts and analyses |
+| **Splunk MCP status** | `mcp_status()`, `doctor()` | Connectivity + tool inventory + SAIA availability |
+| **Webhook alert action** | `ingest_alert()` | Same path as Splunk modular alert → async analysis |
+| **RAG over Splunk data** | `soc_chat()`, chat session CRUD | AI investigation chat grounded in indexed alerts |
 | **Investigation lifecycle** | `investigation_timeline()`, `analyst_actions()`, `add_analyst_action()` | Chronological tracing + human-in-the-loop gate |
 | **Triage prioritization** | `triage_queue()` | Priority-sorted analyst queue from analyzed Splunk alerts |
+| **Inventory enrichment** | `enrich_inventory()`, inventory CRUD | PostgreSQL asset/user/relationship service |
+| **Graph correlation** | `graph_*` methods | Neo4j attack paths + Postgres findings |
+| **Demo readiness** | `doctor()`, `run_full_investigation()` | One-call CI/demo checks |
 | **Separate pipeline endpoints** | `run_analysis()` **or** `run_observability()` | Router selects **one** track per alert; SDK exposes each pipeline separately |
-| **Webhook alert action** | Separate ingest endpoint | SDK wraps downstream analysis triggered by alerts |
 
-This makes the SDK a **complete programmatic interface** to the ThinkingSOC platform, demonstrating **Splunk Developer Tools** usage across REST API v2 data retrieval, MCP Server tool invocation, SAIA AI-assisted SPL generation, RAG-powered investigation, and the full alert-to-triage lifecycle.
+This makes the SDK a **complete programmatic interface** to the ThinkingSOC platform — suitable for **Splunk Developer Tools** bonus evidence: REST API v2, MCP Server, SAIA, webhook ingest, RAG chat, inventory, and graph correlation.
 
 ---
 

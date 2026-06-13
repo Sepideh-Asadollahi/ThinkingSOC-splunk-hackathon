@@ -92,7 +92,7 @@ flowchart LR
 | 19 | [19-storage-persistence.md](./19-storage-persistence.md) | **Storage** — PostgreSQL `tsoc_records`, record types, persist/query, dashboard stats |
 | 20 | [20-investigation-workflow.md](./20-investigation-workflow.md) | **Investigation** — timeline reconstruction, analyst acknowledge/escalate, human-in-the-loop |
 | 21 | [21-database-schema.md](./21-database-schema.md) | **Database schema** — PostgreSQL tables, Qdrant collection, Neo4j graph, indexes, init flow |
-| 22 | [22-developer-sdk.md](./22-developer-sdk.md) | **Developer SDK** — typed Python SDK, async client, CLI, evaluation runner, API reference |
+| 22 | [22-developer-sdk.md](./22-developer-sdk.md) | **Developer SDK** — full API wrapper (ingest, MCP, inventory, graph), CLI, `doctor`, evaluate runner |
 | 23 | [23-post-install-integration-wizard.md](./23-post-install-integration-wizard.md) | **Post-install wizard** — Splunk / LiteLLM / MCP setup, smoke test, `.env` summary, Splunk restart |
 | 24 | [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) | **Demo data** — moment PostgreSQL snapshot, `install.sh` auto-load, export script |
 

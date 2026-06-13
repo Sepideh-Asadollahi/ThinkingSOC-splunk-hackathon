@@ -1,0 +1,4 @@
+{
+  "limit_to_latest_alerts": 5,
+  "force_reanalysis": false
+}

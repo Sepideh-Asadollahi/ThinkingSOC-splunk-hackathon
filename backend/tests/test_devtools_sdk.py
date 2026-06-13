@@ -1005,3 +1005,504 @@ def test_evaluate_score_row_few_actions() -> None:
     assert details["actions_ok"] is False
     assert score == 85
 
+
+# ---------------------------------------------------------------------------
+# New SDK methods (ingest, doctor, MCP wrappers, full investigation)
+# ---------------------------------------------------------------------------
+
+
+def test_workflows_build_doctor_report_all_ok() -> None:
+    from devtools.workflows import build_doctor_report
+
+    report = build_doctor_report(
+        health={"status": "ok"},
+        mcp_status={"configured": True, "connected": True, "saia_available": True},
+        llm_status={"litellm_model": "gpt-4", "litellm_api_key_configured": True},
+        soc_chat_status={"enabled": True, "document_count": 10},
+        graph_health={"status": "ok", "neo4j": True, "postgres": True},
+        inventory_status={"postgres_configured": True, "source": "postgresql"},
+    )
+    assert report["ok"] is True
+    assert report["ready_for_demo"] is True
+    assert report["checks"]["mcp"]["saia_available"] is True
+    assert report["checks"]["graph"]["ok"] is True
+    assert report["checks"]["inventory"]["ok"] is True
+
+
+def test_workflows_build_doctor_report_backend_down() -> None:
+    from devtools.workflows import build_doctor_report
+
+    report = build_doctor_report(
+        health={"status": "degraded"},
+        mcp_status={"configured": False, "connected": False},
+        llm_status={"litellm_model": None, "litellm_api_key_configured": False},
+        soc_chat_status={"enabled": False},
+    )
+    assert report["ok"] is False
+    assert report["ready_for_demo"] is False
+
+
+def test_sdk_ingest_alert() -> None:
+    data = {"ok": True, "status": "accepted", "job_id": "abc-123", "sid": "1749825600.1"}
+    client = TsocSdkClient(base_url=_BASE, ingest_token="tok", max_retries=0)
+    with patch("httpx.Client.post") as m:
+        m.return_value = _ok_response(data)
+        result = client.ingest_alert({"sid": "1749825600.1", "normalized": {"user": "jdoe"}})
+    assert result["ok"] is True
+    assert result["job_id"] == "abc-123"
+
+
+def test_sdk_llm_status() -> None:
+    data = {"litellm_model": "gpt-4", "litellm_api_key_configured": True}
+    client = TsocSdkClient(base_url=_BASE)
+    with patch("httpx.Client.get") as m:
+        m.return_value = _ok_response(data)
+        result = client.llm_status()
+    assert result["litellm_model"] == "gpt-4"
+
+
+def test_sdk_doctor() -> None:
+    client = TsocSdkClient(base_url=_BASE)
+    with (
+        patch.object(client, "health", return_value={"status": "ok"}),
+        patch.object(client, "mcp_status", return_value={"configured": True, "connected": True, "saia_available": True}),
+        patch.object(client, "llm_status", return_value={"litellm_model": "gpt-4", "litellm_api_key_configured": True}),
+        patch.object(client, "soc_chat_status", return_value={"enabled": True, "document_count": 5}),
+        patch.object(client, "graph_health", return_value={"status": "ok", "neo4j": True, "postgres": True}),
+        patch.object(client, "inventory_status", return_value={"postgres_configured": True, "source": "postgresql"}),
+    ):
+        report = client.doctor()
+    assert report["ok"] is True
+    assert report["checks"]["backend"]["ok"] is True
+    assert report["checks"]["mcp"]["saia_available"] is True
+    assert report["checks"]["graph"]["ok"] is True
+
+
+def test_sdk_mcp_run_query() -> None:
+    data = {"tool_name": "splunk_run_query", "result": {"rows": [{"count": "7"}]}}
+    client = TsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.Client.post") as m:
+        m.return_value = _ok_response(data)
+        out = client.mcp_run_query("search index=main | head 5")
+    assert out.tool_name == "splunk_run_query"
+    call_args = m.call_args
+    assert call_args[1]["json"]["tool_name"] == "splunk_run_query"
+    assert "search index=main" in call_args[1]["json"]["arguments"]["search_query"]
+
+
+def test_sdk_mcp_saia_ask() -> None:
+    data = {"tool_name": "saia_ask_splunk_question", "result": {"answer": "main index has auth logs"}}
+    client = TsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.Client.post") as m:
+        m.return_value = _ok_response(data)
+        out = client.mcp_saia_ask("What indexes have auth data?", additional_context="user=jdoe")
+    assert out.tool_name == "saia_ask_splunk_question"
+    payload = m.call_args[1]["json"]
+    assert payload["arguments"]["prompt"] == "What indexes have auth data?"
+    assert payload["arguments"]["additional_context"] == "user=jdoe"
+
+
+def test_sdk_run_full_investigation() -> None:
+    client = TsocSdkClient(base_url=_BASE, max_retries=0)
+    cls = MagicMock(model_dump=MagicMock(return_value={"track": "security"}))
+    triage = MagicMock(model_dump=MagicMock(return_value={"agent_summary": "test summary"}))
+    spl = MagicMock(model_dump=MagicMock(return_value={"source": "rule_based"}))
+    with (
+        patch.object(client, "classify_alert", return_value=cls),
+        patch.object(client, "run_agent_triage", return_value=triage),
+        patch.object(client, "suggest_spl", return_value=spl) as m_spl,
+        patch.object(client, "mcp_status", return_value={"connected": True}),
+    ):
+        result = client.run_full_investigation({"normalized": {"user": "jdoe"}, "operator_goal": "investigate"})
+    assert result["classification"]["track"] == "security"
+    assert result["triage"]["agent_summary"] == "test summary"
+    assert result["mcp_status"]["connected"] is True
+    m_spl.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_ingest_alert() -> None:
+    data = {"ok": True, "sid": "1749825600.1"}
+    client = AsyncTsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as m:
+        m.return_value = _ok_response(data)
+        result = await client.ingest_alert({"sid": "1749825600.1"})
+    assert result["ok"] is True
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_llm_status() -> None:
+    data = {"litellm_model": "claude-3", "litellm_api_key_configured": False}
+    client = AsyncTsocSdkClient(base_url=_BASE)
+    with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as m:
+        m.return_value = _ok_response(data)
+        result = await client.llm_status()
+    assert result["litellm_model"] == "claude-3"
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_doctor() -> None:
+    client = AsyncTsocSdkClient(base_url=_BASE)
+    with (
+        patch.object(client, "health", new_callable=AsyncMock, return_value={"status": "ok"}),
+        patch.object(client, "mcp_status", new_callable=AsyncMock, return_value={"configured": True, "connected": True}),
+        patch.object(client, "llm_status", new_callable=AsyncMock, return_value={"litellm_model": "x", "litellm_api_key_configured": True}),
+        patch.object(client, "soc_chat_status", new_callable=AsyncMock, return_value={"enabled": True}),
+        patch.object(client, "graph_health", new_callable=AsyncMock, return_value={"status": "ok"}),
+        patch.object(client, "inventory_status", new_callable=AsyncMock, return_value={"postgres_configured": True}),
+    ):
+        report = await client.doctor()
+    assert report["ok"] is True
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_mcp_run_query() -> None:
+    data = {"tool_name": "splunk_run_query", "result": []}
+    client = AsyncTsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as m:
+        m.return_value = _ok_response(data)
+        out = await client.mcp_run_query("search index=main")
+    assert out.tool_name == "splunk_run_query"
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_run_full_investigation() -> None:
+    client = AsyncTsocSdkClient(base_url=_BASE, max_retries=0)
+    cls = MagicMock(model_dump=MagicMock(return_value={"track": "observability"}))
+    triage = MagicMock(model_dump=MagicMock(return_value={"agent_summary": "cpu spike"}))
+    spl = MagicMock(model_dump=MagicMock(return_value={"source": "llm"}))
+    with (
+        patch.object(client, "classify_alert", new_callable=AsyncMock, return_value=cls),
+        patch.object(client, "run_agent_triage", new_callable=AsyncMock, return_value=triage),
+        patch.object(client, "suggest_spl", new_callable=AsyncMock, return_value=spl),
+        patch.object(client, "mcp_status", new_callable=AsyncMock, return_value={"connected": False}),
+    ):
+        result = await client.run_full_investigation({"normalized": {"cpu": 95}})
+    assert result["classification"]["track"] == "observability"
+
+
+def test_evaluate_score_connectivity_perfect() -> None:
+    from devtools.evaluate import _score_connectivity
+    from devtools.workflows import build_doctor_report
+
+    doctor = build_doctor_report(
+        health={"status": "ok"},
+        mcp_status={"configured": True, "connected": True, "saia_available": True},
+        llm_status={"litellm_model": "gpt-4", "litellm_api_key_configured": True},
+        soc_chat_status={"enabled": True, "document_count": 1},
+        graph_health={"status": "ok"},
+        inventory_status={"postgres_configured": True},
+    )
+    score, details = _score_connectivity(doctor)
+    assert score == 100
+    assert details["saia_available"] is True
+    assert details["graph_ok"] is True
+
+
+def test_evaluate_score_mcp_spl_perfect() -> None:
+    from devtools.evaluate import _score_mcp_spl
+
+    score, details = _score_mcp_spl({
+        "source": "splunk_mcp_saia",
+        "spl": "search index=main user=jdoe | stats count",
+        "explanation": "failed logins",
+    })
+    assert score == 100
+    assert details["source_ok"] is True
+
+
+# ---------------------------------------------------------------------------
+# Extended SDK API coverage (inventory, graph, chat sessions, gap, integrations)
+# ---------------------------------------------------------------------------
+
+
+def test_sdk_gap_suggest() -> None:
+    data = {
+        "should_suggest_question": True,
+        "gap_summary": "Unknown contractor access",
+        "question_for_admin": "Is jdoe authorized on web-prod-01?",
+    }
+    client = TsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.Client.post") as m:
+        m.return_value = _ok_response(data)
+        out = client.gap_suggest({"normalized": {"user": "jdoe"}})
+    assert out.should_suggest_question is True
+
+
+def test_sdk_inventory_status_and_users() -> None:
+    user = {
+        "user_id": "jdoe",
+        "display_name": "John Doe",
+        "risk_score": 3,
+    }
+    client = TsocSdkClient(base_url=_BASE)
+    with patch("httpx.Client.get") as m:
+        m.side_effect = [
+            _ok_response({"source": "postgresql", "postgres_configured": True}),
+            _ok_response([user]),
+        ]
+        status = client.inventory_status()
+        users = client.list_inventory_users()
+    assert status["postgres_configured"] is True
+    assert users[0].user_id == "jdoe"
+
+
+def test_sdk_enrich_inventory() -> None:
+    data = {
+        "resolved_user_id": "jdoe",
+        "resolved_asset_id": "srv-web-01",
+        "confidence": "high",
+        "notes": "matched hostname",
+        "matched_relationship_ids": [],
+    }
+    client = TsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.Client.post") as m:
+        m.return_value = _ok_response(data)
+        out = client.enrich_inventory({"normalized": {"host": "web-prod-01", "user": "jdoe"}})
+    assert out.confidence == "high"
+
+
+def test_sdk_list_integrations() -> None:
+    row = {
+        "id": "litellm_model",
+        "category": "litellm",
+        "key": "LITELLM_MODEL",
+        "value": "gpt-4",
+        "is_secret": False,
+        "builtin": True,
+        "configured": True,
+    }
+    client = TsocSdkClient(base_url=_BASE)
+    with patch("httpx.Client.get") as m:
+        m.return_value = _ok_response([row])
+        out = client.list_integrations()
+    assert out[0].id == "litellm_model"
+
+
+def test_sdk_graph_findings_and_health() -> None:
+    client = TsocSdkClient(base_url=_BASE)
+    with patch("httpx.Client.get") as m:
+        m.side_effect = [
+            _ok_response({"status": "ok", "neo4j": True, "postgres": True}),
+            _ok_response({"items": [], "total": 0, "limit": 20, "offset": 0}),
+        ]
+        health = client.graph_health()
+        findings = client.graph_findings(limit=20)
+    assert health["status"] == "ok"
+    assert findings["total"] == 0
+
+
+def test_sdk_soc_chat_conversations() -> None:
+    summary = {
+        "id": "conv-1",
+        "title": "Investigation",
+        "created_at": "2026-06-13T00:00:00",
+        "updated_at": "2026-06-13T00:00:00",
+        "message_count": 0,
+    }
+    client = TsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.Client.get") as m:
+        m.return_value = _ok_response([summary])
+        out = client.list_soc_chat_conversations()
+    assert out[0].id == "conv-1"
+
+
+def test_sdk_delete_inventory_user() -> None:
+    client = TsocSdkClient(base_url=_BASE)
+    resp = MagicMock()
+    resp.status_code = 204
+    resp.raise_for_status.return_value = None
+    with patch("httpx.Client.delete") as m:
+        m.return_value = resp
+        client.delete_inventory_user("jdoe")
+    m.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_gap_suggest() -> None:
+    data = {"should_suggest_question": False, "gap_summary": "", "question_for_admin": ""}
+    client = AsyncTsocSdkClient(base_url=_BASE, max_retries=0)
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as m:
+        m.return_value = _ok_response(data)
+        out = await client.gap_suggest({"normalized": {}})
+    assert out.should_suggest_question is False
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_graph_health() -> None:
+    client = AsyncTsocSdkClient(base_url=_BASE)
+    with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as m:
+        m.return_value = _ok_response({"status": "ok"})
+        out = await client.graph_health()
+    assert out["status"] == "ok"
+
+
+# ---------------------------------------------------------------------------
+# New CLI command tests
+# ---------------------------------------------------------------------------
+
+
+def test_cli_ingest_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "--retries", "0", "ingest", "--body", "/dev/null"]),
+        patch("devtools.cli._load_json", return_value={"sid": "1.2", "normalized": {}}),
+        patch.object(TsocSdkClient, "ingest_alert", return_value={"ok": True, "sid": "1.2"}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"ok": true' in captured.out
+
+
+def test_cli_doctor_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "doctor"]),
+        patch.object(TsocSdkClient, "doctor", return_value={"ok": True, "ready_for_demo": True}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"ready_for_demo": true' in captured.out
+
+
+def test_cli_llm_status_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "llm-status"]),
+        patch.object(TsocSdkClient, "llm_status", return_value={"litellm_model": "gpt-4"}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"litellm_model": "gpt-4"' in captured.out
+
+
+def test_cli_run_analysis_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "--retries", "0", "run-analysis", "--body", "/dev/null"]),
+        patch("devtools.cli._load_json", return_value={"normalized": {"user": "jdoe"}}),
+        patch.object(TsocSdkClient, "run_analysis") as m,
+    ):
+        m.return_value = MagicMock(model_dump=MagicMock(return_value={"judge": {"verdict": "true_positive"}}))
+        main()
+    captured = capsys.readouterr()
+    assert '"verdict": "true_positive"' in captured.out
+
+
+def test_cli_search_events_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "search-events", "--limit", "5"]),
+        patch.object(TsocSdkClient, "search_events", return_value={"count": 2, "results": []}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"count": 2' in captured.out
+
+
+def test_cli_get_event_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "get-event", "--record-id", "99"]),
+        patch.object(TsocSdkClient, "get_event", return_value={"id": 99}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"id": 99' in captured.out
+
+
+def test_cli_analyst_actions_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "analyst-actions", "--record-id", "10"]),
+        patch.object(TsocSdkClient, "analyst_actions", return_value={"count": 1}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"count": 1' in captured.out
+
+
+def test_cli_mcp_query_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "--retries", "0", "mcp-query", "--spl", "search index=main"]),
+        patch.object(TsocSdkClient, "mcp_run_query") as m,
+    ):
+        m.return_value = MagicMock(model_dump=MagicMock(return_value={"tool_name": "splunk_run_query", "result": []}))
+        main()
+    captured = capsys.readouterr()
+    assert '"tool_name": "splunk_run_query"' in captured.out
+
+
+def test_cli_investigate_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "investigate", "--body", "/dev/null"]),
+        patch("devtools.cli._load_json", return_value={"normalized": {"user": "jdoe"}}),
+        patch.object(TsocSdkClient, "run_full_investigation", return_value={"classification": {"track": "security"}}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"track": "security"' in captured.out
+
+
+def test_cli_gap_suggest_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "--retries", "0", "gap-suggest", "--body", "/dev/null"]),
+        patch("devtools.cli._load_json", return_value={"normalized": {"user": "jdoe"}}),
+        patch.object(TsocSdkClient, "gap_suggest") as m,
+    ):
+        m.return_value = MagicMock(
+            model_dump=MagicMock(return_value={"should_suggest_question": True, "question_for_admin": "ask admin"})
+        )
+        main()
+    captured = capsys.readouterr()
+    assert '"should_suggest_question": true' in captured.out
+
+
+def test_cli_inventory_status_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "inventory-status"]),
+        patch.object(TsocSdkClient, "inventory_status", return_value={"postgres_configured": True}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"postgres_configured": true' in captured.out
+
+
+def test_cli_graph_health_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "graph-health"]),
+        patch.object(TsocSdkClient, "graph_health", return_value={"status": "ok", "neo4j": True}),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert '"status": "ok"' in captured.out
+
+
+def test_cli_chat_conversations_prints_json(capsys) -> None:
+    from devtools.cli import main
+
+    with (
+        patch("sys.argv", ["cli.py", "chat-conversations"]),
+        patch.object(TsocSdkClient, "list_soc_chat_conversations", return_value=[]),
+    ):
+        main()
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "[]"
+
