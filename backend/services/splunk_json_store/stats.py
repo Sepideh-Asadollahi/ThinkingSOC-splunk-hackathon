@@ -104,17 +104,14 @@ async def fetch_activity_by_day(
         SELECT
             ds.day,
             COALESCE(SUM(CASE
-                WHEN d.tsoc_record_type IN ('soc_analysis', 'soc_analysis_audit', 'soc_analysis_batch')
-                THEN d.cnt END), 0)::int AS security,
+                WHEN d.tsoc_record_type = 'soc_analysis' THEN d.cnt END), 0)::int AS security,
             COALESCE(SUM(CASE
                 WHEN d.tsoc_record_type = 'observability_analysis' THEN d.cnt END), 0)::int AS observability,
             COALESCE(MAX(c.cnt), 0)::int AS correlation,
             COALESCE(SUM(CASE
                 WHEN d.tsoc_record_type IS NOT NULL
-                 AND d.tsoc_record_type NOT IN (
-                    'soc_analysis', 'soc_analysis_audit', 'soc_analysis_batch',
-                    'observability_analysis'
-                 ) THEN d.cnt END), 0)::int AS other
+                 AND d.tsoc_record_type NOT IN ('soc_analysis', 'observability_analysis')
+                 THEN d.cnt END), 0)::int AS other
         FROM day_series ds
         LEFT JOIN daily d ON d.day = ds.day
         LEFT JOIN correlation_daily c ON c.day = ds.day
@@ -146,18 +143,14 @@ async def fetch_activity_by_day(
             SELECT
                 ds.day,
                 COALESCE(SUM(CASE
-                    WHEN d.tsoc_record_type IN (
-                        'soc_analysis', 'soc_analysis_audit', 'soc_analysis_batch'
-                    ) THEN d.cnt END), 0)::int AS security,
+                    WHEN d.tsoc_record_type = 'soc_analysis' THEN d.cnt END), 0)::int AS security,
                 COALESCE(SUM(CASE
                     WHEN d.tsoc_record_type = 'observability_analysis' THEN d.cnt END), 0)::int AS observability,
                 0::int AS correlation,
                 COALESCE(SUM(CASE
                     WHEN d.tsoc_record_type IS NOT NULL
-                     AND d.tsoc_record_type NOT IN (
-                        'soc_analysis', 'soc_analysis_audit', 'soc_analysis_batch',
-                        'observability_analysis'
-                     ) THEN d.cnt END), 0)::int AS other
+                     AND d.tsoc_record_type NOT IN ('soc_analysis', 'observability_analysis')
+                     THEN d.cnt END), 0)::int AS other
             FROM day_series ds
             LEFT JOIN daily d ON d.day = ds.day
             GROUP BY ds.day

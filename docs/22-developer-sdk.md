@@ -21,19 +21,107 @@ Typed Python SDK, CLI, and evaluation runner for programmatic access to the Thin
 
 ### Architecture position
 
+The SDK is an **external HTTP client**. Product code (`services/`, `api/`, agents) **does not import** `devtools` — only tests, CLI, demos, and evidence scripts do.
+
+```mermaid
+flowchart TB
+  subgraph consumers [External consumers — optional]
+    CLI[cli.py]
+    Eval[evaluate.py]
+    Demo[demo_e2e.py]
+    Evidence[submission evidence pack]
+  end
+
+  subgraph sdk [backend/devtools — thin HTTP wrapper]
+    Client[TsocSdkClient / AsyncTsocSdkClient]
+    WF[workflows.py]
+    TX[transport.py]
+  end
+
+  subgraph product [Product runtime — unchanged by SDK]
+    API[FastAPI /api/v1/*]
+    SVC[services/ pipelines]
+  end
+
+  subgraph data [Integrations]
+    SPL[Splunk REST v2 + MCP SAIA]
+    PG[(PostgreSQL)]
+    NEO[(Neo4j graph)]
+  end
+
+  CLI --> Client
+  Eval --> Client
+  Demo --> Client
+  Evidence --> Client
+  Client --> WF
+  Client --> TX
+  Client -->|"HTTP Bearer"| API
+  API --> SVC
+  SVC --> SPL
+  SVC --> PG
+  SVC --> NEO
+
+  SplunkAlert[Splunk Alert Action] -->|"webhook direct"| API
 ```
-                              SDK / CLI (this)
-                                   │
-                                   ▼
-Splunk Alert ──► Webhook ──► FastAPI Backend
-                                   │
-                    ┌──────────────┼──────────────┐
-                    ▼              ▼              ▼
-             Splunk REST    Splunk MCP      PostgreSQL
-             (v2 jobs)    (SAIA + tools)
+
+**Dependency rule:** SDK → `models/` (types) + HTTP. **Never** `services/` → SDK.
+
+```mermaid
+flowchart LR
+  subgraph productSide [Product code]
+    Main[main.py]
+    Routes[api/routes]
+    Services[services/]
+  end
+
+  subgraph sdkSide [devtools/ only]
+    SDK[TsocSdkClient]
+  end
+
+  SDK -->|"REST calls"| Routes
+  Routes --> Services
+  Services -.->|"no import"| SDK
 ```
 
 The SDK wraps the same REST endpoints that the analyst UI uses, with **direct access** to Splunk MCP SAIA, MCP tool invocation, and Splunk REST job analysis. It enables external automation, CI testing, and evidence pack generation without the frontend.
+
+### SDK module map
+
+```mermaid
+flowchart LR
+  subgraph entry [Entry points]
+    CLI[cli.py]
+    EV[evaluate.py]
+    E2E[demo_e2e.py]
+  end
+
+  subgraph core [Core]
+    SYNC[client.py]
+    ASYNC[async_client.py]
+    ERR[errors.py]
+  end
+
+  subgraph helpers [Helpers]
+    WF[workflows.py]
+    TX[transport.py]
+  end
+
+  subgraph contracts [Shared types]
+    MDL[backend/models/]
+  end
+
+  CLI --> SYNC
+  EV --> SYNC
+  E2E --> SYNC
+  SYNC --> TX
+  SYNC --> WF
+  SYNC --> MDL
+  ASYNC --> TX
+  ASYNC --> WF
+  ASYNC --> MDL
+  SYNC --> ERR
+  ASYNC --> ERR
+```
 
 ---
 
@@ -451,6 +539,23 @@ print(result.get("job_id"), result.get("auto_analyze"))
 
 Example payload: [`backend/devtools/examples/ingest.json`](../backend/devtools/examples/ingest.json)
 
+**Production vs SDK path** — same endpoint, SDK is optional:
+
+```mermaid
+flowchart TB
+  subgraph production [Production — always used at runtime]
+    SA[Splunk modular alert action]
+    SA --> WH["POST /api/v1/alerts/splunk-ingest"]
+    WH --> ENR[enrich + graph upsert]
+    ENR --> BG[background analysis optional]
+  end
+
+  subgraph developer [Developer / demo — optional]
+    SDK["ingest_alert()"]
+    SDK --> WH
+  end
+```
+
 ---
 
 #### `llm_status() → dict`
@@ -487,6 +592,23 @@ print(report["checks"]["mcp"]["saia_available"])
 
 CLI equivalent: `python backend/devtools/cli.py doctor`
 
+```mermaid
+sequenceDiagram
+  participant C as TsocSdkClient
+  participant W as workflows.build_doctor_report
+  participant API as FastAPI backend
+
+  C->>API: GET /api/v1/health
+  C->>API: GET /api/v1/mcp/status
+  C->>API: GET /api/v1/llm/status
+  C->>API: GET /api/v1/soc/chat/status
+  C->>API: GET /api/v1/graph/health
+  Note over C,API: graph/inventory failures captured, not fatal
+  C->>API: GET /api/v1/inventory/status
+  C->>W: aggregate checks + raw payloads
+  W-->>C: ok, ready_for_demo, checks, raw
+```
+
 ---
 
 #### `run_full_investigation(body) → dict`
@@ -520,6 +642,24 @@ result = client.run_full_investigation({
 })
 print(result["classification"]["track"])
 print(result["triage"]["agent_summary"])
+```
+
+```mermaid
+sequenceDiagram
+  participant C as TsocSdkClient
+  participant API as FastAPI backend
+  participant W as workflows.build_full_investigation_result
+
+  C->>API: POST /classification/alert
+  API-->>C: classification
+  C->>API: POST /agents/triage
+  API-->>C: triage
+  C->>API: POST /assistant/spl-suggest
+  API-->>C: spl
+  C->>API: GET /mcp/status
+  API-->>C: mcp_status
+  C->>W: package result dict
+  W-->>C: classification + triage + spl + mcp_status
 ```
 
 ---
@@ -1183,6 +1323,29 @@ python backend/devtools/evaluate.py \
 
 Add `--check-mcp` to score MCP SAIA SPL generation per scenario when `mcp_query` is set in the matrix.
 
+```mermaid
+flowchart TD
+  Start[evaluate.py main] --> Doctor["client.doctor()"]
+  Doctor --> Conn["_score_connectivity()"]
+  Conn --> ConnBlock[connectivity section in report]
+
+  Start --> Loop{each scenario in matrix}
+  Loop --> Triage["run_agent_triage()"]
+  Loop --> SPL["suggest_spl()"]
+  Triage --> Row["_score_row()"]
+  SPL --> Row
+  Row --> Results[results array]
+
+  Loop --> MCPFlag{--check-mcp and mcp_query?}
+  MCPFlag -->|yes| Gen["mcp_generate_spl()"]
+  Gen --> MCPS["_score_mcp_spl()"]
+  MCPS --> Results
+  MCPFlag -->|no| Results
+
+  Results --> Report[JSON report stdout / --out file]
+  ConnBlock --> Report
+```
+
 ### Scoring rubric (per scenario, 100 points max)
 
 | Check | Points | Condition |
@@ -1288,6 +1451,42 @@ Ready-to-use JSON files in [`backend/devtools/examples/`](../backend/devtools/ex
 ---
 
 ## Splunk integration context
+
+```mermaid
+flowchart LR
+  subgraph sdkMethods [SDK entry points]
+    Ingest[ingest_alert]
+    BySid[run_analysis_by_sid]
+    MCPQ[mcp_run_query]
+    MCPGen[mcp_generate_spl]
+    MCPAsk[mcp_saia_ask]
+    SPL[suggest_spl]
+  end
+
+  subgraph backend [Backend services]
+    IngestSvc[alert ingest pipeline]
+    REST[splunk REST v2 jobs]
+    MCPLayer[splunk/mcp client]
+    SAIA[SAIA predict + MCP SAIA tools]
+  end
+
+  subgraph splunk [Splunk Enterprise]
+    WH[Alert webhook]
+    Jobs[Search jobs SID]
+    MCPSrv[MCP Server]
+  end
+
+  Ingest --> IngestSvc
+  WH --> IngestSvc
+  BySid --> REST
+  REST --> Jobs
+  MCPQ --> MCPLayer
+  MCPGen --> MCPLayer
+  MCPAsk --> MCPLayer
+  SPL --> SAIA
+  MCPLayer --> MCPSrv
+  SAIA --> MCPSrv
+```
 
 The SDK provides **direct programmatic access** to Splunk capabilities:
 

@@ -2,7 +2,20 @@
 
 Typed Python SDK, CLI, and evaluation runner for **all** hackathon backend APIs. Product logic lives in `backend/services/`; this folder is a thin HTTP wrapper only — safe to use without changing runtime behavior.
 
-**Full reference:** [docs/22-developer-sdk.md](../../docs/22-developer-sdk.md)
+**Full reference:** [docs/22-developer-sdk.md](../../docs/22-developer-sdk.md) (includes Mermaid architecture diagrams)
+
+## Isolation from product runtime
+
+The SDK is **not imported** by `services/`, `api/`, or `main.py`. It only calls the backend over HTTP.
+
+```mermaid
+flowchart LR
+  SDK[devtools/ TsocSdkClient] -->|"HTTP REST"| API[api/routes]
+  API --> SVC[services/]
+  SVC -.->|"no import"| SDK
+```
+
+See [architecture diagrams](../../docs/22-developer-sdk.md#architecture-position) in the full doc.
 
 ## What is included
 
@@ -88,6 +101,16 @@ python backend/devtools/evaluate.py \
 ```
 
 Scores per-scenario agent quality, platform connectivity (`doctor`), and optional MCP SAIA SPL generation.
+
+```mermaid
+flowchart LR
+  Eval[evaluate.py] --> Doctor[doctor]
+  Eval --> Scenarios[scenario matrix]
+  Doctor --> Report[JSON report]
+  Scenarios --> Report
+  Scenarios --> MCP["mcp_generate_spl optional"]
+  MCP --> Report
+```
 
 ## End-to-end demo
 

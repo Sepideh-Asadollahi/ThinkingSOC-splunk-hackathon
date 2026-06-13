@@ -123,7 +123,7 @@ Stacked area chart titled **Pipeline activity** showing daily event counts over 
 
 | Series (UI) | Source |
 |-------------|--------|
-| **Security** | `tsoc_record_type IN (soc_analysis, soc_analysis_audit, soc_analysis_batch)` |
+| **Security** | `tsoc_record_type = soc_analysis` (same as Analysis page / **Analyses (24h)** KPI — audit and batch rows count toward **Other**) |
 | **Observability** | `tsoc_record_type = observability_analysis` |
 | **Correlation** | `graph_findings` created per day (query falls back to `0` if the table is missing) |
 
