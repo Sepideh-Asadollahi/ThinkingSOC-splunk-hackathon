@@ -15,7 +15,7 @@
 | SPL aligned with **Splunk UI** chat | REST **`/predict`** (same `write_spl` path as UI), not MCP `saia_generate_spl` |
 | Runnable answers in the product | MCP **`splunk_run_query`** (fallback: REST oneshot) |
 | **All Time** for investigation hunts | SPL `earliest=1 latest=now`; REST/MCP execute uses `earliest_time=0 latest_time=now` |
-| Quality when SPL is wrong | Splunk **parser** check + LiteLLM refine on error / 0 rows (max 2 attempts) |
+| Quality when SPL is wrong | Deterministic syntax repair + Splunk **parser** check + LiteLLM refine on error / 0 rows (max 3 attempts) |
 
 **Not in the main path (hackathon):** CIM `tstats` post-process, `apply_cim_tstats_*`, or per-question `datamodelsimple` injection. SPL policy is **`search`** only (no `tstats` / `datamodel` in generated SPL).
 
@@ -41,7 +41,7 @@ sequenceDiagram
     A->>A: validate_spl (parser)
     A->>M: execute (All Time: SPL earliest=1 latest=now)
     M-->>A: spl_results rows
-    alt error or 0 rows (max 2 refine)
+    alt error or 0 rows (max 3 refine)
       A->>A: LiteLLM execution refine
       A->>M: re-execute
     end
@@ -137,15 +137,16 @@ flowchart TD
 
 | Trigger | Function | Max attempts | Config |
 |---------|----------|--------------|--------|
-| Parser error after generate | `refine_root_cause_spl_until_valid` | 2 | `TSOC_SPL_LLM_REFINE_ON_ERROR=true` |
-| Execute error or 0 rows | `run_investigation_item_execute_refine_loop` | 2 | `TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS` |
+| Parser error after generate | `refine_root_cause_spl_until_valid` | 3 | `TSOC_SPL_LLM_REFINE_ON_ERROR=true` |
+| Execute error or 0 rows | `run_investigation_item_execute_refine_loop` | 3 | `TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS` |
 
 Refine notes on the investigation item:
 
 | Note | Meaning |
 |------|---------|
-| `llm_refine_after_parser_error_1` / `_2` | LiteLLM fixed SPL after Splunk parser rejected it |
-| `llm_refine_after_execute_1` / `_2` | LiteLLM fixed SPL after bad execute or zero rows |
+| `llm_refine_after_parser_error_1` / `_2` / `_3` | LiteLLM fixed SPL after Splunk parser rejected it |
+| `llm_refine_after_execute_1` / `_2` / `_3` | LiteLLM fixed SPL after bad execute or zero rows |
+| `auto_repaired_spl_syntax` | Deterministic sanitizer repaired a high-confidence syntax mutation before execution |
 | `auto_fallback_after_zero_rows` | Rule-based `search` fallback when refine returned unusable SPL |
 | `execute_refine_exhausted` | Max refine attempts used |
 
@@ -169,7 +170,7 @@ Unit tests: `backend/tests/test_spl_syntax_sanitize.py`, `backend/tests/test_spl
 
 ---
 
-## Post-execute refine (LiteLLM only, max 2)
+## Post-execute refine (deterministic repair + LiteLLM, max 3)
 
 After the first execute, if `spl_results.error` or `row_count == 0`, `run_investigation_item_execute_refine_loop` runs LiteLLM (`review_spl_after_execution_with_llm`) then re-validates and re-executes. Set **`TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS=0`** to disable.
 
@@ -230,7 +231,7 @@ See **SPL syntax sanitize + parser-driven refine** above for the full sanitize �
 | `TSOC_SPL_EXECUTE_VIA_MCP` | `true` | Prefer MCP `splunk_run_query` |
 | `TSOC_INVESTIGATION_SPL_TIME_WINDOW` | `earliest=1 latest=now` | Config default; active pipeline uses `SPL_ALL_TIME_WINDOW` in `spl_predict_pipeline.py` |
 | `TSOC_SPL_LLM_REFINE_ON_ERROR` | `true` | Parser error → LiteLLM |
-| `TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS` | `2` | Post-execute refine; `0` disables |
+| `TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS` | `3` | Post-execute refine; `0` disables |
 | `TSOC_INVESTIGATION_QUESTIONS_MAX` | `3` | Max questions per alert |
 | `TSOC_MCP_ENABLED` | `true` | MCP for execute + optional spl-generate |
 | `SPLUNK_MCP_URL` / `SPLUNK_MCP_TOKEN` | — | MCP Bearer |

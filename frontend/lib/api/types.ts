@@ -170,6 +170,25 @@ export type DashboardIntegrations = {
   neo4j: boolean
 }
 
+export type DashboardRunbookOps = {
+  latest_runbooks: number
+  source_verified: number
+  human_approved: number
+  reusable_alert_names: number
+  executions: number
+  reused: number
+  no_evidence: number
+  failed: number
+  evidence_rows: number
+  estimated_minutes_saved: number
+  shadow_runs: number
+  response_previews: number
+  autopilot_sessions: number
+  autopilot_completed: number
+  chat_conversations: number
+  chat_messages: number
+}
+
 export type TopPriorityItem = {
   id?: number | null
   stored_at?: string | null
@@ -203,6 +222,7 @@ export type DashboardOverview = {
   triage_by_priority: CountByPriority[]
   track_split: TrackSplit
   integrations: DashboardIntegrations
+  runbook_ops: DashboardRunbookOps
   health_score: number
   top_priority: TopPriorityItem[]
 }
@@ -215,6 +235,7 @@ export type SettingCategory =
   | "virustotal"
   | "ingest"
   | "analysis"
+  | "runbook"
   | "custom"
 
 export type IntegrationSettingRecord = {

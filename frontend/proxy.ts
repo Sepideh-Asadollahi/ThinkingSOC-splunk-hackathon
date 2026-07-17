@@ -11,6 +11,7 @@ const PROTECTED_PREFIXES = [
   "/relationships",
   "/analysis",
   "/triage",
+  "/runbooks",
   "/splunk-connection",
 ]
 
@@ -87,6 +88,8 @@ export const config = {
     "/analysis/:path*",
     "/triage",
     "/triage/:path*",
+    "/runbooks",
+    "/runbooks/:path*",
     "/splunk-connection",
     "/splunk-connection/:path*",
     "/api/backend/:path*",

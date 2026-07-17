@@ -21,7 +21,7 @@ Domain logic: ingest, classification, inventory enrichment, Security/Observabili
 | [`splunk_json_store/`](./splunk_json_store/) | PostgreSQL JSONB persistence (`tsoc_records`) |
 | [`llm/`](./llm/) | LiteLLM wrapper, context budget, thinking extraction |
 | [`platform/`](./platform/) | Dashboard KPIs, integration settings, host metrics |
-| [`demo/`](./demo/) | PostgreSQL moment snapshot restore |
+| [`demo/`](./demo/) | Full PostgreSQL demo snapshot restore |
 | [`prompts/`](./prompts/) | LLM system prompts (classifier, Hunter, Judge, SPL refine, …) |
 
 ## Root modules

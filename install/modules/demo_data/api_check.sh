@@ -37,12 +37,15 @@ _demo_sync_ingest_token_to_frontend() {
 
 _demo_backend_bearer_token() {
     local tok
-    tok="$(grep -E '^CORRELATION_BEARER_TOKEN=' "${INSTALL_DIR}/backend/.env" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+    # All main API routes (including Investigation/Runbooks) use the ingest
+    # bearer dependency. Prefer that token so a separately configured
+    # correlation token cannot make otherwise healthy API probes return 403.
+    tok="$(grep -E '^TSOC_INGEST_TOKEN=' "${INSTALL_DIR}/backend/.env" 2>/dev/null | head -1 | cut -d= -f2- || true)"
     if [[ -n "$tok" ]]; then
         echo "$tok"
         return 0
     fi
-    grep -E '^TSOC_INGEST_TOKEN=' "${INSTALL_DIR}/backend/.env" 2>/dev/null | head -1 | cut -d= -f2- || true
+    grep -E '^CORRELATION_BEARER_TOKEN=' "${INSTALL_DIR}/backend/.env" 2>/dev/null | head -1 | cut -d= -f2- || true
 }
 
 _demo_curl_backend_json() {

@@ -19,6 +19,7 @@ from services.soc_analysis.admin_org_gap import attach_admin_org_gap
 from services.alert.enrichment_resolver import enrich_from_inventory
 from services.soc_rag import find_similar_alerts, upsert_analysis_document
 from services.soc_analysis_graph import SocAnalysisGraphState, run_soc_analysis_langgraph
+from services.llm.litellm_service import LiteLLMProviderError
 from services.soc_analysis.soc_analysis_risk import build_risk_context, find_asset_row, find_user_row
 from services.soc_analysis.analysis_complete_log import log_analysis_complete
 from services.triage.triage_priority import compute_triage_from_soc
@@ -230,10 +231,11 @@ async def run_analysis(
         result = await assemble_from_langgraph(final, enrichment, body, settings)
         path_name = "langgraph"
     except Exception as e:
+        expected_provider_failure = isinstance(e, LiteLLMProviderError)
         logger.warning(
             "SOC LangGraph LLM pipeline failed, using fallback: %s",
             e,
-            exc_info=True,
+            exc_info=not expected_provider_failure,
         )
         result = build_fallback_soc_result(
             enrichment, risk, body.normalized, body.search_name, preview_rows

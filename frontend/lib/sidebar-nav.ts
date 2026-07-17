@@ -6,6 +6,7 @@ export type SidebarIconNavItem = {
   title: string
   url: string
   icon?: ReactNode
+  exact?: boolean
 }
 
 /** One icon per route for collapsed (icon-only) sidebar rail. */
@@ -18,6 +19,7 @@ export function flattenNavItemsForIconRail(items: NavMainItem[]): SidebarIconNav
           title: sub.title,
           url: sub.url,
           icon: sub.icon ?? item.icon,
+          exact: sub.exact,
         })
       }
       continue
@@ -26,6 +28,7 @@ export function flattenNavItemsForIconRail(items: NavMainItem[]): SidebarIconNav
       title: item.title,
       url: item.url,
       icon: item.icon,
+      exact: item.exact,
     })
   }
   return flat

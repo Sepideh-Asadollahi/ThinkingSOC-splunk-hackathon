@@ -76,6 +76,10 @@ class SplSearchResult(BaseModel):
     rows: List[Dict[str, Any]] = Field(default_factory=list)
     truncated: bool = False
     error: Optional[str] = None
+    execution_transport: Optional[Literal["mcp", "rest"]] = Field(
+        default=None,
+        description="Transport that returned this result; MCP is preferred and REST is fallback.",
+    )
 
 
 class SplSaiaAnalysis(BaseModel):

@@ -1,0 +1,44 @@
+# ThinkingSOC — Polished Timed Tutorial Voiceover
+
+Target duration: **2 minutes 50 seconds**
+Recommended delivery: **friendly, confident, and educational at approximately 155 words per minute**
+
+## 00:00–00:17 — Welcome and project introduction
+
+Hello, and welcome to ThinkingSOC. It uses AI Agents to help security teams investigate threats faster and reuse what they learn. In this walkthrough, I will show how a completed Splunk investigation becomes a checked and analyst-approved Runbook for the next matching alert.
+
+## 00:17–00:34 — What is a SOC?
+
+First, what is a SOC? A Security Operations Center watches for threats, investigates alerts, and helps the organization respond to incidents. The main challenge is scale: analysts review large amounts of evidence and often repeat work that someone else has already done.
+
+## 00:34–00:57 — Operational and business value
+
+ThinkingSOC turns repeated work into knowledge the team can reuse. Analysts spend less time rebuilding searches and can handle more alerts. The documented mid-sized example shows about two hundred and twenty-three thousand dollars in annual staffing capacity. In larger, high-volume SOCs, savings can reach hundreds of thousands or even millions of dollars, depending on team size, staffing costs, alert volume, and Runbook reuse.
+
+## 00:57–01:14 — Investigation and Runbook creation
+
+Now, let us follow the workflow. The investigation page keeps the original Splunk alert, verdict, evidence, and analyst timeline in one place. After the analyst acknowledges the investigation, ThinkingSOC turns the accepted findings into a Runbook for that exact Alert Name.
+
+## 01:14–01:37 — Runbook Autopilot Agents
+
+Behind the scenes, Runbook Autopilot coordinates a bounded team of Agents. The Supervisor manages the workflow; Evidence Scout collects context; Runbook Engineer creates fresh read-only SPL; Policy Guard enforces safety rules; and Response Advisor suggests the next step. Tool access uses MCP, with the Splunk REST API available as fallback. Every Agent handoff and tool result is stored in an auditable trace.
+
+## 01:37–01:54 — Execution graph and safety
+
+The execution graph shows the whole process. Each box explains the step, its SPL parser validation, its source evidence, and its current gate. Reuse stays blocked until every check passes, the Runbook receives human-in-the-loop approval, and the target Alert Name matches exactly.
+
+## 01:54–02:11 — Runbook Library
+
+The Runbook Library groups Runbooks by exact Alert Name. Analysts can search, sort, open details, create an immutable revision without overwriting older versions, and import or export JSON. Each revision keeps its SPL, source evidence, model provenance, performance data, and approval history.
+
+## 02:11–02:28 — Shadow Evaluation
+
+ThinkingSOC tests its results before claiming success. Shadow Evaluation runs the same detection against another alert and measures SPL validation, evidence coverage, speed, errors, and estimated time saved. Missing evidence and incomplete results stay visible, so the system shows what really happened.
+
+## 02:28–02:44 — SOC Chat and natural language
+
+Runbook knowledge and Autopilot activity are available in SOC Chat. Analysts can ask why an Agent made a decision, see which tools it used, or ask ThinkingSOC to run an approved Runbook for an alert in plain English. The same safety checks still apply.
+
+## 02:44–02:50 — Closing
+
+ThinkingSOC turns every accepted investigation into a safer, faster, and more useful response to the next alert.

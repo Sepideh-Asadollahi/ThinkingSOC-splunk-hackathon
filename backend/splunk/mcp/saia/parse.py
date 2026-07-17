@@ -7,11 +7,11 @@ import re
 from typing import Any, List, Tuple
 
 _SPL_GENERATING = re.compile(
-    r"^(?:splunk-spl\s*)?(?:\||\s*(?:tstats|search|datamodel)\b)",
+    r"^(?:splunk-spl\s*)?(?:\||\s*(?:tstats|search|datamodel)\b|\s*index\s*=)",
     re.I,
 )
 _SPL_PIPE_CMD = re.compile(
-    r"^\s*\|(?:\s*(?:datamodel|tstats|search|where|rename|table|stats|eventstats|streamstats|fields|eval|sort|head|tail|dedup)\b)",
+    r"^\s*\|\s*[A-Za-z_][\w-]*\b",
     re.I,
 )
 _SPL_CONTINUATION = re.compile(

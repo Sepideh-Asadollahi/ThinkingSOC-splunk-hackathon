@@ -83,6 +83,28 @@ def test_list_builtin_settings(client_integration: TestClient) -> None:
     ids = {row["id"] for row in rows}
     assert "splunk_mgmt_url" in ids
     assert "litellm_model" in ids
+    runbook_rows = [row for row in rows if row["category"] == "runbook"]
+    assert {row["id"] for row in runbook_rows} == {
+        "tsoc_runbook_enabled",
+        "tsoc_runbook_autopilot_enabled",
+        "tsoc_runbook_max_steps",
+            "tsoc_runbook_default_manual_minutes",
+            "tsoc_runbook_artifact_scan_limit",
+            "tsoc_runbook_analyst_hourly_cost_usd",
+            "tsoc_runbook_input_cost_per_1m_tokens",
+            "tsoc_runbook_output_cost_per_1m_tokens",
+        }
+
+
+def test_runbook_builtin_rejects_out_of_range_value(
+    client_integration: TestClient,
+) -> None:
+    response = client_integration.patch(
+        "/api/v1/integrations/settings/tsoc_runbook_max_steps",
+        json={"value": "4"},
+    )
+    assert response.status_code == 400
+    assert "less than or equal to 3" in response.json()["detail"]
 
 
 def test_update_builtin_persists_override(

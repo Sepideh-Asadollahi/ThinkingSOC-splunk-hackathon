@@ -16,8 +16,10 @@ import pytest
 
 from config import Settings, mcp_configured
 from models.analysis import InvestigationQuestionItem
+from services.investigation.investigation_spl_execute import _run_one
 from services.investigation.investigation_questions_spl import finalize_investigation_questions_for_verdict
 from services.splunk_integration.splunk_mcp_service import get_mcp_status
+from splunk.client import SplunkRestClient
 from splunk.datamodel.cim_schema import fetch_cim_datamodel_schema
 from splunk.mcp.client import SplunkMcpClient
 from splunk.mcp.spl_assistant import generate_spl_via_mcp
@@ -140,9 +142,31 @@ async def test_a5_saia_pipeline_optimize_explain_notes(
     notes = list(rc.notes or [])
     assert "mcp_saia_generate_spl" in notes
     if splunk_live_settings.tsoc_mcp_saia_optimize_spl:
-        assert "mcp_saia_optimize_spl" in notes or "optimize" in trace.get("steps", [])
+        assert "mcp_saia_optimize_spl" in notes or any(
+            str(step).startswith("optimize") for step in trace.get("steps", [])
+        )
     if splunk_live_settings.tsoc_mcp_saia_explain_spl:
         assert "mcp_saia_explain_spl" in notes or (rc.explanation or "").strip()
+
+
+@pytest.mark.asyncio
+async def test_b0_mcp_disabled_uses_real_rest_fallback(
+    splunk_live_settings: Settings,
+) -> None:
+    """Prove the documented fallback works with MCP explicitly unavailable."""
+    settings = splunk_live_settings.model_copy(update={"tsoc_mcp_enabled": False})
+    client = SplunkRestClient(settings)
+    session_key = await client.login()
+    result = await _run_one(
+        settings,
+        client,
+        session_key,
+        "search index=_internal | head 1",
+        app="search",
+    )
+    assert result.error is None
+    assert result.execution_transport == "rest"
+    assert (result.row_count or 0) >= 1
 
 
 @pytest.mark.asyncio
@@ -178,6 +202,9 @@ async def test_b2_assistant_spl_suggest_api(
         "splunk_mcp_saia",
         "splunk_mcp_saia_reviewed",
         "splunk_mcp_saia+llm",
+        "rest_predict_execute",
+        "rest_predict_execute_empty",
+        "rest_predict_execute_error",
     )
     rc = data.get("root_cause_spl") or {}
     assert _spl_nonempty(rc.get("spl"))
@@ -209,6 +236,9 @@ async def test_b3_finalize_investigation_questions(
             "mcp_saia_generate_spl",
             "splunk_mcp_saia+llm",
             "llm_reviewed_after_mcp_saia",
+            "rest_predict_write_spl",
+            "mcp_saia_optimize_spl",
+            "mcp_saia_explain_spl",
         )
     )
 

@@ -82,6 +82,7 @@ class SocChatStoredMessage(BaseModel):
     message_id: Optional[int] = None
     seq: Optional[int] = None
     sql_meta: Optional[SocChatSqlMeta] = None
+    citations: List[SocChatCitation] = Field(default_factory=list)
 
 
 class SocChatConversationDetail(BaseModel):

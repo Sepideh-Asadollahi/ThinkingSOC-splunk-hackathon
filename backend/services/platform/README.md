@@ -1,6 +1,6 @@
 # Platform Service
 
-Platform-level services for the dashboard UI. Aggregates KPIs and activity timelines from PostgreSQL, manages integration settings for the Splunk connection, and collects host OS resource metrics.
+Platform-level services for the dashboard UI. Aggregates KPIs, activity timelines, Forge/Runbook lifecycle, guarded execution outcomes, Autopilot and Chat usage from PostgreSQL; it also manages integration settings and collects host OS resource metrics.
 
 ## Key files
 

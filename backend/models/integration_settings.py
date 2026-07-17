@@ -15,6 +15,7 @@ SettingCategory = Literal[
     "virustotal",
     "ingest",
     "analysis",
+    "runbook",
     "custom",
 ]
 

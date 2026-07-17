@@ -66,4 +66,19 @@ describe("getBreadcrumbsFromPathname", () => {
     )
     expect(getBreadcrumbsFromPathname("/splunk-connection")[0]?.label).toBe("Settings")
   })
+
+  it("shows the dedicated Runbooks section", () => {
+    expect(getBreadcrumbsFromPathname("/runbooks")).toEqual([
+      { label: "Runbooks", href: "/runbooks" },
+      { label: "Forge & Policies" },
+    ])
+    expect(getBreadcrumbsFromPathname("/runbooks/library")).toEqual([
+      { label: "Runbooks", href: "/runbooks" },
+      { label: "Runbook Library" },
+    ])
+    expect(getBreadcrumbsFromPathname("/runbooks/evaluation")).toEqual([
+      { label: "Runbooks", href: "/runbooks" },
+      { label: "Shadow & Evaluation" },
+    ])
+  })
 })

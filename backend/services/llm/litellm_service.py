@@ -2,13 +2,47 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import threading
+import time
+from collections import deque
 from typing import Any, Dict, List, Optional
 
 from config import Settings
 from services.llm.thinking_content import split_litellm_message
 
 logger = logging.getLogger(__name__)
+
+_RPM_WINDOW_SECONDS = 60.0
+_rpm_state_guard = threading.Lock()
+_rpm_timestamps: deque[float] = deque()
+
+
+async def _wait_for_litellm_rpm_slot(rpm: int) -> None:
+    """Apply a process-local sliding-window RPM limit without blocking the event loop."""
+    wait_logged = False
+    while True:
+        with _rpm_state_guard:
+            now = time.monotonic()
+            cutoff = now - _RPM_WINDOW_SECONDS
+            while _rpm_timestamps and _rpm_timestamps[0] <= cutoff:
+                _rpm_timestamps.popleft()
+            if len(_rpm_timestamps) < rpm:
+                _rpm_timestamps.append(now)
+                return
+            wait_seconds = max(
+                0.001,
+                _rpm_timestamps[0] + _RPM_WINDOW_SECONDS - now,
+            )
+        if not wait_logged:
+            logger.info(
+                "litellm local RPM limit reached rpm=%d wait_seconds=%.2f",
+                rpm,
+                wait_seconds,
+            )
+            wait_logged = True
+        await asyncio.sleep(wait_seconds)
 
 
 def _cap_max_tokens(settings: Settings, max_tokens: Optional[int]) -> Optional[int]:
@@ -31,10 +65,12 @@ class LiteLLMProviderError(RuntimeError):
         *,
         kind: str = "provider_error",
         retryable: bool = True,
+        attempts: int = 1,
     ) -> None:
         super().__init__(message)
         self.kind = kind
         self.retryable = retryable
+        self.attempts = attempts
 
 
 def provider_error_http_status(err: LiteLLMProviderError) -> int:
@@ -43,6 +79,7 @@ def provider_error_http_status(err: LiteLLMProviderError) -> int:
         "connection": 502,
         "timeout": 504,
         "rate_limit": 503,
+        "provider_busy": 503,
         "auth": 503,
         "bad_request": 400,
         "context_window": 400,
@@ -94,6 +131,11 @@ def _map_litellm_exception(exc: Exception) -> LiteLLMProviderError:
                 "LLM provider rate limit exceeded. Wait briefly and retry.",
                 kind="rate_limit",
             )
+        if isinstance(item, litellm.exceptions.ServiceUnavailableError):
+            return LiteLLMProviderError(
+                "LLM provider is temporarily busy or unavailable. Automatic retries were attempted.",
+                kind="provider_busy",
+            )
         if isinstance(item, litellm.exceptions.AuthenticationError):
             return LiteLLMProviderError(
                 "LLM provider rejected the API key. Verify LITELLM_API_KEY and provider credentials.",
@@ -125,6 +167,19 @@ def _map_litellm_exception(exc: Exception) -> LiteLLMProviderError:
             "LLM request timed out. The provider took too long to respond; retry with a shorter prompt.",
             kind="timeout",
         )
+    if any(
+        token in combined.lower()
+        for token in (
+            "resourceexhausted",
+            "all workers are busy",
+            "request limit reached",
+            "service unavailable",
+        )
+    ):
+        return LiteLLMProviderError(
+            "LLM provider is temporarily busy or unavailable. Automatic retries were attempted.",
+            kind="provider_busy",
+        )
 
     short = str(exc).strip()
     if len(short) > 240:
@@ -133,6 +188,13 @@ def _map_litellm_exception(exc: Exception) -> LiteLLMProviderError:
         "LLM provider error: {0}".format(short or type(exc).__name__),
         kind="provider_error",
     )
+
+
+def _retry_delay_seconds(settings: Settings, retry_number: int) -> float:
+    """Bounded exponential backoff; retry_number is one-based."""
+    base = float(settings.litellm_retry_base_seconds)
+    cap = float(settings.litellm_retry_max_seconds)
+    return min(cap, base * (2 ** max(0, retry_number - 1)))
 
 
 def _normalize_messages(messages: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -179,6 +241,8 @@ async def litellm_chat_completion(
         "model": mid,
         "messages": msgs,
         "timeout": settings.litellm_timeout_seconds,
+        # Keep retry ownership here so provider SDK retries cannot multiply attempts.
+        "max_retries": 0,
     }
     if settings.litellm_api_key:
         kwargs["api_key"] = settings.litellm_api_key
@@ -192,23 +256,48 @@ async def litellm_chat_completion(
     if extra_body:
         kwargs["extra_body"] = extra_body
 
-    try:
-        response = await litellm.acompletion(**kwargs)
-    except LiteLLMNotConfiguredError:
-        raise
-    except ValueError:
-        raise
-    except Exception as e:
-        mapped = _map_litellm_exception(e)
-        logger.warning(
-            "litellm acompletion failed model=%s messages=%d kind=%s retryable=%s: %s",
-            mid,
-            len(msgs),
-            mapped.kind,
-            mapped.retryable,
-            mapped,
-        )
-        raise mapped
+    max_retries = int(settings.litellm_max_retries)
+    response: Any = None
+    for attempt_index in range(max_retries + 1):
+        await _wait_for_litellm_rpm_slot(int(settings.litellm_rpm))
+        try:
+            response = await litellm.acompletion(**kwargs)
+            break
+        except LiteLLMNotConfiguredError:
+            raise
+        except ValueError:
+            raise
+        except Exception as e:
+            mapped = _map_litellm_exception(e)
+            mapped.attempts = attempt_index + 1
+            retry_exhausted = attempt_index >= max_retries
+            if not mapped.retryable or retry_exhausted:
+                logger.warning(
+                    "litellm acompletion failed model=%s messages=%d kind=%s "
+                    "retryable=%s attempts=%d final=true: %s",
+                    mid,
+                    len(msgs),
+                    mapped.kind,
+                    mapped.retryable,
+                    mapped.attempts,
+                    mapped,
+                )
+                raise mapped from e
+
+            retry_number = attempt_index + 1
+            delay = _retry_delay_seconds(settings, retry_number)
+            logger.warning(
+                "litellm transient failure model=%s messages=%d kind=%s "
+                "attempt=%d/%d retry_in_seconds=%.1f: %s",
+                mid,
+                len(msgs),
+                mapped.kind,
+                mapped.attempts,
+                max_retries + 1,
+                delay,
+                mapped,
+            )
+            await asyncio.sleep(delay)
 
     choice = response.choices[0]
     message = choice.message

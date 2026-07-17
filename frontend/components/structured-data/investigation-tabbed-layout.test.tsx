@@ -12,7 +12,24 @@ vi.mock("./investigation-timeline", () => ({
 }))
 
 vi.mock("./investigation-analyst-actions", () => ({
-  InvestigationAnalystActions: () => <div data-testid="investigation-analyst-mock">Analyst gate</div>,
+  InvestigationAnalystActions: ({
+    onActionRecorded,
+  }: {
+    onActionRecorded?: (action: "acknowledge" | "escalate") => void
+  }) => (
+    <div data-testid="investigation-analyst-mock">
+      Analyst gate
+      <button type="button" onClick={() => onActionRecorded?.("acknowledge")}>Acknowledge mock</button>
+    </div>
+  ),
+}))
+
+vi.mock("./verified-runbook-panel", () => ({
+  VerifiedRunbookPanel: ({ autoBuildRequestKey }: { autoBuildRequestKey?: number }) => (
+    <div data-testid="verified-runbook-mock" data-auto-build-request-key={autoBuildRequestKey}>
+      Forge runbook
+    </div>
+  ),
 }))
 
 describe("InvestigationTabbedLayout", () => {
@@ -35,6 +52,8 @@ describe("InvestigationTabbedLayout", () => {
 
     expect(screen.getByTestId("investigation-timeline-mock")).toBeInTheDocument()
     expect(screen.getByTestId("investigation-analyst-mock")).toBeInTheDocument()
+    expect(screen.getByRole("tab", { name: INVESTIGATION_TAB.forge })).toBeInTheDocument()
+    expect(screen.queryByTestId("verified-runbook-mock")).not.toBeInTheDocument()
     expect(screen.getByTestId("investigation-tabs-bar")).toBeInTheDocument()
 
     const summary = screen.getByTestId("security-summary-card")
@@ -42,6 +61,37 @@ describe("InvestigationTabbedLayout", () => {
     expect(
       summary.compareDocumentPosition(analyst) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy()
+  })
+
+  it("moves to ThinkingSOC Forge and starts its build after Acknowledge", async () => {
+    const user = userEvent.setup()
+    render(
+      <InvestigationTabbedLayout
+        event={{ id: "42", sid: "sid-1", search_name: "demo" }}
+        payload={{}}
+        analysis={{ summary: "Test summary" }}
+        triage={null}
+        classification={null}
+        rawAlert={null}
+        analysisInput={null}
+        analysisOutput={null}
+        phase={null}
+        content={undefined}
+        recordId="42"
+      />
+    )
+
+    const forgeTab = screen.getByRole("tab", { name: INVESTIGATION_TAB.forge })
+    expect(forgeTab).toHaveAttribute("data-state", "inactive")
+
+    await user.click(screen.getByRole("button", { name: "Acknowledge mock" }))
+
+    expect(forgeTab).toHaveAttribute("data-state", "active")
+    expect(screen.getByTestId("thinking-soc-forge-tab")).toBeInTheDocument()
+    expect(screen.getByTestId("verified-runbook-mock")).toHaveAttribute(
+      "data-auto-build-request-key",
+      "1"
+    )
   })
 
   it("shows Overview first and opens it by default", () => {

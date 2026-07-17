@@ -61,6 +61,7 @@ const CATEGORY_LABELS: Record<SettingCategory, string> = {
   virustotal: "VirusTotal",
   ingest: "Ingest",
   analysis: "Analysis",
+  runbook: "Runbook",
   custom: "Custom",
 }
 
@@ -160,7 +161,7 @@ export function SplunkConnectionContent() {
     setError(null)
     try {
       const data = await backendFetch<IntegrationSettingRecord[]>("/integrations/settings")
-      setSettings(data)
+      setSettings(data.filter((row) => row.category !== "runbook"))
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Failed to load settings")
     } finally {
@@ -169,7 +170,8 @@ export function SplunkConnectionContent() {
   }, [])
 
   useEffect(() => {
-    void load()
+    const timer = window.setTimeout(() => void load(), 0)
+    return () => window.clearTimeout(timer)
   }, [load])
 
   const byCategory = useMemo(() => {

@@ -216,7 +216,7 @@ OpenAPI at `/docs` when the API is running lists request/response JSON schemas.
 
 | Path | Role |
 |------|------|
-| `backend/data/demo/postgres_snapshot/` | JSON fallback demo (inventory + up to 4 newest `tsoc_records`); primary seed is `postgres_dump/tsoc_demo.sql` |
+| `backend/data/demo/postgres_snapshot/` | Full JSON fallback demo (inventory, records, RAG, correlation, Chat); primary seed is `postgres_dump/tsoc_demo.sql` |
 | `backend/data/demo/*.csv` | CSV fallback seed when snapshot manifest absent |
 | `default/indexes.conf` | Demo index definition |
 | `bin/thinkingsoc_hackathon.py` + `default/alert_actions.conf` | Modular alert action (not generic Webhook) |

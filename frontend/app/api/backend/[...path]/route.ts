@@ -10,8 +10,8 @@ import {
 
 const BACKEND_URL = process.env.TSOC_BACKEND_URL || "http://127.0.0.1:9876"
 
-/** Allow long SOC chat (multiple LLM calls) on self-hosted / compatible platforms. */
-export const maxDuration = 600
+/** Allow three bounded retries for slow/free LLM providers on supported platforms. */
+export const maxDuration = 900
 
 function isConnectionRefused(err: unknown): boolean {
   if (!err || typeof err !== "object") return false

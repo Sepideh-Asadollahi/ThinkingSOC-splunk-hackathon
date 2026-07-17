@@ -36,6 +36,14 @@ _AGG_COMMAND_PREFIX = re.compile(
     r"^(stats|chart|timechart|top|rare|table|fields)\b",
     re.IGNORECASE,
 )
+# A recurring LLM mutation removes the boolean operator between a null check and
+# a grouped condition, for example ``isnotnull(status) (status=\"Valid\")``.
+# This is unambiguously invalid inside an expression, so it is safe to repair
+# deterministically before asking an LLM or sending the SPL to Splunk.
+_MISSING_BOOLEAN_AFTER_NULL_CHECK = re.compile(
+    r"\b(is(?:not)?null\s*\(\s*[^()]+?\s*\))\s+(?=\()",
+    re.IGNORECASE,
+)
 
 
 def strip_time_range_from_spl(spl: str) -> str:
@@ -99,8 +107,28 @@ def dedupe_search_field_clauses(spl: str) -> str:
 
 
 def strip_redundant_boolean_and(spl: str) -> str:
-    """Remove stray ``and``/``AND`` left after clause deduplication."""
-    return re.sub(r"\s+\band\b\s+", " ", spl or "", flags=re.IGNORECASE)
+    """Remove optional ``AND`` tokens only from the generating search clause.
+
+    Splunk search filters use implicit AND, but expressions in later commands do
+    not.  The old implementation removed every ``AND`` in the pipeline and could
+    corrupt valid expressions such as ``eval ok=if(a AND b,1,0)``.
+    """
+    s = spl or ""
+    pipe_idx = s.find("|")
+    if pipe_idx < 0:
+        return re.sub(r"\s+\band\b\s+", " ", s, flags=re.IGNORECASE)
+    head = re.sub(
+        r"\s+\band\b\s+",
+        " ",
+        s[:pipe_idx],
+        flags=re.IGNORECASE,
+    )
+    return head + s[pipe_idx:]
+
+
+def repair_missing_boolean_operators(spl: str) -> str:
+    """Repair high-confidence missing boolean operators in LLM-produced SPL."""
+    return _MISSING_BOOLEAN_AFTER_NULL_CHECK.sub(r"\1 AND ", spl or "")
 
 
 def _safe_spl_alias(value: str) -> str:
@@ -258,6 +286,7 @@ def sanitize_spl_syntax(spl: str) -> str:
     s = quote_spl_colon_field_values(s)
     s = dedupe_search_field_clauses(s)
     s = strip_redundant_boolean_and(s)
+    s = repair_missing_boolean_operators(s)
     s = fix_field_equals_in_pipe_clauses(s)
     s = discourage_values_aggregation(s)
     s = fix_spl_quoted_string_escapes(s)

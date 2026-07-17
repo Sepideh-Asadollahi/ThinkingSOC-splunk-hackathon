@@ -27,8 +27,8 @@ ensure_demo_data_ready_for_install() {
     if verify_demo_snapshot_bundle; then
         DEMO_SEED_MODE="snapshot"
         _demo_log_paths_and_sources
-        _demo_log "Selected restore mode: snapshot (JSON moment bundle via Python asyncpg)"
-        _demo_log_warn "Full backup missing — using JSON snapshot (may omit tsoc_rag_documents and extra correlation findings)"
+        _demo_log "Selected restore mode: snapshot (full JSON fallback via Python asyncpg)"
+        _demo_log_warn "Full SQL backup missing — using the full JSON snapshot fallback"
         return 0
     fi
 

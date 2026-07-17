@@ -43,6 +43,9 @@ flowchart LR
     D11["11 Environment Config"]
     D22["22 Developer SDK"]
     D23["23 Post-Install Wizard"]
+    D25["25 Verified Runbook Forge"]
+    D26["26 Hackathon Product Guide"]
+    D27["27 U.S. SOC Impact & ROI"]
   end
 
   D00 --> D01 --> D02 --> D03
@@ -66,6 +69,8 @@ flowchart LR
   D07 --> D22
   D11 --> D23
   D15 --> D23
+  D20 --> D25
+  D25 --> D26 --> D27
 ```
 
 | # | Document | Content |
@@ -80,7 +85,7 @@ flowchart LR
 | 07 | [07-lld-low-level-design.md](./07-lld-low-level-design.md) | **LLD** — contracts, APIs, schema, sequences |
 | 08 | [08-triage-priority-layer.md](./08-triage-priority-layer.md) | **Triage** — post-analysis priority queue, scoring, API, UI |
 | 09 | [09-virustotal-threat-intel.md](./09-virustotal-threat-intel.md) | **VirusTotal** — IOC extraction rules (allowlisted fields), API v3 mapping, compact TI |
-| 10 | [10-soc-vector-rag.md](./10-soc-vector-rag.md) | **SOC vector RAG** — Qdrant + FastEmbed, persisted chat, session RAG, Text-to-SQL, correlation in chat |
+| 10 | [10-soc-vector-rag.md](./10-soc-vector-rag.md) | **SOC vector RAG** — Qdrant + FastEmbed, persisted chat, session RAG, Text-to-SQL, correlation and Runbook/Autopilot context in chat |
 | 11 | [11-environment-configuration.md](./11-environment-configuration.md) | **Environment** — backend/frontend `.env` reference (all `TSOC_*`, LiteLLM, Splunk, RAG) |
 | 12 | [12-correlation-graph-service.md](./12-correlation-graph-service.md) | **Correlation** — Neo4j alert graph, findings, Graph Explorer, Smart Attack Discovery API |
 | 13 | [13-cim-investigation-spl-mcp.md](./13-cim-investigation-spl-mcp.md) | **Investigation SPL** — SAIA REST `/predict`, MCP execute (All Time), refine loop, UI results |
@@ -94,7 +99,10 @@ flowchart LR
 | 21 | [21-database-schema.md](./21-database-schema.md) | **Database schema** — PostgreSQL tables, Qdrant collection, Neo4j graph, indexes, init flow |
 | 22 | [22-developer-sdk.md](./22-developer-sdk.md) | **Developer SDK** — full API wrapper (ingest, MCP, inventory, graph), CLI, `doctor`, evaluate runner |
 | 23 | [23-post-install-integration-wizard.md](./23-post-install-integration-wizard.md) | **Post-install wizard** — Splunk / LiteLLM / MCP setup, smoke test, `.env` summary, Splunk restart |
-| 24 | [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) | **Demo data** — moment PostgreSQL snapshot, `install.sh` auto-load, export script |
+| 24 | [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) | **Demo data** — full PostgreSQL dump + JSON fallback, Runbook judge tour, `install.sh` auto-load |
+| 25 | [25-verified-runbook-forge.md](./25-verified-runbook-forge.md) | **ThinkingSOC Forge** — bounded Autopilot Agent/Tool trace, Runbook-aware Chat, source verification, approval, and reuse |
+| 26 | [26-hackathon-forge-product-guide.md](./26-hackathon-forge-product-guide.md) | **Hackathon edition** — product delta, LLM role, trust model, demo, and acceptance evidence |
+| 27 | [27-forge-us-soc-economic-impact.md](./27-forge-us-soc-economic-impact.md) | **SOC impact** — U.S. labor inputs, capacity, throughput, ROI, break-even, and measurement policy |
 
 Subfolders (`code-graph/`, etc.) include their own **`README.md`** index. The repository also has per-folder READMEs under `backend/`, `ThinkingSOC_Hackathon_Splunk_App/`, `setup_tool/`, and elsewhere.
 

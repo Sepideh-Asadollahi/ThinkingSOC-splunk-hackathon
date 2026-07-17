@@ -40,7 +40,7 @@ flowchart LR
 
 Retrieval prefers **Qdrant** when `TSOC_VECTOR_ENABLE=true` and Qdrant is reachable; otherwise **PostgreSQL** keyword scoring.
 
-**Routing:** SOC Chat does **not** use keyword/regex shortcuts for question types (no hardcoded "list alerts" or "which is high" paths). Statistical vs narrative routing and SQL generation are **LLM-only**, guided by `sql_schema.py` and recent **conversation** turns.
+**Routing:** informational question types do **not** use keyword shortcuts: statistical vs narrative routing and SQL generation are LLM-guided. The one intentional deterministic route is an explicit Runbook execution command containing an execution verb, Runbook context, and SID. This safety-sensitive command is parsed without granting execution authority to an LLM.
 
 ## Run locally
 
@@ -167,18 +167,24 @@ sequenceDiagram
   UI->>API: {conversation_id, messages}
   API->>PG: get_or_create_conversation
   API->>PG: merge DB history + client payload
-  API->>LLM: classify: statistical or narrative?
-  alt statistical
-    API->>LLM: generate SQL (sql_schema + conversation)
-    API->>PG: execute SELECT (whitelist, LIMIT, timeout)
-    API->>API: enrich_rows_with_triage
-    API->>LLM: format answer over rows
-  else narrative
-    API->>Qdrant: retrieve_rag_documents (top-k)
-    alt Qdrant unavailable
-      API->>PG: keyword fallback search
+  alt explicit Runbook execution command + SID
+    API->>PG: resolve exact SID to latest soc_analysis
+    API->>PG: select latest SOURCE_VERIFIED + approved exact-name Runbook
+    API->>API: run_verified_runbook (existing human/read-only gates)
+  else statistical or narrative question
+    API->>LLM: classify: statistical or narrative?
+    alt statistical question
+      API->>LLM: generate SQL (sql_schema + conversation)
+      API->>PG: execute SELECT (whitelist, LIMIT, timeout)
+      API->>API: enrich_rows_with_triage
+      API->>LLM: format answer over rows
+    else narrative
+      API->>Qdrant: retrieve_rag_documents (top-k)
+      alt Qdrant unavailable
+        API->>PG: keyword fallback search
+      end
+      API->>LLM: answer with retrieved context
     end
-    API->>LLM: answer with retrieved context
   end
   API->>PG: append_messages (user + assistant)
   API->>Qdrant: index message (doc_type=chat_message)
@@ -202,9 +208,21 @@ Bootstrap: `ensure_chat_schema()` in `chat_store.py` runs on first API use (same
 | `POST` | `/api/v1/soc/chat/conversations` | Create empty session; optional `{ "title": "..." }` |
 | `GET` | `/api/v1/soc/chat/conversations/{id}` | Full thread for UI reload |
 | `DELETE` | `/api/v1/soc/chat/conversations/{id}` | Delete session + messages (+ session RAG index rows for that conversation) |
+| `POST` | `/api/v1/soc/chat` | Send turns; also accepts explicit English Runbook-by-SID execution commands |
 
 The UI shows **Delete chat** in the header and a trash icon on each sidebar item; a confirmation dialog runs before delete.
-| `POST` | `/api/v1/soc/chat` | Send turns; body includes `conversation_id` + `messages` |
+
+### Execute an approved Runbook by SID
+
+Chat understands explicit requests such as:
+
+```text
+Run the approved Runbook for SID demo-runbook-target-20260716
+```
+
+The command route requires an affirmative English execution phrase, Runbook context, and exactly one explicit SID. Negated phrases (`do not run`), informational questions, missing SIDs, and multiple SIDs never execute. A short follow-up such as `Execute it for SID alert-2` is accepted only when recent conversation turns already establish Runbook context.
+
+Execution reuses `run_verified_runbook()` and therefore retains all existing controls: stored `soc_analysis` target, different source/target SID, exact Alert Name, latest `SOURCE_VERIFIED` revision, explicit human approval, bounded read-only investigation steps, and MCP→Splunk REST fallback. A SAIA-optimized SPL is accepted only after Splunk parser validation; when the optimization is rejected, execution falls back to the parser-valid pre-optimization SPL. It never runs Safe Response actions or containment. The assistant persists a Markdown result and `runbook_run` citation in the conversation; `retrieval_meta.query_mode` is `runbook_execute`.
 
 ### Request flow (`POST /soc/chat`)
 
@@ -213,15 +231,19 @@ flowchart TD
   Req["POST /soc/chat\n conversation_id + messages"]
   GetConv["1. get_or_create_conversation\nensure row exists in PG"]
   Merge["2. merge_request_messages\nDB history + client payload"]
-  Classify{"3. LLM classify\nis_statistical?"}
+  Command{"3. Explicit Runbook\ncommand + one SID?"}
+  Execute["Resolve SID + approved exact-name Runbook\nrun_verified_runbook"]
+  Classify{"4. LLM classify\nis_statistical?"}
   SQL["Text-to-SQL path"]
   RAG["Narrative RAG path"]
-  Persist["4. append_messages\nuser + assistant turns to PG"]
-  SessionIdx["5. Index each message\ndoc_type=chat_message to Qdrant"]
+  Persist["5. append_messages\nuser + assistant turns to PG"]
+  SessionIdx["6. Index each message\ndoc_type=chat_message to Qdrant"]
   Title["Auto-update title\nfirst user line when New chat"]
   Resp["Response\nanswer + conversation_id + sql_meta"]
 
-  Req --> GetConv --> Merge --> Classify
+  Req --> GetConv --> Merge --> Command
+  Command -->|yes| Execute --> Persist
+  Command -->|no| Classify
   Classify -->|yes| SQL --> Persist
   Classify -->|no| RAG --> Persist
   Persist --> SessionIdx
@@ -232,9 +254,10 @@ flowchart TD
 
 1. **`get_or_create_conversation`** — if `conversation_id` is set, ensure the row exists (empty sessions have zero messages; do not re-`INSERT` on every send).
 2. **Merge history** — `merge_request_messages()` combines DB history with the client payload (handles resend of full thread or append of one new user line).
-3. **Route** — statistical goes to SQL; else RAG + LiteLLM.
-4. **Persist** — `append_messages()` writes user + assistant turns; title auto-updates from first user line when still `"New chat"`.
-5. **Session index** — each saved message is embedded into `tsoc_rag_documents` as `doc_type = chat_message` for session-scoped retrieval (see below).
+3. **Command gate** — an explicit Runbook-by-SID request uses the guarded Runbook service; ambiguous or negative language cannot execute.
+4. **Question route** — statistical goes to SQL; else RAG + LiteLLM.
+5. **Persist** — `append_messages()` writes user + assistant turns; title auto-updates from first user line when still `"New chat"`.
+6. **Session index** — each saved message is embedded into `tsoc_rag_documents` as `doc_type = chat_message` for session-scoped retrieval (see below).
 
 `conversation_id` is returned on every chat response so the UI stays in sync.
 
@@ -396,7 +419,9 @@ The **triage queue API** (`GET /api/v1/triage/queue`, `build_triage_queue_items`
 
 If classification is **not** statistical (explain verdict, MITRE, how to investigate), SOC Chat uses **vector/keyword retrieval** + LiteLLM with the last 6 messages and retrieved chunks (all default `doc_type` values).
 
-**SOC Chat retrieval** searches these `doc_type` values by default: `splunk_alert`, `soc_analysis`, `observability_analysis`, `inventory_user`, `inventory_asset`, `inventory_relationship`, **`correlation_finding`**, **`correlation_alert`**, **`correlation_attack_path`**. New analyses and observability runs are indexed on completion; inventory and correlation are refreshed on startup backfill (and via backfill API).
+**SOC Chat retrieval** searches these `doc_type` values by default: `splunk_alert`, `soc_analysis`, `observability_analysis`, `inventory_user`, `inventory_asset`, `inventory_relationship`, **`correlation_finding`**, **`correlation_alert`**, **`correlation_attack_path`**, plus Forge `runbook_draft`, `runbook_approval`, `runbook_run`, `runbook_shadow_run`, `runbook_response_preview`, `runbook_response_decision`, and `runbook_autopilot`. New analyses, observability runs, and Forge artifacts are indexed on completion; inventory, correlation, and historical Runbook artifacts are refreshed through the backfill API.
+
+Forge compaction intentionally excludes generated SPL, raw result rows, and credentials. Runbook Autopilot documents retain bounded Agent handoffs, Tool names/results, durations, gate state, and the next recommended action, allowing Chat to explain how a result was reached without exposing executable response payloads.
 
 ## Modules (`backend/services/soc_rag/`)
 
@@ -407,6 +432,7 @@ If classification is **not** statistical (explain verdict, MITRE, how to investi
 | `compact_observability.py` | Observability pipeline analyses |
 | `compact_inventory.py` | Users, assets, relationships for chat |
 | `compact_correlation.py` | Findings, Neo4j alerts, attack paths for chat |
+| `compact_runbook.py` | Safe Runbook, response-preview, and Autopilot trace documents for chat |
 | `index_correlation.py` | Backfill correlation into RAG |
 | `chat_store.py` | `tsoc_chat_*` tables — conversation persistence |
 | `chat_history.py` | Session RAG over `chat_message` docs |

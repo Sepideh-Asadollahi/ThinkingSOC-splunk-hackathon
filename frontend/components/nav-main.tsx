@@ -27,16 +27,17 @@ export type NavMainItem = {
   url: string
   icon?: React.ReactNode
   isActive?: boolean
-  items?: { title: string; url: string; icon?: React.ReactNode }[]
+  exact?: boolean
+  items?: { title: string; url: string; icon?: React.ReactNode; exact?: boolean }[]
 }
 
-function isPathActive(pathname: string, url: string) {
-  return pathname === url || pathname.startsWith(`${url}/`)
+export function isPathActive(pathname: string, url: string, exact = false) {
+  return pathname === url || (!exact && pathname.startsWith(`${url}/`))
 }
 
 function itemHasActiveChild(pathname: string, item: NavMainItem) {
-  if (isPathActive(pathname, item.url)) return true
-  return item.items?.some((sub) => isPathActive(pathname, sub.url)) ?? false
+  if (isPathActive(pathname, item.url, item.exact)) return true
+  return item.items?.some((sub) => isPathActive(pathname, sub.url, sub.exact)) ?? false
 }
 
 function NavIconRail({
@@ -52,7 +53,7 @@ function NavIconRail({
         <SidebarMenuItem key={item.url} className="flex w-full justify-center">
           <SidebarMenuButton
             asChild
-            isActive={isPathActive(pathname, item.url)}
+            isActive={isPathActive(pathname, item.url, item.exact)}
             tooltip={item.title}
             className="mx-auto size-8! p-0!"
           >
@@ -101,7 +102,7 @@ export function NavMain({
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   asChild
-                  isActive={isPathActive(pathname, item.url)}
+                  isActive={isPathActive(pathname, item.url, item.exact)}
                   tooltip={item.title}
                 >
                   <Link
@@ -148,7 +149,7 @@ export function NavMain({
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton
                           asChild
-                          isActive={isPathActive(pathname, subItem.url)}
+                          isActive={isPathActive(pathname, subItem.url, subItem.exact)}
                         >
                           <Link href={subItem.url}>
                             <span>{subItem.title}</span>

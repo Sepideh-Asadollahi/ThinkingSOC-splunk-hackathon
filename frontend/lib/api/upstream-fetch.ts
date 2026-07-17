@@ -3,7 +3,18 @@ import { Agent } from "undici"
 import { proxyLog } from "@/lib/api/proxy-log"
 
 const DEFAULT_TIMEOUT_MS = 300_000
-const CHAT_TIMEOUT_MS = 600_000
+const LLM_TIMEOUT_MS = 900_000
+
+const LLM_HEAVY_POST_PATHS = new Set([
+  "agents/triage",
+  "analysis/route",
+  "analysis/run",
+  "analysis/run-by-sid",
+  "llm/chat",
+  "observability/run",
+  "observability/run-by-sid",
+  "soc/chat",
+])
 
 function parseTimeoutMs(env: string | undefined, fallback: number): number {
   const n = Number(env)
@@ -13,8 +24,13 @@ function parseTimeoutMs(env: string | undefined, fallback: number): number {
 /** Upstream fetch timeout for Next.js → FastAPI proxy (undici headers/body). */
 export function upstreamTimeoutMs(path: string, method: string): number {
   const normalized = path.replace(/^\/+|\/+$/g, "")
-  if (method === "POST" && normalized === "soc/chat") {
-    return parseTimeoutMs(process.env.TSOC_PROXY_CHAT_TIMEOUT_MS, CHAT_TIMEOUT_MS)
+  const compilesRunbook =
+    normalized.startsWith("investigation/records/") && normalized.endsWith("/runbook")
+  if (method === "POST" && (LLM_HEAVY_POST_PATHS.has(normalized) || compilesRunbook)) {
+    return parseTimeoutMs(
+      process.env.TSOC_PROXY_LLM_TIMEOUT_MS ?? process.env.TSOC_PROXY_CHAT_TIMEOUT_MS,
+      LLM_TIMEOUT_MS,
+    )
   }
   return parseTimeoutMs(process.env.TSOC_PROXY_TIMEOUT_MS, DEFAULT_TIMEOUT_MS)
 }

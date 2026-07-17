@@ -95,3 +95,33 @@ async def test_resolve_empty_conversation_does_not_recreate() -> None:
     assert merged == [{"role": "user", "content": "hello"}]
     get_or_create.assert_awaited_once_with(settings, cid)
     create.assert_not_awaited()
+
+
+async def test_persist_turn_attaches_citations_to_assistant_only() -> None:
+    from config import get_settings
+    from services.soc_rag.chat import _persist_turn
+    from services.soc_rag.models import SocChatCitation
+
+    settings = get_settings()
+    citation = SocChatCitation(
+        doc_id="verified_runbook_autopilot_session:abc",
+        doc_type="runbook_autopilot",
+        summary_line="Autopilot stopped at the human gate",
+    )
+    with patch(
+        "services.soc_rag.chat.append_messages",
+        new_callable=AsyncMock,
+        side_effect=[[], []],
+    ) as append:
+        await _persist_turn(
+            settings,
+            "conv-1",
+            user_message="What happened?",
+            assistant_message="No automatic execution occurred.",
+            citations=[citation],
+        )
+
+    assert append.await_count == 2
+    assert append.await_args_list[0].kwargs == {}
+    assistant_meta = append.await_args_list[1].kwargs["metadata"]
+    assert assistant_meta["citations"][0]["doc_type"] == "runbook_autopilot"

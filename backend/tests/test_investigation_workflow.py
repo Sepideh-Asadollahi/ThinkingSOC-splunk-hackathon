@@ -215,6 +215,54 @@ async def test_build_timeline_orders_pipeline_steps_by_rank(test_settings: Setti
 
 
 @pytest.mark.asyncio
+async def test_build_timeline_projects_target_run_onto_source(
+    test_settings: Settings,
+) -> None:
+    anchor = {
+        "id": 10,
+        "sid": "source-sid",
+        "row_index": 0,
+        "search_name": "Suspicious Login",
+        "tsoc_record_type": "soc_analysis",
+        "payload": {},
+    }
+    run_row = {
+        "id": 30,
+        "sid": "target-sid",
+        "row_index": 0,
+        "tsoc_record_type": "verified_runbook_run",
+        "created_at": "2026-07-14T10:00:00+00:00",
+        "payload": {
+            "source_record_id": 10,
+            "target_record_id": 20,
+            "status": "REUSED",
+        },
+    }
+    search = AsyncMock(side_effect=[[anchor], [run_row]])
+    with (
+        patch(
+            "services.investigation.investigation_workflow.get_stored_event_by_id",
+            new_callable=AsyncMock,
+            return_value=anchor,
+        ),
+        patch(
+            "services.investigation.investigation_workflow.search_stored_events",
+            search,
+        ),
+        patch(
+            "services.investigation.investigation_workflow.splunk_store_configured",
+            return_value=True,
+        ),
+    ):
+        out = await build_investigation_timeline(test_settings, 10)
+
+    assert [step["record_type"] for step in out["steps"]] == [
+        "soc_analysis",
+        "verified_runbook_run",
+    ]
+
+
+@pytest.mark.asyncio
 async def test_record_analyst_action_rejects_invalid(test_settings: Settings) -> None:
     with pytest.raises(ValueError, match="acknowledge"):
         await record_analyst_action(test_settings, 1, action="invalid")
@@ -273,6 +321,55 @@ def test_timeline_detail_analyst_action() -> None:
         "payload": {"action": "escalate", "note": "Tier 2 queue"},
     }
     assert _timeline_detail(row) == "escalate — Tier 2 queue"
+
+
+def test_timeline_filters_runbook_artifacts_to_exact_record() -> None:
+    anchor = {
+        "id": 10,
+        "sid": "sid-abc",
+        "row_index": 0,
+        "tsoc_record_type": "soc_analysis",
+    }
+    rows = [
+        anchor,
+        {
+            "id": 11,
+            "sid": "sid-abc",
+            "row_index": 0,
+            "tsoc_record_type": "verified_runbook_draft",
+            "payload": {"source_record_id": 10, "status": "SOURCE_VERIFIED"},
+        },
+        {
+            "id": 12,
+            "sid": "sid-abc",
+            "row_index": 0,
+            "tsoc_record_type": "verified_runbook_approval",
+            "payload": {"source_record_id": 99, "decision": "approve"},
+        },
+    ]
+    out = _filter_timeline_rows(rows, anchor, 10)
+    assert [row["id"] for row in out] == [10, 11]
+
+
+def test_timeline_detail_runbook_status_and_savings() -> None:
+    draft_detail = _timeline_detail(
+        {
+            "tsoc_record_type": "verified_runbook_draft",
+            "payload": {
+                "status": "SOURCE_VERIFIED",
+                "title": "Login investigation",
+                "steps": [{"step_id": "step-1"}],
+            },
+        }
+    )
+    run_detail = _timeline_detail(
+        {
+            "tsoc_record_type": "verified_runbook_run",
+            "payload": {"status": "REUSED", "estimated_minutes_saved": 24.9},
+        }
+    )
+    assert draft_detail == "SOURCE_VERIFIED · 1 step(s) · Login investigation"
+    assert run_detail == "REUSED · estimated 24.9 minutes saved"
 
 
 @pytest.mark.asyncio

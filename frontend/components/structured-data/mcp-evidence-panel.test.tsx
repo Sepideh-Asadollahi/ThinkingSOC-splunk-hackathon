@@ -42,6 +42,15 @@ describe("McpMarkdownContent", () => {
     expect(screen.getByRole("table")).toBeInTheDocument()
     expect(screen.getByText("Sysmon")).toBeInTheDocument()
   })
+
+  it("renders compact markdown without block elements for graph and button previews", () => {
+    render(<McpMarkdownContent content="**Generating command** with `search`" compact />)
+
+    const root = screen.getByTestId("mcp-markdown-content")
+    expect(root.tagName).toBe("SPAN")
+    expect(root.querySelector("p, div")).toBeNull()
+    expect(screen.getByText("Generating command").tagName).toBe("STRONG")
+  })
 })
 
 describe("McpEvidencePanel", () => {

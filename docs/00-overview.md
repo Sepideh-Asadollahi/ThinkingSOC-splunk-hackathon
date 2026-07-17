@@ -31,6 +31,9 @@ flowchart TD
   LLM["18 LLM Service Layer"]
   STR["19 Storage & Persistence"]
   INV_WF["20 Investigation Workflow"]
+  FORGE["25 Verified Runbook Forge"]
+  BUILD["26 Hackathon Product Guide"]
+  ROI["27 U.S. SOC Impact & ROI"]
 
   O --> S --> I --> A --> P
   P --> T
@@ -49,6 +52,7 @@ flowchart TD
   L --> STR
   STR --> D21["21 Database Schema"]
   SPL --> INV_WF
+  INV_WF --> FORGE --> BUILD --> ROI
 ```
 
 | # | Document | What you learn |
@@ -78,6 +82,9 @@ flowchart TD
 | **22** | [22-developer-sdk.md](./22-developer-sdk.md) | Developer SDK — full backend API wrapper, CLI, `doctor`, evaluation runner |
 | **23** | [23-post-install-integration-wizard.md](./23-post-install-integration-wizard.md) | Post-install wizard — Splunk / LiteLLM / MCP, smoke test, `.env` summary |
 | **24** | [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) | Demo PostgreSQL moment snapshot — `install.sh` load, export, CSV fallback |
+| **25** | [25-verified-runbook-forge.md](./25-verified-runbook-forge.md) | ThinkingSOC Forge — technical contracts, API, verification, persistence, UI, and evidence pack |
+| **26** | [26-hackathon-forge-product-guide.md](./26-hackathon-forge-product-guide.md) | Hackathon feature delta, GPT-5.6 role, trust boundary, demo, and acceptance claims |
+| **27** | [27-forge-us-soc-economic-impact.md](./27-forge-us-soc-economic-impact.md) | U.S. SOC capacity and ROI model with official labor sources and reproducible formulas |
 
 **Diagrams:** [architecture_diagram.md](../architecture_diagram.md) (repo root, Devpost integration view) · [architecture-views.md](./architecture-views.md) (8 multi-perspective Mermaid diagrams).
 
@@ -104,7 +111,7 @@ Do not put demo **data** under `docs/` — that folder is for architecture and d
 
 ## System in one paragraph
 
-Splunk **10+** fires an alert and sends a **webhook** with `sid` and a sample row. The **FastAPI backend** loads full job results via **REST**, enriches alerts from **PostgreSQL inventory** (users, assets, relationships), **classifies** each alert into exactly **one** track (Security, Observability, or `manual_review` — never both pipelines), then runs the selected **LangGraph pipeline** with **LiteLLM** (and optional **Splunk MCP** for metadata, Hunter/Judge live evidence, and investigation SPL execute), and persists structured JSON in **PostgreSQL**. The Splunk app is webhook + index only (no CSV lookups). The product UI is external (`frontend/`).
+Splunk **10+** fires an alert and sends a **webhook** with `sid` and a sample row. The **FastAPI backend** loads full job results via **REST**, enriches alerts from **PostgreSQL inventory** (users, assets, relationships), **classifies** each alert into exactly **one** track (Security, Observability, or `manual_review` — never both pipelines), then runs the selected **LangGraph pipeline** with **LiteLLM** (and optional **Splunk MCP** for metadata, Hunter/Judge live evidence, and investigation SPL execute), and persists structured JSON in **PostgreSQL**. **ThinkingSOC Forge**, added as the project's hackathon feature, can then convert an acknowledged security investigation into a source-verified, human-approved reusable runbook and execute it read-only on an exact-match alert. The Splunk app is webhook + index only (no CSV lookups). The product UI is external (`frontend/`).
 
 ## Conventions in these documents
 

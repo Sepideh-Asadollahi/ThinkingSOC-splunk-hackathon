@@ -146,6 +146,22 @@ prompt_and_reset_tsoc_docker_stack() {
     echo "  This will NOT delete Docker images (postgres/qdrant/neo4j stay cached)."
     echo "  After cleanup, the stack is started again from local images."
     echo ""
+
+    # A destructive reset must never be the unattended default. CI and
+    # operator smoke tests can opt in explicitly, which makes install.sh
+    # reproducible without weakening the interactive safety gate.
+    case "${TSOC_RESET_EXISTING_STACK:-}" in
+        true|1|yes)
+            warn "TSOC_RESET_EXISTING_STACK explicitly permits this ThinkingSOC-only reset."
+            _reset_tsoc_docker_stack || return 1
+            return 0
+            ;;
+        false|0|no)
+            err "Install stopped — TSOC_RESET_EXISTING_STACK explicitly forbids resetting the existing stack."
+            return 1
+            ;;
+    esac
+
     if ! prompt_yn "Remove existing ThinkingSOC containers and volumes now?" "n"; then
         err "Install stopped — remove the stack manually or answer Yes to continue with a clean Docker reset."
         return 1

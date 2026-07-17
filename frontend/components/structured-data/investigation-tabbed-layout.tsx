@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 
 import {
   NeonBadge,
@@ -28,6 +28,7 @@ import {
 } from "./soc-analysis-view"
 import { InvestigationAnalystActions } from "./investigation-analyst-actions"
 import { InvestigationTimeline } from "./investigation-timeline"
+import { VerifiedRunbookPanel } from "./verified-runbook-panel"
 import { TriageSection } from "./triage-section"
 import { StructuredDataView } from "./structured-data-view"
 import { FieldGrid } from "./field-grid"
@@ -45,6 +46,7 @@ export const INVESTIGATION_TAB = {
   framework: "Framework",
   evidenceChain: "Evidence chain",
   adminQuestion: "Admin question",
+  forge: "ThinkingSOC Forge",
   technical: "Technical",
 } as const
 
@@ -196,6 +198,16 @@ export function InvestigationTabbedLayout({
   timelineRefreshKey?: number
   onAnalystActionRecorded?: () => void
 }) {
+  const [activeTab, setActiveTab] = useState("overview")
+  const [runbookBuildRequestKey, setRunbookBuildRequestKey] = useState(0)
+  const handleAnalystActionRecorded = (action: "acknowledge" | "escalate") => {
+    if (action === "acknowledge") {
+      setActiveTab("forge")
+      setRunbookBuildRequestKey((current) => current + 1)
+    }
+    onAnalystActionRecorded?.()
+  }
+
   const analysisForPanels =
     analysis && triage && !asRecord(analysis.triage) ? { ...analysis, triage } : analysis
   const sections = analysisForPanels ? parseInvestigationAnalysis(analysisForPanels) : null
@@ -204,11 +216,15 @@ export function InvestigationTabbedLayout({
   const showTriageOnly = !analysis && triage != null
   /** Admin question tab only when analysis suggests an org knowledge gap (see docs/07-lld). */
   const showAdminQuestionTab = Boolean(sections?.hasAdminGap)
+  const showWorkflowPanels = Boolean(recordId)
 
   type TabDef = { value: string; label: string }
   const tabDefs: TabDef[] = [
     { value: "overview", label: INVESTIGATION_TAB.overview },
   ]
+  if (showWorkflowPanels) {
+    tabDefs.push({ value: "forge", label: INVESTIGATION_TAB.forge })
+  }
   if (sections?.hasRecommendedActions) {
     tabDefs.push({ value: "recommended-action", label: INVESTIGATION_TAB.recommendedAction })
   }
@@ -240,11 +256,9 @@ export function InvestigationTabbedLayout({
     tabDefs.push({ value: "technical", label: INVESTIGATION_TAB.technical })
   }
 
-  const showWorkflowPanels = Boolean(recordId)
-
   return (
     <NeonGlassCard accent="orange" data-testid="investigation-tabs">
-      <NeonTabs defaultValue="overview">
+      <NeonTabs value={activeTab} onValueChange={setActiveTab}>
         <div
           className="border-b border-white/[0.06] px-4 pt-4"
           data-testid="investigation-tabs-bar"
@@ -265,7 +279,7 @@ export function InvestigationTabbedLayout({
               <div className="grid gap-4 lg:grid-cols-2">
                 <InvestigationAnalystActions
                   recordId={recordId!}
-                  onActionRecorded={onAnalystActionRecorded}
+                  onActionRecorded={handleAnalystActionRecorded}
                 />
                 <InvestigationTimeline recordId={recordId!} refreshKey={timelineRefreshKey} />
               </div>
@@ -277,6 +291,17 @@ export function InvestigationTabbedLayout({
               <StructuredDataView data={payload} />
             ) : null}
           </NeonTabsContent>
+
+          {showWorkflowPanels ? (
+            <NeonTabsContent value="forge" className="space-y-4" data-testid="thinking-soc-forge-tab">
+              <VerifiedRunbookPanel
+                recordId={recordId!}
+                refreshKey={timelineRefreshKey}
+                autoBuildRequestKey={runbookBuildRequestKey}
+                onWorkflowChanged={onAnalystActionRecorded}
+              />
+            </NeonTabsContent>
+          ) : null}
 
           {sections?.hasRecommendedActions ? (
             <NeonTabsContent value="recommended-action">

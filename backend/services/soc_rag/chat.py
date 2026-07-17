@@ -27,6 +27,10 @@ from .chat_history import (
     index_chat_message_for_rag,
     retrieve_session_messages,
 )
+from .runbook_command import (
+    detect_runbook_execution_intent,
+    execute_runbook_chat_command,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -41,18 +45,30 @@ CHAT_DEFAULT_DOC_TYPES = [
     "correlation_finding",
     "correlation_alert",
     "correlation_attack_path",
+    "runbook_draft",
+    "runbook_approval",
+    "runbook_run",
+    "runbook_shadow_run",
+    "runbook_response_preview",
+    "runbook_response_decision",
+    "runbook_autopilot",
 ]
 
 _SYSTEM = """You are a SOC analyst assistant for ThinkingSOC.
+Always answer in English, regardless of the language used in the question or retrieved context.
 Answer using ONLY the retrieved context, which may include:
 - Splunk alerts (essential fields)
 - SOC security analyses (Defender/Hunter/Judge, triage, MITRE, investigation SPL)
 - Observability analyses (diagnoser/responder/ops judge)
 - Inventory users, assets, and user-asset relationships
 - Graph correlation: attack discoveries (findings), correlated alert nodes, entity links, and CAUSED attack paths between alerts
+- ThinkingSOC Forge: Runbook revisions, approval/reuse history, shadow evaluations, Safe Response Previews, and Runbook Autopilot agent/tool traces
 
 If context is insufficient, say what is missing and suggest Splunk searches, the Correlation explorer UI (/correlation), or which page to check.
-Cite sid, search_name, finding display_id, alert_row_id, user_id, or asset_id when referencing specific items.
+Cite sid, search_name, runbook_id, source_record_id, session_id, finding display_id, alert_row_id, user_id, or asset_id when referencing specific items.
+Treat Safe Response Preview actions as advisory and non-executable. Never claim that Autopilot approved a Runbook or executed containment.
+Keep these gates distinct: Runbook approval (`approve`) authorizes only guided read-only reuse, while a response-preview decision (`approve_for_manual_action`) only records that an analyst may continue through an external manual change process. Neither means containment executed.
+For Autopilot questions, treat the session status and `next_recommended_action` as authoritative when explaining why it stopped.
 Be concise and actionable."""
 
 
@@ -139,17 +155,25 @@ async def _persist_turn(
     user_message: str,
     assistant_message: str,
     sql_meta: Optional[Dict[str, Any]] = None,
+    citations: Optional[List[SocChatCitation]] = None,
 ) -> None:
-    meta = {"sql_meta": sql_meta} if sql_meta else {}
-    rows = await append_messages(
+    assistant_meta: Dict[str, Any] = {}
+    if sql_meta:
+        assistant_meta["sql_meta"] = sql_meta
+    if citations:
+        assistant_meta["citations"] = [item.model_dump(mode="json") for item in citations]
+    user_rows = await append_messages(
         settings,
         conversation_id,
-        [
-            SocChatMessage(role="user", content=user_message),
-            SocChatMessage(role="assistant", content=assistant_message),
-        ],
-        metadata=meta,
+        [SocChatMessage(role="user", content=user_message)],
     )
+    assistant_rows = await append_messages(
+        settings,
+        conversation_id,
+        [SocChatMessage(role="assistant", content=assistant_message)],
+        metadata=assistant_meta,
+    )
+    rows = [*user_rows, *assistant_rows]
     for row in rows:
         await index_chat_message_for_rag(
             settings,
@@ -177,6 +201,39 @@ async def run_soc_chat(
     question = _last_user_message(raw_messages)
     if not question:
         raise ValueError("Last message must be a non-empty user message")
+
+    runbook_intent = detect_runbook_execution_intent(
+        question,
+        prior_messages=raw_messages[:-1],
+    )
+    if runbook_intent.detected:
+        logger.info(
+            "soc_chat routing to runbook command rid=%s conversation_id=%s sid=%s reason=%s",
+            rid,
+            conversation_id,
+            runbook_intent.sid,
+            runbook_intent.reason,
+        )
+        command = await execute_runbook_chat_command(
+            settings,
+            runbook_intent,
+            request_id=rid,
+        )
+        await _persist_turn(
+            settings,
+            conversation_id,
+            user_message=question,
+            assistant_message=command.answer,
+            citations=command.citations,
+        )
+        return SocChatResponse(
+            answer=command.answer,
+            citations=command.citations,
+            splunk_mcp_used=False,
+            retrieval_backend="runbook_executor",
+            retrieval_meta=command.metadata,
+            conversation_id=conversation_id,
+        )
 
     filters = body.filters or SocChatFilters()
     top_k = max(settings.tsoc_rag_chat_top_k, 10)
@@ -306,7 +363,7 @@ async def run_soc_chat(
         session_hits=session_hits,
     )
     user_prompt = (
-        "Retrieved SOC context (alerts, analyses, inventory):\n"
+        "Retrieved SOC context (alerts, analyses, inventory, Runbooks, Autopilot traces):\n"
         "{0}\n\n"
         "Conversation:\n{1}\n\n"
         "Answer the latest user question."
@@ -393,6 +450,7 @@ async def run_soc_chat(
         conversation_id,
         user_message=question,
         assistant_message=answer or "",
+        citations=citations,
     )
 
     return SocChatResponse(

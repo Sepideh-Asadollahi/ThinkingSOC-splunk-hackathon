@@ -2,9 +2,12 @@
 
 import Link from "next/link"
 import {
+  BookOpenCheckIcon,
+  FlaskConicalIcon,
   GitBranchIcon,
   Link2Icon,
   LayoutDashboardIcon,
+  LibraryIcon,
   LineChartIcon,
   MessageSquareIcon,
   PackageIcon,
@@ -28,7 +31,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 
-const data = {
+export const APP_SIDEBAR_DATA = {
   user: {
     name: "Admin",
     email: "admin",
@@ -58,6 +61,24 @@ const data = {
       title: "Correlation",
       url: "/correlation",
       icon: <GitBranchIcon className="size-4" />,
+    },
+  ],
+  navRunbooks: [
+    {
+      title: "Runbook Library",
+      url: "/runbooks/library",
+      icon: <LibraryIcon className="size-4" />,
+    },
+    {
+      title: "Shadow & Evaluation",
+      url: "/runbooks/evaluation",
+      icon: <FlaskConicalIcon className="size-4" />,
+    },
+    {
+      title: "Forge & Policies",
+      url: "/runbooks",
+      exact: true,
+      icon: <BookOpenCheckIcon className="size-4" />,
     },
   ],
   navAssetIdentity: [
@@ -116,14 +137,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               collapsed ? "items-center gap-1 px-1 py-2" : "gap-0 p-2"
             )}
           >
-            <NavMain items={data.navDashboard} label="Dashboard" />
-            <NavMain items={data.navAIAssistant} label="AI Assistant" />
-            <NavMain items={data.navServices} label="Services" />
+            <NavMain items={APP_SIDEBAR_DATA.navDashboard} label="Dashboard" />
+            <NavMain items={APP_SIDEBAR_DATA.navAIAssistant} label="AI Assistant" />
+            <NavMain items={APP_SIDEBAR_DATA.navServices} label="Services" />
+            <NavMain items={APP_SIDEBAR_DATA.navRunbooks} label="Runbooks" />
             <NavMain
-              items={data.navAssetIdentity}
+              items={APP_SIDEBAR_DATA.navAssetIdentity}
               label="Asset and Identity Management"
             />
-            <NavMain items={data.navSettings} label="Settings" />
+            <NavMain items={APP_SIDEBAR_DATA.navSettings} label="Settings" />
           </div>
         </ScrollArea>
       </SidebarContent>
@@ -133,7 +155,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           collapsed && "items-center px-1"
         )}
       >
-        <NavUser user={data.user} />
+        <NavUser user={APP_SIDEBAR_DATA.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

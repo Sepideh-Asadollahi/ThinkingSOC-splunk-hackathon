@@ -181,6 +181,10 @@ Direct LLM proxy endpoint for ad-hoc completions. Used by the frontend for non-R
 | `LITELLM_API_KEY` | — | Unified API key |
 | `LITELLM_API_BASE` | — | Custom API base (NIM, Azure, etc.) |
 | `LITELLM_TIMEOUT_SECONDS` | `120` | HTTP timeout per request |
+| `LITELLM_RPM` | `30` | Process-local requests-per-minute guard |
+| `LITELLM_MAX_RETRIES` | `3` | Retries for transient failures after the initial attempt |
+| `LITELLM_RETRY_BASE_SECONDS` | `5` | Initial exponential-backoff delay |
+| `LITELLM_RETRY_MAX_SECONDS` | `60` | Retry-delay cap |
 | `LITELLM_MAX_TOKENS` | `131072` | Global completion token cap |
 | `TSOC_LLM_CONTEXT_TOKENS` | `131072` | Effective context window for budget calc |
 | `LITELLM_ANALYSIS_MAX_TOKENS` | `8192` | Structured analysis JSON cap |

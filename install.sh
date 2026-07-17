@@ -135,6 +135,12 @@ main() {
     echo ""
 
     need_root
+    if [[ "$NON_INTERACTIVE" == "true" ]]; then
+        # Keep apt/dpkg/needrestart from attempting a TTY dialog during CI,
+        # cloud-init, and unattended smoke installs.
+        export DEBIAN_FRONTEND="${DEBIAN_FRONTEND:-noninteractive}"
+        export NEEDRESTART_MODE="${NEEDRESTART_MODE:-a}"
+    fi
     detect_os
     resolve_install_dir "$SCRIPT_DIR"
     init_install_verbose
@@ -168,13 +174,20 @@ main() {
     echo ""
 
     LOAD_DEMO_DATA=true
-    if ! prompt_yn "Load demo data (sample users, assets, relationships, latest analysis records)?" "y"; then
-        LOAD_DEMO_DATA=false
-    else
+    case "${TSOC_LOAD_DEMO_DATA:-}" in
+        true|1|yes) LOAD_DEMO_DATA=true ;;
+        false|0|no) LOAD_DEMO_DATA=false ;;
+        *)
+            if ! prompt_yn "Load demo data (sample users, assets, relationships, latest analysis records)?" "y"; then
+                LOAD_DEMO_DATA=false
+            fi
+            ;;
+    esac
+    if [[ "$LOAD_DEMO_DATA" == true ]]; then
         demo_data_runtime_note
         if [[ -f "${INSTALL_DIR}/backend/data/demo/postgres_snapshot/manifest.json" ]] \
             || [[ -f "${INSTALL_SCRIPT_DIR}/backend/data/demo/postgres_snapshot/manifest.json" ]]; then
-            ok "Moment demo snapshot available (auto-load during database setup)"
+            ok "Full demo snapshot available (auto-load during database setup)"
         else
             warn "postgres_snapshot not in install tree — will try CSV fallback after repository step"
         fi
@@ -201,8 +214,16 @@ main() {
     echo "  Guide: install/README.md"
     echo ""
     SETUP_SYSTEMD=false
-    if prompt_yn "Create systemd services (tsoc-backend + tsoc-frontend)?" "y"; then
-        SETUP_SYSTEMD=true
+    case "${TSOC_SETUP_SYSTEMD:-}" in
+        true|1|yes) SETUP_SYSTEMD=true ;;
+        false|0|no) SETUP_SYSTEMD=false ;;
+        *)
+            if prompt_yn "Create systemd services (tsoc-backend + tsoc-frontend)?" "y"; then
+                SETUP_SYSTEMD=true
+            fi
+            ;;
+    esac
+    if [[ "$SETUP_SYSTEMD" == true ]]; then
         ok "Selected: systemd (auto-start on boot)"
     else
         ok "Selected: background production services (no systemd)"

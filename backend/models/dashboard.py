@@ -51,6 +51,27 @@ class DashboardIntegrations(BaseModel):
     neo4j: bool = False
 
 
+class DashboardRunbookOps(BaseModel):
+    """Forge, guarded reuse, Autopilot, and Chat operational rollup."""
+
+    latest_runbooks: int = 0
+    source_verified: int = 0
+    human_approved: int = 0
+    reusable_alert_names: int = 0
+    executions: int = 0
+    reused: int = 0
+    no_evidence: int = 0
+    failed: int = 0
+    evidence_rows: int = 0
+    estimated_minutes_saved: float = 0.0
+    shadow_runs: int = 0
+    response_previews: int = 0
+    autopilot_sessions: int = 0
+    autopilot_completed: int = 0
+    chat_conversations: int = 0
+    chat_messages: int = 0
+
+
 class SystemResources(BaseModel):
     hostname: str = ""
     cpu_percent: float = 0.0
@@ -84,5 +105,6 @@ class DashboardOverview(BaseModel):
     triage_by_priority: List[CountByPriority] = Field(default_factory=list)
     track_split: TrackSplit = Field(default_factory=TrackSplit)
     integrations: DashboardIntegrations = Field(default_factory=DashboardIntegrations)
+    runbook_ops: DashboardRunbookOps = Field(default_factory=DashboardRunbookOps)
     health_score: int = 0
     top_priority: List[TopPriorityItem] = Field(default_factory=list)

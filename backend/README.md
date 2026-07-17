@@ -46,7 +46,7 @@ Copy `.env.example` to `.env` and set Splunk credentials, PostgreSQL DSN, and op
 
 ### LiteLLM (`.env`)
 
-All LLM calls go through **LiteLLM** (`services/llm/litellm_service.py`). Configure model, keys, timeout, and token limits in **`backend/.env`** (see `.env.example`): `LITELLM_MODEL`, `LITELLM_API_KEY` / `LITELLM_API_BASE`, `LITELLM_TIMEOUT_SECONDS`, `LITELLM_ANALYSIS_MAX_TOKENS`, `LITELLM_ANALYSIS_TEMPERATURE`, optional `LITELLM_CHAT_DEFAULT_TEMPERATURE`. SOC/Observability pipelines always attempt LiteLLM; on failure they fall back to rule-based stages. `GET /api/v1/llm/status` returns non-secret settings. Structure: [../docs/04-agents-and-pipelines.md](../docs/04-agents-and-pipelines.md).
+All LLM calls go through **LiteLLM** (`services/llm/litellm_service.py`). Configure model, keys, timeout, RPM, retry/backoff, and token limits in **`backend/.env`** (see `.env.example`): `LITELLM_MODEL`, `LITELLM_API_KEY` / `LITELLM_API_BASE`, `LITELLM_TIMEOUT_SECONDS`, `LITELLM_RPM` (default `30`), `LITELLM_MAX_RETRIES` (default `3`), `LITELLM_RETRY_BASE_SECONDS`, `LITELLM_RETRY_MAX_SECONDS`, `LITELLM_ANALYSIS_MAX_TOKENS`, `LITELLM_ANALYSIS_TEMPERATURE`, optional `LITELLM_CHAT_DEFAULT_TEMPERATURE`. Explicit environment / `.env` values take precedence over persisted Integration Settings; persisted values fill only unset fields. Transient provider overload, rate-limit, timeout, and network failures are retried with bounded exponential backoff; permanent request/authentication errors fail immediately. SOC/Observability pipelines fall back to rule-based stages after retry exhaustion. `GET /api/v1/llm/status` returns non-secret settings. Structure: [../docs/04-agents-and-pipelines.md](../docs/04-agents-and-pipelines.md).
 
 **Storage (PostgreSQL):** backend writes ingest/analysis/audit JSON records into PostgreSQL (`TSOC_POSTGRES_DSN`).
 
@@ -104,7 +104,7 @@ Live Splunk tests are separately marked `splunk_live` and require `TSOC_RUN_SPLU
 - `GET /api/v1/llm/status` — LiteLLM config surface (no secrets); see [docs/04-agents-and-pipelines.md](../docs/04-agents-and-pipelines.md)
 - `POST /api/v1/llm/chat` — chat completion via LiteLLM (`messages` array); same Bearer rule as ingest when `TSOC_INGEST_TOKEN` is set
 - `POST /api/v1/assistant/spl-suggest` — SPL via REST `/predict` (UI path), MCP execute (All Time), LiteLLM/rule fallback — [docs/13-cim-investigation-spl-mcp.md](../docs/13-cim-investigation-spl-mcp.md)
-- SOC **`investigation_questions`** — `/predict` per question, MCP `splunk_run_query`, refine loop (max 2) → `spl_results` in UI — [docs/13-cim-investigation-spl-mcp.md](../docs/13-cim-investigation-spl-mcp.md)
+- SOC **`investigation_questions`** — `/predict` per question, deterministic syntax repair, MCP `splunk_run_query`, refine loop (max 3) → `spl_results` in UI — [docs/13-cim-investigation-spl-mcp.md](../docs/13-cim-investigation-spl-mcp.md)
 - `GET /api/v1/mcp/status` — MCP connectivity — [docs/02-integration-boundaries.md](../docs/02-integration-boundaries.md)
 - `POST /api/v1/mcp/spl-generate` — debug: MCP `saia_generate_spl` only (not the main investigation path; Bearer if `TSOC_INGEST_TOKEN` set)
 - `POST /api/v1/mcp/tools/call` — debug MCP tool invocation by name (Bearer if token set)
@@ -115,16 +115,23 @@ Live Splunk tests are separately marked `splunk_live` and require `TSOC_RUN_SPLU
 - `POST /api/v1/analysis/run` — full SOC analysis (enrichment + Defender / Hunter / Judge + risk + MITRE-style mapping). LangGraph pipeline via LiteLLM with rule-based fallback on error. Optional offline triple (`users`, `assets`, `relationships`) for tests.
 - `POST /api/v1/analysis/route` — classify and run Security/Observability pipeline(s) automatically
 - `POST /api/v1/agents/triage` — agent-style triage orchestration (route + pipeline + next actions + suggested SPL); response includes `security_triage` / `observability_triage` when pipelines run
-- `GET /api/v1/triage/queue` — analyst queue sorted by `triage_score` (`track=all|security|observability`, `limit`); see [docs/08-triage-priority-layer.md](../docs/08-triage-priority-layer.md)
+- `GET /api/v1/triage/queue` — analyst queue sorted by `triage_score`, with pipeline and limit filtering; see [docs/08-triage-priority-layer.md](../docs/08-triage-priority-layer.md)
 - `POST /api/v1/analysis/run-by-sid` — fetch all rows for a Splunk `sid`, run analysis per row.
 - `POST /api/v1/observability/run` — run Observability pipeline directly (enrichment + Diagnoser + Responder + Ops Judge)
 - `POST /api/v1/observability/run-by-sid` — fetch rows for a Splunk `sid`, run Observability per row
 - `GET /api/v1/storage/events` — search JSON records stored in PostgreSQL (optional `sid`, `record_type`)
+- `GET /api/v1/investigation/runbook-settings` — non-secret ThinkingSOC Forge policy and dependency readiness
+- `GET /api/v1/investigation/runbooks`, `/export`, `POST /import`, and `PATCH /runbooks/{runbook_id}` — Alert Name library, portable JSON exchange, and immutable revision editing
+- `POST/GET /api/v1/investigation/records/{record_id}/runbook` — compile/source-verify or load the latest verified-runbook state
+- `POST/GET /api/v1/investigation/records/{record_id}/runbook/autopilot` — run or inspect bounded Supervisor/Evidence/Engineer/Guard/Advisor collaboration with durable Tool traces; never auto-approves or executes containment
+- `GET /api/v1/investigation/records/{record_id}/runbook/compatible-targets` — bounded, payload-free exact-detection candidates for guided reuse
+- `POST /api/v1/investigation/records/{record_id}/runbook/approval` and `POST /api/v1/investigation/records/{target_record_id}/runbook-runs` — human decision and read-only reuse
+- Runbook SPL execution uses `TSOC_SPL_EXECUTE_VIA_MCP=true` as **MCP preferred, Splunk REST oneshot fallback**. `spl_results.execution_transport` reports `mcp` or `rest`; both error causes are retained if fallback also fails.
 - `POST /api/v1/admin-org/gap-suggest` — given alert + optional analysis excerpts, suggest **one organizational GAP question** for an admin (LiteLLM with rule fallback when unavailable). Simplified vs ThinkingSOC `admin_org_gap` (no DB/RAG/queue).
 - After every successful **SOC analysis** (`run_analysis`, including ingest auto-triage), the backend also runs admin-org GAP and returns it on `SocAnalysisResult.admin_org_gap` (and stores `admin_org_gap_suggest` when PostgreSQL is configured). The investigation UI shows the suggested admin question when `should_suggest_question` is true.
 - `GET /api/v1/soc/chat/status` — RAG index stats (PostgreSQL + Qdrant)
-- `POST /api/v1/soc/chat` — SOC analyst chat ([docs/10-soc-vector-rag.md](../docs/10-soc-vector-rag.md))
-- `POST /api/v1/soc/rag/backfill` — rebuild RAG index from `tsoc_records`
+- `POST /api/v1/soc/chat` — SOC analyst chat, including explicit English commands to run the latest approved exact-Alert-Name Runbook for a supplied SID; investigation remains read-only ([docs/10-soc-vector-rag.md](../docs/10-soc-vector-rag.md))
+- `POST /api/v1/soc/rag/backfill` — rebuild RAG index from alerts, analyses, inventory/correlation, and all Forge Runbook/Autopilot artifacts
 
 ### SOC Chat / vector RAG (default)
 

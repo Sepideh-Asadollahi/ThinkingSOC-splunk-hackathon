@@ -1,0 +1,116 @@
+[
+  {
+    "message_id": 2,
+    "conversation_id": "1ec30fe6-3570-4443-aa02-08ba524ddf55",
+    "role": "user",
+    "content": "Which correlation findings have the highest risk?",
+    "seq": 1,
+    "metadata": {
+      "sql_meta": {
+        "sql": "SELECT display_id, title, risk_score, finding_type, ticket_status FROM graph_findings ORDER BY risk_score DESC LIMIT 10",
+        "row_count": 1,
+        "query_mode": "sql",
+        "tables_used": [
+          "graph_findings"
+        ]
+      }
+    },
+    "created_at": "2026-06-07T20:16:03.635471+00:00"
+  },
+  {
+    "message_id": 3,
+    "conversation_id": "1ec30fe6-3570-4443-aa02-08ba524ddf55",
+    "role": "assistant",
+    "content": "**1** result(s):\n1. GF-0007 — Phishing-Driven RDP and PsExec Lateral Movement on SERVER01 [smart_attack_discovery] | risk=67",
+    "seq": 2,
+    "metadata": {
+      "sql_meta": {
+        "sql": "SELECT display_id, title, risk_score, finding_type, ticket_status FROM graph_findings ORDER BY risk_score DESC LIMIT 10",
+        "row_count": 1,
+        "query_mode": "sql",
+        "tables_used": [
+          "graph_findings"
+        ]
+      }
+    },
+    "created_at": "2026-06-07T20:16:03.635471+00:00"
+  },
+  {
+    "message_id": 4,
+    "conversation_id": "6c32a6bd-9470-41bc-94f6-dec04b21b757",
+    "role": "user",
+    "content": "Which correlation findings have the highest risk?",
+    "seq": 1,
+    "metadata": {
+      "sql_meta": {
+        "sql": "SELECT display_id, title, risk_score, finding_type, ticket_status FROM graph_findings ORDER BY risk_score DESC LIMIT 10",
+        "row_count": 1,
+        "query_mode": "sql",
+        "tables_used": [
+          "graph_findings"
+        ]
+      }
+    },
+    "created_at": "2026-06-07T21:08:26.812022+00:00"
+  },
+  {
+    "message_id": 5,
+    "conversation_id": "6c32a6bd-9470-41bc-94f6-dec04b21b757",
+    "role": "assistant",
+    "content": "**1** result(s):\n1. GF-0007 — Phishing-Driven RDP and PsExec Lateral Movement on SERVER01 [smart_attack_discovery] | risk=67",
+    "seq": 2,
+    "metadata": {
+      "sql_meta": {
+        "sql": "SELECT display_id, title, risk_score, finding_type, ticket_status FROM graph_findings ORDER BY risk_score DESC LIMIT 10",
+        "row_count": 1,
+        "query_mode": "sql",
+        "tables_used": [
+          "graph_findings"
+        ]
+      }
+    },
+    "created_at": "2026-06-07T21:08:26.812022+00:00"
+  },
+  {
+    "message_id": 6,
+    "conversation_id": "7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9",
+    "role": "user",
+    "content": "For source record 330, explain the latest Runbook Autopilot session 49e5647c-b344-4a73-814f-5f5dff5dacac: which agents and tools participated, why did it stop, and did it execute any containment? Cite the Runbook artifacts.",
+    "seq": 1,
+    "metadata": {},
+    "created_at": "2026-07-15T19:07:43.616206+00:00"
+  },
+  {
+    "message_id": 7,
+    "conversation_id": "7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9",
+    "role": "assistant",
+    "content": "**Runbook Autopilot session 49e5647c‑b344‑4a73‑814f‑5f5dff5dacac (source record 330)**  \n\n| Step | Agent | Tool | Action | Outcome |\n|------|-------|------|--------|---------|\n| 1 | **SUPERVISOR** | – | Started bounded workflow | ✔ |\n| 2 | **SUPERVISOR** | – | Delegated source‑readiness to **EVIDENCE_SCOUT** | ✔ |\n| 3 | **EVIDENCE_SCOUT** | `storage.get_record` | Load stored SOC analysis (sid scheduler__admin__search__t8372_c2_at_1727841780.1) | ✔ (Trace 3‑4) |\n| 4 | **EVIDENCE_SCOUT** | `analyst_actions.list` | Verify latest human analyst action | ✔ (Trace 5‑6) |\n| 5 | **EVIDENCE_SCOUT** | – | Pass metadata to **RUNBOOK_ENGINEER** | ✔ (Trace 7) |\n| 6 | **RUNBOOK_ENGINEER** | `runbook.state` | Load latest immutable runbook state | ✔ (Trace 8‑9) |\n| 7 | **RUNBOOK_ENGINEER** | `runbook.library.search` | Search library by exact alert name | ✔ (Trace 10‑11) |\n| 8 | **RUNBOOK_ENGINEER** | – | Request policy decision | ✔ (Trace 12) |\n| 9 | **POLICY_GUARD** | – | Policy decision: read‑only compile & evidence verification allowed; **automatic execution disabled** | ✔ (Trace 13‑15) |\n|10 | **RESPONSE_ADVISOR** | `runbook.safe_response_preview.cache` | Reuse latest non‑executable preview | ✔ (Trace 14) |\n|11 | **SUPERVISOR** | – | Complete session | ✔ (Trace 16) |\n\n### Why the session stopped\n- **Policy Guard** explicitly returned `automatic_execution_performed: false` (Trace 15).  \n- The runbook decision (artifact [2]) was *“approve_for_manual_action”* – human approval is required before any containment or action.  \n- No containment or automated response was executed.\n\n### Did it execute containment?\n- **No**. The session ended with a human‑approval gate; containment actions were not triggered.  \n\n**Runbook artifacts referenced**\n\n- **Runbook ID**: `f06410a1-a19b-43bd-b892-ef3ab172b970` (source record 330) – draft in artifact [3].  \n- **Runbook response decision**: artifact [2] (`approve_for_manual_action`).  \n- **Safe Response Preview**: artifact [8] (preview actions are `PREVIEW_ONLY`).  \n\nThus, the autopilot session completed all pre‑execution checks, confirmed that automatic containment is disabled, and handed control back to the analyst for manual approval.",
+    "seq": 2,
+    "metadata": {},
+    "created_at": "2026-07-15T19:07:43.616206+00:00"
+  },
+  {
+    "message_id": 8,
+    "conversation_id": "demo-runbook-judge-tour-v1",
+    "role": "user",
+    "content": "Show me the complete evidence and agent flow for the OAuth token replay runbook.",
+    "seq": 1,
+    "metadata": {
+      "demo_scenario_id": "judge-tour-runbook-v1"
+    },
+    "created_at": "2026-07-16T09:26:00+00:00"
+  },
+  {
+    "message_id": 9,
+    "conversation_id": "demo-runbook-judge-tour-v1",
+    "role": "assistant",
+    "content": "### Judge tour ready\n\nOpen **Runbook Library** and select **Judge Demo: Suspicious OAuth Token Replay**. The stored scenario shows three parser-valid evidence steps, a different-SID shadow replay, human approval, safe response preview, and a five-agent Autopilot audit trace.\n\nSafety invariant: **human approval is required and automatic execution is false**. You can ask follow-up questions in Chat because every Forge artifact is indexed in RAG.",
+    "seq": 2,
+    "metadata": {
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+      "demo_scenario_id": "judge-tour-runbook-v1"
+    },
+    "created_at": "2026-07-16T09:27:00+00:00"
+  }
+]

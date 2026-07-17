@@ -13,6 +13,7 @@ from .compact_alert import compact_alert_document
 from .compact_analysis import compact_analysis_from_payload
 from .compact_inventory import index_inventory_catalog
 from .compact_observability import compact_observability_from_payload
+from .compact_runbook import compact_runbook_artifact
 from .index_correlation import index_correlation_catalog
 from .index_writer import upsert_alert_document
 from .pg_store import upsert_rag_document
@@ -23,6 +24,13 @@ _STORAGE_RECORD_TYPES = (
     "splunk_ingest",
     "soc_analysis",
     "observability_analysis",
+    "verified_runbook_draft",
+    "verified_runbook_approval",
+    "verified_runbook_run",
+    "verified_runbook_shadow_run",
+    "verified_runbook_response_preview",
+    "verified_runbook_response_decision",
+    "verified_runbook_autopilot_session",
 )
 
 
@@ -70,7 +78,7 @@ async def backfill_from_storage(
                     else:
                         await upsert_rag_document(settings, doc)
                         counts["soc_analysis"] += 1
-                else:
+                elif rec_type == "observability_analysis":
                     merged = dict(pl)
                     merged.setdefault("sid", row.get("sid"))
                     merged.setdefault("search_name", row.get("search_name"))
@@ -83,6 +91,17 @@ async def backfill_from_storage(
                     else:
                         await upsert_rag_document(settings, doc)
                         counts["observability_analysis"] += 1
+                else:
+                    merged = dict(pl)
+                    merged.setdefault("sid", row.get("sid"))
+                    merged.setdefault("search_name", row.get("search_name"))
+                    merged.setdefault("row_index", row.get("row_index"))
+                    doc = compact_runbook_artifact(rec_type, merged)
+                    if doc is None:
+                        continue
+                    if not dry_run:
+                        await upsert_rag_document(settings, doc)
+                    counts[rec_type] += 1
             except Exception as e:
                 logger.warning("backfill row failed type=%s id=%s: %s", rec_type, row.get("id"), e)
                 counts["errors"] += 1

@@ -47,22 +47,22 @@ _step_prepare_tsoc_docker_stack() {
 
 _step_project_setup() {
     local seed_flag=""
-    if [[ "$LOAD_DEMO_DATA" == false ]]; then
-        seed_flag="--no-seed"
-    elif [[ "${DEMO_SEED_MODE:-}" == "dump" ]]; then
-        # Full pg_dump restore runs after setup.py — skip JSON/CSV seed to avoid
-        # loading a partial snapshot (rag=0, findings=1) that confuses diagnostics.
-        seed_flag="--no-seed"
-    fi
     ensure_docker_stack_images || return 1
     if [[ "$LOAD_DEMO_DATA" == true ]]; then
         ensure_demo_data_ready_for_install || return 1
+        if [[ "${DEMO_SEED_MODE:-}" == "dump" ]]; then
+            # Mode is selected by ensure_demo_data_ready_for_install above.
+            # The full pg_dump restore runs after setup.py, so schema setup must
+            # not pre-fill the database from JSON and accidentally make the
+            # dump restore look unnecessary.
+            seed_flag="--no-seed"
+        fi
         case "${DEMO_SEED_MODE:-}" in
             dump)
                 info "Running project setup (schema only — demo data from full pg_dump backup next) …"
                 ;;
             snapshot)
-                info "Running project setup (database + moment demo snapshot) …"
+                info "Running project setup (database + full JSON demo snapshot) …"
                 ;;
             csv)
                 info "Running project setup (database + demo CSV seed) …"
@@ -72,6 +72,7 @@ _step_project_setup() {
                 ;;
         esac
     else
+        seed_flag="--no-seed"
         info "Running project setup (database, no demo seed) …"
     fi
     info "Log file: $INSTALL_DIR/setup.log"
@@ -99,7 +100,7 @@ _step_start_services() {
 }
 
 _step_frontend_build() {
-    ensure_frontend_production_build || return 1
+    ensure_frontend_production_build true || return 1
 }
 
 _step_embedding_model() {

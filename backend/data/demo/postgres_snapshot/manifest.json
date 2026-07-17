@@ -3,7 +3,7 @@
   "demo_mode": "full",
   "record_limit": null,
   "correlation_limit": null,
-  "snapshot_at": "2026-06-07T19:27:20.918592+00:00",
+  "snapshot_at": "2026-07-16T04:19:34.459209+00:00",
   "tables": [
     {
       "name": "tsoc_users",
@@ -27,18 +27,28 @@
     },
     {
       "name": "tsoc_records",
-      "rows": 82,
+      "rows": 389,
       "file": "tsoc_records.json"
     },
     {
       "name": "tsoc_rag_documents",
-      "rows": 39,
+      "rows": 111,
       "file": "tsoc_rag_documents.json"
     },
     {
       "name": "graph_findings",
       "rows": 1,
       "file": "graph_findings.json"
+    },
+    {
+      "name": "tsoc_chat_conversations",
+      "rows": 4,
+      "file": "tsoc_chat_conversations.json"
+    },
+    {
+      "name": "tsoc_chat_messages",
+      "rows": 8,
+      "file": "tsoc_chat_messages.json"
     }
   ]
 }

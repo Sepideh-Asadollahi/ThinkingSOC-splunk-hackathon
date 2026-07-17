@@ -24,19 +24,23 @@ import {
   postSocChat,
   postSocRagBackfill,
   type SocChatConversationSummary,
+  type SocChatCitation,
   type SocChatMessage,
   type SocChatSqlMeta,
 } from "@/lib/api/soc-chat"
 import { tsocOverflowYAutoClasses } from "@/lib/ui-scroll"
 import { cn } from "@/lib/utils"
 
-type ChatMessage = SocChatMessage & { sql_meta?: SocChatSqlMeta | null }
+type ChatMessage = SocChatMessage & {
+  sql_meta?: SocChatSqlMeta | null
+  citations?: SocChatCitation[]
+}
 
-export function SocChatContent() {
+export function SocChatContent({ initialPrompt = "" }: { initialPrompt?: string }) {
   const [conversations, setConversations] = useState<SocChatConversationSummary[]>([])
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState(initialPrompt)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hydrated, setHydrated] = useState(false)
@@ -61,6 +65,7 @@ export function SocChatContent() {
         role: m.role,
         content: m.content,
         sql_meta: m.sql_meta ?? null,
+        citations: m.citations ?? [],
       }))
     )
   }, [])
@@ -178,7 +183,12 @@ export function SocChatContent() {
       const res = await postSocChat(next, activeConversationId)
       const withAssistant: ChatMessage[] = [
         ...next,
-        { role: "assistant", content: res.answer, sql_meta: res.sql_meta ?? null },
+        {
+          role: "assistant",
+          content: res.answer,
+          sql_meta: res.sql_meta ?? null,
+          citations: res.citations,
+        },
       ]
       setMessages(withAssistant)
       const convId = res.conversation_id ?? activeConversationId
@@ -217,7 +227,12 @@ export function SocChatContent() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 md:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Chat</h1>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Chat</h1>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Ask about alerts, analyses, Runbook revisions, approvals, response previews, and Autopilot agent/tool traces.
+          </p>
+        </div>
         <div className="flex flex-wrap gap-2">
           {activeConversation && (
             <NeonActionButton
@@ -329,6 +344,7 @@ export function SocChatContent() {
                 role={m.role}
                 content={m.content}
                 sqlMeta={m.role === "assistant" ? m.sql_meta : null}
+                citations={m.role === "assistant" ? m.citations : undefined}
               />
             ))}
             {loading && <p className="text-sm text-muted-foreground">Thinking…</p>}
@@ -341,7 +357,7 @@ export function SocChatContent() {
               <NeonInput
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about alerts, verdicts, entities…"
+                placeholder="Ask about alerts—or run an approved Runbook by SID…"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault()
@@ -356,6 +372,9 @@ export function SocChatContent() {
               Send
             </NeonActionButton>
           </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Try: “Run the approved Runbook for SID demo-123”.
+          </p>
         </NeonGlassCard>
       </div>
     </div>

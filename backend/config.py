@@ -65,6 +65,11 @@ class Settings(BaseSettings):
     litellm_api_key: Optional[str] = None
     litellm_api_base: Optional[str] = None
     litellm_timeout_seconds: float = 120.0
+    litellm_rpm: int = Field(default=30, ge=1, le=10000)
+    # Application-level retries after the initial attempt. Provider-internal retries are disabled.
+    litellm_max_retries: int = Field(default=3, ge=0, le=10)
+    litellm_retry_base_seconds: float = Field(default=5.0, ge=0.0, le=60.0)
+    litellm_retry_max_seconds: float = Field(default=60.0, ge=0.0, le=300.0)
     # Upper cap for completion tokens (128k). Individual call sites may request less.
     litellm_max_tokens: int = Field(default=131072, ge=256, le=131072)
     # Effective model context window (tokens) — sizes prompt truncation budgets.
@@ -155,9 +160,20 @@ class Settings(BaseSettings):
     # On Splunk parser/execute errors: pass error text to LiteLLM and re-validate/re-execute.
     tsoc_spl_llm_refine_on_error: bool = True
     # After execute: refine SPL on error or 0 rows (LiteLLM + optional MCP optimize), max attempts per question.
-    tsoc_spl_execute_refine_max_attempts: int = Field(default=2, ge=0, le=2)
+    tsoc_spl_execute_refine_max_attempts: int = Field(default=3, ge=0, le=3)
     # Investigation follow-up questions per alert (LLM list + SPL per question).
     tsoc_investigation_questions_max: int = Field(default=3, ge=1, le=12)
+
+    # ThinkingSOC Forge — verified incident-to-runbook compiler.
+    tsoc_runbook_enabled: bool = True
+    tsoc_runbook_max_steps: int = Field(default=3, ge=1, le=3)
+    tsoc_runbook_default_manual_minutes: int = Field(default=25, ge=5, le=120)
+    tsoc_runbook_artifact_scan_limit: int = Field(default=500, ge=50, le=1000)
+    tsoc_runbook_analyst_hourly_cost_usd: float = Field(default=65.0, ge=0, le=1000)
+    tsoc_runbook_input_cost_per_1m_tokens: float = Field(default=0.0, ge=0, le=1000)
+    tsoc_runbook_output_cost_per_1m_tokens: float = Field(default=0.0, ge=0, le=1000)
+    # Bounded multi-agent orchestration; never grants approval or executes response actions.
+    tsoc_runbook_autopilot_enabled: bool = True
 
     # SOC vector RAG — PostgreSQL + Qdrant (docs/10-soc-vector-rag.md)
     tsoc_rag_similar_max: int = Field(default=3, ge=1, le=5)
@@ -241,6 +257,22 @@ def clear_settings_cache() -> None:
     get_settings.cache_clear()
 
 
+def _apply_persisted_setting_overrides(
+    base: Settings,
+    overrides: dict[str, object],
+) -> Settings:
+    """Apply UI overrides only when the field was not explicitly supplied by env/.env."""
+    explicit_env_fields = set(base.model_fields_set)
+    valid = {
+        key: value
+        for key, value in overrides.items()
+        if key in Settings.model_fields and key not in explicit_env_fields
+    }
+    if not valid:
+        return base
+    return base.model_copy(update=valid)
+
+
 @lru_cache
 def get_settings() -> Settings:
     base = Settings()
@@ -252,10 +284,7 @@ def get_settings() -> Settings:
         overrides = {}
     if not overrides:
         return base
-    valid = {k: v for k, v in overrides.items() if k in Settings.model_fields}
-    if not valid:
-        return base
-    return base.model_copy(update=valid)
+    return _apply_persisted_setting_overrides(base, overrides)
 
 
 def investigation_questions_max(settings: Settings) -> int:

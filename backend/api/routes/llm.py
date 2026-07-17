@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from api.http_rid import http_rid
+from api.app_errors import map_exception
 
 from config import Settings, get_settings
 from api.deps import check_ingest_bearer
@@ -50,6 +51,10 @@ async def llm_status(settings: Settings = Depends(get_settings)) -> dict:
         "litellm_api_key_configured": bool(settings.litellm_api_key),
         "litellm_api_base_configured": bool(settings.litellm_api_base),
         "litellm_timeout_seconds": settings.litellm_timeout_seconds,
+        "litellm_rpm": settings.litellm_rpm,
+        "litellm_max_retries": settings.litellm_max_retries,
+        "litellm_retry_base_seconds": settings.litellm_retry_base_seconds,
+        "litellm_retry_max_seconds": settings.litellm_retry_max_seconds,
         "litellm_analysis_max_tokens": settings.litellm_analysis_max_tokens,
         "litellm_analysis_temperature": settings.litellm_analysis_temperature,
         "litellm_chat_default_temperature": settings.litellm_chat_default_temperature,
@@ -104,7 +109,7 @@ async def llm_chat(
             e.kind,
             e,
         )
-        raise HTTPException(status_code=status, detail=str(e)) from e
+        raise map_exception(e, context="POST /api/v1/llm/chat") from e
     except ValueError as e:
         logger.warning("api POST /llm/chat rid=%s 400 validation: %s", http_rid(request), e)
         raise HTTPException(status_code=400, detail=str(e)) from e

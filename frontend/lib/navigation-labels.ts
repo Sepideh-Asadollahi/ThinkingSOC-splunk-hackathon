@@ -30,6 +30,11 @@ const ROUTE_NAV: Record<string, RouteNavMeta> = {
     sectionHref: "/correlation",
     page: "Correlation",
   },
+  runbooks: {
+    section: "Runbooks",
+    sectionHref: "/runbooks",
+    page: "Forge & Policies",
+  },
   inventory: {
     section: "Asset and Identity Management",
     sectionHref: "/inventory",
@@ -67,6 +72,20 @@ export function getBreadcrumbsFromPathname(pathname: string): BreadcrumbItem[] {
       { label: meta.section, href: meta.sectionHref },
       { label: meta.page, href: meta.sectionHref },
       { label: "Graph Explorer" },
+    ]
+  }
+
+  if (root === "runbooks" && segments[1] === "library") {
+    return [
+      { label: "Runbooks", href: "/runbooks" },
+      { label: "Runbook Library" },
+    ]
+  }
+
+  if (root === "runbooks" && segments[1] === "evaluation") {
+    return [
+      { label: "Runbooks", href: "/runbooks" },
+      { label: "Shadow & Evaluation" },
     ]
   }
 

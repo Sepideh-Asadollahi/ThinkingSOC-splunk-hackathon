@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from collections import deque
+from unittest.mock import AsyncMock, MagicMock, call, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -12,6 +13,8 @@ from main import app
 from services.llm.litellm_service import (
     LiteLLMProviderError,
     _map_litellm_exception,
+    _wait_for_litellm_rpm_slot,
+    litellm_chat_completion,
     provider_error_http_status,
 )
 
@@ -41,6 +44,8 @@ def test_llm_status(client: TestClient) -> None:
     assert r.status_code == 200
     data = r.json()
     assert "litellm_model" in data
+    assert data["litellm_rpm"] == 30
+    assert data["litellm_max_retries"] == 3
     assert data["litellm_api_key_configured"] is False
 
 
@@ -98,6 +103,21 @@ def test_map_litellm_connection_error() -> None:
     assert provider_error_http_status(mapped) == 502
 
 
+def test_map_litellm_busy_provider_error() -> None:
+    import litellm
+
+    exc = litellm.exceptions.ServiceUnavailableError(
+        message="Nvidia_nimException - ResourceExhausted: All workers are busy",
+        llm_provider="nvidia_nim",
+        model="deepseek-ai/deepseek-v4-flash",
+    )
+    mapped = _map_litellm_exception(exc)
+    assert mapped.kind == "provider_busy"
+    assert mapped.retryable is True
+    assert provider_error_http_status(mapped) == 503
+    assert "ResourceExhausted" not in str(mapped)
+
+
 def test_llm_chat_provider_connection_error_mocked(client_llm_configured: TestClient) -> None:
     import litellm
 
@@ -122,8 +142,6 @@ def test_llm_chat_provider_connection_error_mocked(client_llm_configured: TestCl
 
 def test_litellm_chat_completion_accepts_system_and_user_messages():
     import asyncio
-
-    from services.llm.litellm_service import litellm_chat_completion
 
     settings = Settings(
         splunk_mgmt_url="https://x",
@@ -151,3 +169,132 @@ def test_litellm_chat_completion_accepts_system_and_user_messages():
     call_kw = m.call_args.kwargs
     assert call_kw["model"] == "gpt-4o-mini"
     assert len(call_kw["messages"]) == 2
+
+
+def test_litellm_rpm_limiter_waits_for_sliding_window() -> None:
+    import asyncio
+
+    async def _run() -> None:
+        with (
+            patch(
+                "services.llm.litellm_service._rpm_timestamps",
+                new=deque(),
+            ),
+            patch(
+                "services.llm.litellm_service.time.monotonic",
+                side_effect=[0.0, 0.0, 0.0, 60.1],
+            ),
+            patch(
+                "services.llm.litellm_service.asyncio.sleep",
+                new_callable=AsyncMock,
+            ) as sleep,
+        ):
+            await _wait_for_litellm_rpm_slot(2)
+            await _wait_for_litellm_rpm_slot(2)
+            await _wait_for_litellm_rpm_slot(2)
+
+        sleep.assert_awaited_once_with(60.0)
+
+    asyncio.run(_run())
+
+
+def test_litellm_retries_busy_provider_then_succeeds() -> None:
+    import asyncio
+    import litellm
+
+    settings = Settings(
+        splunk_mgmt_url="https://x",
+        litellm_model="nvidia_nim/deepseek-ai/deepseek-v4-flash",
+        litellm_api_key="k",
+        litellm_max_retries=3,
+        litellm_retry_base_seconds=5,
+        litellm_retry_max_seconds=60,
+    )
+    busy = litellm.exceptions.ServiceUnavailableError(
+        message="ResourceExhausted: All workers are busy",
+        llm_provider="nvidia_nim",
+        model="deepseek-ai/deepseek-v4-flash",
+    )
+    response = MagicMock()
+    response.choices = [MagicMock(message=MagicMock(content="ok"), finish_reason="stop")]
+    response.model = "deepseek-ai/deepseek-v4-flash"
+    response.usage = None
+
+    async def _run():
+        return await litellm_chat_completion(
+            settings,
+            [{"role": "user", "content": "ping"}],
+        )
+
+    with (
+        patch(
+            "services.llm.litellm_service._wait_for_litellm_rpm_slot",
+            new_callable=AsyncMock,
+        ) as rpm_slot,
+        patch(
+            "services.llm.litellm_service.asyncio.sleep",
+            new_callable=AsyncMock,
+        ) as sleep,
+        patch(
+            "litellm.acompletion",
+            new_callable=AsyncMock,
+            side_effect=[busy, busy, response],
+        ) as completion,
+    ):
+        out = asyncio.run(_run())
+
+    assert out["content"] == "ok"
+    assert completion.await_count == 3
+    assert rpm_slot.await_count == 3
+    assert sleep.await_args_list == [call(5.0), call(10.0)]
+    assert completion.await_args_list[0].kwargs["max_retries"] == 0
+
+
+def test_litellm_stops_after_three_retries() -> None:
+    import asyncio
+    import litellm
+
+    settings = Settings(
+        splunk_mgmt_url="https://x",
+        litellm_model="nvidia_nim/deepseek-ai/deepseek-v4-flash",
+        litellm_api_key="k",
+        litellm_max_retries=3,
+        litellm_retry_base_seconds=5,
+        litellm_retry_max_seconds=60,
+    )
+
+    def _busy() -> Exception:
+        return litellm.exceptions.ServiceUnavailableError(
+            message="ResourceExhausted: All workers are busy",
+            llm_provider="nvidia_nim",
+            model="deepseek-ai/deepseek-v4-flash",
+        )
+
+    async def _run():
+        return await litellm_chat_completion(
+            settings,
+            [{"role": "user", "content": "ping"}],
+        )
+
+    with (
+        patch(
+            "services.llm.litellm_service._wait_for_litellm_rpm_slot",
+            new_callable=AsyncMock,
+        ),
+        patch(
+            "services.llm.litellm_service.asyncio.sleep",
+            new_callable=AsyncMock,
+        ) as sleep,
+        patch(
+            "litellm.acompletion",
+            new_callable=AsyncMock,
+            side_effect=[_busy(), _busy(), _busy(), _busy()],
+        ) as completion,
+    ):
+        with pytest.raises(LiteLLMProviderError) as exc_info:
+            asyncio.run(_run())
+
+    assert exc_info.value.kind == "provider_busy"
+    assert exc_info.value.attempts == 4
+    assert completion.await_count == 4
+    assert sleep.await_args_list == [call(5.0), call(10.0), call(20.0)]

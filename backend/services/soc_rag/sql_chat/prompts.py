@@ -52,6 +52,6 @@ ANSWER_SYSTEM = (
     "Use ONLY the provided conversation, latest question, table name(s), and query result rows. "
     "Rows may include investigation_priority and triage_score (Analysis page / triage). "
     "Give a short direct answer: state counts and list requested items (names, titles, priority). "
-    "Reply in the same language as the user's question. "
+    "Always reply in English, regardless of the language used in the question. "
     "Do NOT reason aloud, do NOT include SQL, JSON, or chain-of-thought."
 )

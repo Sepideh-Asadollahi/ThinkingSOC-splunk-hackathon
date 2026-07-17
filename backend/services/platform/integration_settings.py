@@ -7,6 +7,8 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from pydantic import ValidationError
+
 from config import Settings
 from models.integration_settings import (
     IntegrationSettingCreate,
@@ -106,6 +108,38 @@ _BUILTIN: List[Dict[str, Any]] = [
         "field": "litellm_timeout_seconds",
         "value_type": "float",
         "description": "LiteLLM HTTP timeout (seconds).",
+    },
+    {
+        "id": "litellm_rpm",
+        "category": "litellm",
+        "key": "LITELLM_RPM",
+        "field": "litellm_rpm",
+        "value_type": "int",
+        "description": "Process-wide maximum LLM requests per minute.",
+    },
+    {
+        "id": "litellm_max_retries",
+        "category": "litellm",
+        "key": "LITELLM_MAX_RETRIES",
+        "field": "litellm_max_retries",
+        "value_type": "int",
+        "description": "Transient provider retries after the initial LLM attempt (0..10).",
+    },
+    {
+        "id": "litellm_retry_base_seconds",
+        "category": "litellm",
+        "key": "LITELLM_RETRY_BASE_SECONDS",
+        "field": "litellm_retry_base_seconds",
+        "value_type": "float",
+        "description": "Initial delay for exponential LLM retry backoff.",
+    },
+    {
+        "id": "litellm_retry_max_seconds",
+        "category": "litellm",
+        "key": "LITELLM_RETRY_MAX_SECONDS",
+        "field": "litellm_retry_max_seconds",
+        "value_type": "float",
+        "description": "Maximum delay between transient LLM retries.",
     },
     {
         "id": "litellm_analysis_max_tokens",
@@ -331,6 +365,71 @@ _BUILTIN: List[Dict[str, Any]] = [
         "value_type": "bool",
         "description": "Classify alerts via LLM (full payload); manual_review when LLM unavailable.",
     },
+    # ThinkingSOC Forge
+    {
+        "id": "tsoc_runbook_enabled",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_ENABLED",
+        "field": "tsoc_runbook_enabled",
+        "value_type": "bool",
+        "description": "Enable compile, approval, and guided reuse operations for ThinkingSOC Forge.",
+    },
+    {
+        "id": "tsoc_runbook_autopilot_enabled",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_AUTOPILOT_ENABLED",
+        "field": "tsoc_runbook_autopilot_enabled",
+        "value_type": "bool",
+        "description": "Enable bounded Runbook Agent orchestration; human approval and execution gates remain fixed.",
+    },
+    {
+        "id": "tsoc_runbook_max_steps",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_MAX_STEPS",
+        "field": "tsoc_runbook_max_steps",
+        "value_type": "int",
+        "description": "Maximum ordered runbook steps accepted from the compiler (1..3).",
+    },
+    {
+        "id": "tsoc_runbook_default_manual_minutes",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_DEFAULT_MANUAL_MINUTES",
+        "field": "tsoc_runbook_default_manual_minutes",
+        "value_type": "int",
+        "description": "Default visible manual-investigation baseline used for reuse metrics (5..120 minutes).",
+    },
+    {
+        "id": "tsoc_runbook_artifact_scan_limit",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_ARTIFACT_SCAN_LIMIT",
+        "field": "tsoc_runbook_artifact_scan_limit",
+        "value_type": "int",
+        "description": "Bounded append-only artifact lookup limit (50..1000 records per type).",
+    },
+    {
+        "id": "tsoc_runbook_analyst_hourly_cost_usd",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_ANALYST_HOURLY_COST_USD",
+        "field": "tsoc_runbook_analyst_hourly_cost_usd",
+        "value_type": "float",
+        "description": "Loaded SOC analyst hourly cost used for projected Shadow Replay savings.",
+    },
+    {
+        "id": "tsoc_runbook_input_cost_per_1m_tokens",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_INPUT_COST_PER_1M_TOKENS",
+        "field": "tsoc_runbook_input_cost_per_1m_tokens",
+        "value_type": "float",
+        "description": "Configured compiler-model input cost per one million tokens.",
+    },
+    {
+        "id": "tsoc_runbook_output_cost_per_1m_tokens",
+        "category": "runbook",
+        "key": "TSOC_RUNBOOK_OUTPUT_COST_PER_1M_TOKENS",
+        "field": "tsoc_runbook_output_cost_per_1m_tokens",
+        "value_type": "float",
+        "description": "Configured compiler-model output cost per one million tokens.",
+    },
 ]
 
 _BUILTIN_BY_ID = {row["id"]: row for row in _BUILTIN}
@@ -357,6 +456,7 @@ def _normalize_category(category: str) -> SettingCategory:
         "virustotal",
         "ingest",
         "analysis",
+        "runbook",
         "custom",
     }:
         return category  # type: ignore[return-value]
@@ -583,7 +683,16 @@ def update_integration_setting(
             if meta.get("is_secret") and raw in ("", _SECRET_MASK):
                 pass
             else:
-                overrides[setting_id] = _coerce_value(raw, meta.get("value_type"))
+                candidate = _coerce_value(raw, meta.get("value_type"))
+                try:
+                    validated = Settings.model_validate(
+                        {**settings.model_dump(), meta["field"]: candidate}
+                    )
+                except ValidationError as exc:
+                    raise ValueError(
+                        f"invalid value for {meta['key']}: {exc.errors()[0]['msg']}"
+                    ) from exc
+                overrides[setting_id] = getattr(validated, meta["field"])
                 changed_settings = True
         store["overrides"] = overrides
         _write_store(store)
@@ -629,4 +738,3 @@ def delete_integration_setting(setting_id: str) -> bool:
     store["custom"] = custom
     _write_store(store)
     return changed_settings
-

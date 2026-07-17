@@ -107,6 +107,7 @@ async def soc_chat_get_conversation(
     for m in conv.get("messages") or []:
         meta = m.get("metadata") if isinstance(m.get("metadata"), dict) else {}
         sql_meta = meta.get("sql_meta")
+        citations = meta.get("citations") if isinstance(meta.get("citations"), list) else []
         messages.append(
             SocChatStoredMessage(
                 role=str(m.get("role") or ""),
@@ -114,6 +115,7 @@ async def soc_chat_get_conversation(
                 message_id=int(m["message_id"]) if m.get("message_id") is not None else None,
                 seq=int(m["seq"]) if m.get("seq") is not None else None,
                 sql_meta=sql_meta,
+                citations=citations,
             )
         )
     return SocChatConversationDetail(

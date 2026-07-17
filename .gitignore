@@ -12,6 +12,8 @@ build/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
 *.prof
 
@@ -33,6 +35,7 @@ backend/data/integration_settings.json
 logs/
 *.log
 *.pid
+*.pid.lock
 setup.log
 backend/logs/
 
@@ -42,6 +45,8 @@ backend/.cache/
 *.db
 *.db-wal
 *.db-shm
+*.sqlite
+*.sqlite3
 
 # ── Node.js / Frontend ──────────────────────────────────────────────────────
 node_modules/
@@ -58,6 +63,17 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 *.tsbuildinfo
+coverage/
+
+# ── Browser and end-to-end test output ───────────────────────────────────────
+**/test-results/
+**/playwright-report/
+**/blob-report/
+**/.playwright/
+**/playwright/.cache/
+**/playwright/.auth/
+**/storage-state*.json
+**/trace.zip
 
 # ── OS files ─────────────────────────────────────────────────────────────────
 .DS_Store
@@ -112,3 +128,27 @@ project-engineering/
 # ── Generated submission evidence (regenerate locally) ───────────────────────
 submission/evidence/*
 !submission/evidence/.gitkeep
+
+# ── Generated demo recordings (large, local-only media) ──────────────────────
+artifacts/devpost-recording/
+artifacts/recordings/
+artifacts/screenshots/
+artifacts/contact-sheets/
+artifacts/tmp/
+*.mp4
+*.webm
+*.mkv
+*.mov
+*.avi
+*contact-sheet*.png
+*sample-preview*.png
+*final-frame*.png
+
+# ── Temporary and partial generated files ────────────────────────────────────
+*.tmp
+*.temp
+*.part
+*.crdownload
+
+# Local one-off provider request payloads
+scripts/payload.json

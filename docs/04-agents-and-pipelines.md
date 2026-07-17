@@ -287,7 +287,7 @@ After the graph produces investigation **questions**, `finalize_investigation_qu
 3. **Rule-based `search`** if both above fail
 4. **Splunk parser** validation
 5. **MCP `splunk_run_query`** (All Time: SPL `earliest=1 latest=now`; REST/MCP job params `earliest_time=0`) — fills `spl_results`; REST oneshot fallback
-6. **Refine loop (max 2)** — on **error** or **0 rows**: LiteLLM execution refine → re-execute (`TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS`)
+6. **Refine loop (max 3)** — on **error** or **0 rows**: deterministic syntax repair, then LiteLLM execution refine → parser validation → re-execute (`TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS`)
 
 See [13-cim-investigation-spl-mcp.md](./13-cim-investigation-spl-mcp.md) for full detail, `notes` tags, and troubleshooting.
 

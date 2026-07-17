@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from typing import Any, Dict, List, Tuple
 
@@ -9,6 +10,8 @@ from config import Settings
 
 from . import pg
 from .pg import init_store, splunk_store_configured
+
+logger = logging.getLogger(__name__)
 
 async def _ensure_pool(settings: Settings) -> bool:
     if not splunk_store_configured(settings):
@@ -185,3 +188,106 @@ async def fetch_inventory_counts(settings: Settings) -> Tuple[int, int]:
         users = await conn.fetchval("SELECT COUNT(*)::int FROM tsoc_users")
         assets = await conn.fetchval("SELECT COUNT(*)::int FROM tsoc_assets")
     return int(users or 0), int(assets or 0)
+
+
+async def fetch_runbook_ops(settings: Settings) -> Dict[str, Any]:
+    """One-roundtrip rollup for Forge, reuse, Autopilot, and SOC Chat."""
+    if not await _ensure_pool(settings):
+        return {}
+    query = """
+        WITH latest_drafts AS (
+            SELECT DISTINCT ON (payload->>'source_record_id')
+                payload,
+                search_name
+            FROM tsoc_records
+            WHERE tsoc_record_type = 'verified_runbook_draft'
+            ORDER BY
+                payload->>'source_record_id',
+                CASE WHEN payload->>'revision' ~ '^[0-9]+$'
+                    THEN (payload->>'revision')::int ELSE 0 END DESC,
+                id DESC
+        ),
+        latest_approvals AS (
+            SELECT DISTINCT ON (
+                payload->>'source_record_id',
+                payload->>'runbook_id'
+            ) payload
+            FROM tsoc_records
+            WHERE tsoc_record_type = 'verified_runbook_approval'
+            ORDER BY
+                payload->>'source_record_id',
+                payload->>'runbook_id',
+                id DESC
+        ),
+        draft_rollup AS (
+            SELECT
+                COUNT(*)::int AS latest_runbooks,
+                COUNT(*) FILTER (
+                    WHERE d.payload->>'status' = 'SOURCE_VERIFIED'
+                )::int AS source_verified,
+                COUNT(*) FILTER (
+                    WHERE d.payload->>'status' = 'SOURCE_VERIFIED'
+                      AND a.payload->>'decision' = 'approve'
+                )::int AS human_approved,
+                COUNT(DISTINCT d.search_name) FILTER (
+                    WHERE d.payload->>'status' = 'SOURCE_VERIFIED'
+                      AND a.payload->>'decision' = 'approve'
+                )::int AS reusable_alert_names
+            FROM latest_drafts d
+            LEFT JOIN latest_approvals a
+              ON a.payload->>'source_record_id' = d.payload->>'source_record_id'
+             AND a.payload->>'runbook_id' = d.payload->>'runbook_id'
+        ),
+        run_rollup AS (
+            SELECT
+                COUNT(*)::int AS executions,
+                COUNT(*) FILTER (WHERE payload->>'status' = 'REUSED')::int AS reused,
+                COUNT(*) FILTER (WHERE payload->>'status' = 'NO_EVIDENCE')::int AS no_evidence,
+                COUNT(*) FILTER (WHERE payload->>'status' = 'FAILED')::int AS failed,
+                COALESCE(SUM(CASE
+                    WHEN payload->>'total_evidence_rows' ~ '^[0-9]+$'
+                    THEN (payload->>'total_evidence_rows')::int ELSE 0 END), 0)::int
+                    AS evidence_rows,
+                COALESCE(SUM(CASE
+                    WHEN payload->>'estimated_minutes_saved' ~ '^[0-9]+([.][0-9]+)?$'
+                    THEN (payload->>'estimated_minutes_saved')::numeric ELSE 0 END), 0)::float
+                    AS estimated_minutes_saved
+            FROM tsoc_records
+            WHERE tsoc_record_type = 'verified_runbook_run'
+        ),
+        artifact_rollup AS (
+            SELECT
+                COUNT(*) FILTER (
+                    WHERE tsoc_record_type = 'verified_runbook_shadow_run'
+                )::int AS shadow_runs,
+                COUNT(*) FILTER (
+                    WHERE tsoc_record_type = 'verified_runbook_response_preview'
+                )::int AS response_previews,
+                COUNT(*) FILTER (
+                    WHERE tsoc_record_type = 'verified_runbook_autopilot_session'
+                )::int AS autopilot_sessions,
+                COUNT(*) FILTER (
+                    WHERE tsoc_record_type = 'verified_runbook_autopilot_session'
+                      AND payload->>'status' = 'COMPLETED'
+                )::int AS autopilot_completed
+            FROM tsoc_records
+        )
+        SELECT
+            d.*,
+            r.*,
+            a.*,
+            (SELECT COUNT(*)::int FROM tsoc_chat_conversations) AS chat_conversations,
+            (SELECT COUNT(*)::int FROM tsoc_chat_messages) AS chat_messages
+        FROM draft_rollup d
+        CROSS JOIN run_rollup r
+        CROSS JOIN artifact_rollup a
+    """
+    try:
+        async with pg._PG_POOL.acquire() as conn:
+            row = await conn.fetchrow(query)
+    except Exception as exc:
+        # Dashboard availability must not depend on optional Chat/Forge tables
+        # while an older installation is still being migrated.
+        logger.warning("dashboard Runbook operations rollup unavailable: %s", exc)
+        return {}
+    return dict(row) if row else {}

@@ -68,7 +68,9 @@ _restore_demo_dump_to_postgres() {
 
     _demo_log "  psql restore: exit=0 duration=${elapsed_sec}s (verbose: ${psql_log})"
     local err_lines
-    err_lines="$(grep -ciE '^ERROR:|^FATAL:' "$psql_log" 2>/dev/null || echo 0)"
+    # grep -c prints "0" and exits 1 when there are no matches; appending
+    # `echo 0` would therefore produce the invalid numeric value "0\n0".
+    err_lines="$(grep -ciE '^ERROR:|^FATAL:' "$psql_log" 2>/dev/null || true)"
     if [[ "${err_lines:-0}" -gt 0 ]]; then
         _demo_log_warn "  psql log contains ${err_lines} ERROR/FATAL line(s) despite exit=0 — review ${psql_log}"
         _demo_log_file_tail "psql errors" "$psql_log" 20
@@ -76,6 +78,9 @@ _restore_demo_dump_to_postgres() {
     ok "Demo database restored from backup"
     _demo_log_postgres_counts "Row counts AFTER restore (dump path)"
     _demo_log_record_type_breakdown || true
-    _demo_log_api_visibility "API check after dump restore (backend may not be up yet)"
+    # On a genuinely fresh install the backend is intentionally not running
+    # yet. Visibility is diagnostic here; service startup and the mandatory
+    # smoke step perform the authoritative API check later.
+    _demo_log_api_visibility "API check after dump restore (backend may not be up yet)" || true
     return 0
 }

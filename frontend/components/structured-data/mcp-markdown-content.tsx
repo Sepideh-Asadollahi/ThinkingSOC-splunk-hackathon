@@ -40,10 +40,58 @@ const markdownComponents: Components = {
   ),
 }
 
-/** Render SAIA / LiteLLM fallback answers with GFM markdown (tables, code, emphasis). */
-export function McpMarkdownContent({ content, className }: { content: string; className?: string }) {
+const compactMarkdownComponents: Components = {
+  p: ({ children }) => <span>{children}</span>,
+  h1: ({ children }) => <strong>{children}</strong>,
+  h2: ({ children }) => <strong>{children}</strong>,
+  h3: ({ children }) => <strong>{children}</strong>,
+  h4: ({ children }) => <strong>{children}</strong>,
+  h5: ({ children }) => <strong>{children}</strong>,
+  h6: ({ children }) => <strong>{children}</strong>,
+  blockquote: ({ children }) => <span>{children}</span>,
+  ul: ({ children }) => <span>{children}</span>,
+  ol: ({ children }) => <span>{children}</span>,
+  li: ({ children }) => <span className="after:content-['·'] after:mx-1">{children}</span>,
+  table: ({ children }) => <span>{children}</span>,
+  thead: ({ children }) => <span>{children}</span>,
+  tbody: ({ children }) => <span>{children}</span>,
+  tr: ({ children }) => <span>{children}</span>,
+  th: ({ children }) => <span className="after:content-[':'] after:mr-1">{children}</span>,
+  td: ({ children }) => <span className="after:content-['·'] after:mx-1">{children}</span>,
+  pre: ({ children }) => <span className="font-mono">{children}</span>,
+  a: ({ children }) => <span className="text-teal-200 underline underline-offset-2">{children}</span>,
+  hr: () => <span aria-hidden="true"> — </span>,
+  input: ({ checked }) => <span aria-hidden="true">{checked ? "☑ " : "☐ "}</span>,
+  img: ({ alt }) => <span>{alt ?? "image"}</span>,
+  br: () => <span aria-hidden="true"> · </span>,
+}
+
+type MarkdownContentProps = {
+  content: string
+  className?: string
+  compact?: boolean
+}
+
+/** Render model-authored text with the same safe GFM support used by SOC Chat. */
+export function MarkdownContent({ content, className, compact = false }: MarkdownContentProps) {
   const trimmed = content.trim()
   if (!trimmed) return null
+
+  if (compact) {
+    return (
+      <span
+        className={cn(
+          "mcp-markdown min-w-0 text-inherit [&_code]:rounded [&_code]:bg-black/40 [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.92em] [&_code]:text-teal-200/90 [&_strong]:font-semibold [&_strong]:text-slate-100",
+          className
+        )}
+        data-testid="mcp-markdown-content"
+      >
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={compactMarkdownComponents}>
+          {trimmed}
+        </ReactMarkdown>
+      </span>
+    )
+  }
 
   return (
     <div
@@ -69,4 +117,9 @@ export function McpMarkdownContent({ content, className }: { content: string; cl
       </ReactMarkdown>
     </div>
   )
+}
+
+/** Backward-compatible name used by MCP and Chat views. */
+export function McpMarkdownContent(props: MarkdownContentProps) {
+  return <MarkdownContent {...props} />
 }

@@ -113,3 +113,5 @@ def test_dashboard_overview_ok(client_dashboard: TestClient) -> None:
     assert body["integrations"]["neo4j"] is False
     assert body["system_resources"]["hostname"] == "test-host"
     assert body["system_resources"]["cpu_percent"] == 12.5
+    assert body["runbook_ops"]["latest_runbooks"] == 0
+    assert body["runbook_ops"]["executions"] == 0

@@ -1,4 +1,4 @@
-# Demo PostgreSQL data (full backup + moment snapshot)
+# Demo PostgreSQL data (full backup + full JSON fallback)
 
 How hackathon **demo data** is bundled, loaded during **`install.sh`**, and refreshed from a live database.
 
@@ -29,16 +29,16 @@ bash scripts/restore-demo-db.sh           # psql restore + service restart
 
 ---
 
-## Fallback: JSON moment snapshot
+## Fallback: full JSON snapshot
 
 Used only when the full backup is missing.
 
 | Data | Scope in fallback snapshot |
 |------|----------------|
 | **Asset + Identity** | **Full** — all rows from `tsoc_users`, `tsoc_assets`, `tsoc_relationships`, `tsoc_identity_rules` |
-| **Analysis moment** | **Up to 6 newest** rows from `tsoc_records` (by `id`, the monotonic PK — robust against clustered `created_at`) |
-| **Correlation** | **Newest 1** row from `graph_findings` (`/correlation`) |
-| **Not in snapshot** | `tsoc_rag_documents`, chat (RAG may backfill at runtime) |
+| **Analysis and Runbook artifacts** | **Full** — every `tsoc_records` row |
+| **Correlation and RAG** | **Full** — every `graph_findings` and `tsoc_rag_documents` row |
+| **Chat** | **Full** — conversations and messages, including the Runbook judge-tour guide |
 
 ```text
 backend/data/demo/postgres_snapshot/
@@ -48,7 +48,32 @@ backend/data/demo/postgres_snapshot/
 ├── tsoc_relationships.json
 ├── tsoc_identity_rules.json
 ├── tsoc_records.json
-└── graph_findings.json
+├── tsoc_rag_documents.json
+├── graph_findings.json
+├── tsoc_chat_conversations.json
+└── tsoc_chat_messages.json
+```
+
+## Runbook judge-tour scenario
+
+Both installation paths contain the synthetic Alert Name **`Judge Demo: Suspicious OAuth Token Replay`**. It is designed to make the complete Forge workflow visible immediately after installation while preserving every pre-existing demo scenario.
+
+| Demonstrated contract | Bundled evidence |
+|-----------------------|------------------|
+| Exact-match reuse | Two alerts share the Alert Name but have distinct SIDs |
+| Evidence grounding | Three parser-valid, read-only SPL steps return source evidence |
+| Human control | Acknowledge and Runbook approval records are linked to the source investigation |
+| Pre-production validation | Different-SID Shadow Run has `EVIDENCE_FOUND` and zero execution errors |
+| Reuse value | Approved Runbook has a `REUSED` run with time-saved metrics |
+| Safe response | Two `PREVIEW_ONLY` actions; execution support and automatic execution are false |
+| Agent observability | Five agents, handoffs, tool calls, MCP and REST-fallback metadata in the Autopilot trace |
+| Chat access | Runbook artifacts are compacted into RAG and a guide conversation is preloaded |
+
+The scenario uses only synthetic identities and documentation-range IP addresses. The seed is additive and idempotent:
+
+```bash
+backend/.venv/bin/python backend/scripts/seed/seed_runbook_judge_demo.py
+# A second run reports inserted_records=0 and inserted_chat_messages=0.
 ```
 
 ---
@@ -92,8 +117,7 @@ Verify after seed:
 ```bash
 docker exec tsoc-postgres psql -U tsoc -d tsoc -tAc "SELECT COUNT(*) FROM tsoc_users;"
 docker exec tsoc-postgres psql -U tsoc -d tsoc -tAc "SELECT COUNT(*) FROM tsoc_records;"
-# pg_dump restore: expect 7 users and many tsoc_records (full demo dump).
-# JSON snapshot fallback only: up to 4 newest tsoc_records rows in postgres_snapshot/
+# Both bundled restore modes include the complete existing demo plus the Runbook tour.
 ```
 
 ---
@@ -104,17 +128,15 @@ The installer never asks you to restart manually for demo data. After PostgreSQL
 
 ---
 
-## Refresh snapshot from live DB
+## Refresh install data from live DB
 
 After you change inventory or run new analyses on a dev machine:
 
 ```bash
-cd backend && .venv/bin/python scripts/seed/export_demo_postgres_snapshot.py
-# Default: full Asset/Identity + up to 6 newest records + newest correlation finding
-# Optional: --record-limit 8
+bash scripts/backup-demo-db.sh --json-full
 ```
 
-Commit the updated `backend/data/demo/postgres_snapshot/` files so the next install loads the new moment.
+This refreshes the primary SQL dump and the full JSON fallback. Commit both directories so the next install restores the same data.
 
 ---
 
@@ -129,6 +151,7 @@ Commit the updated `backend/data/demo/postgres_snapshot/` files so the next inst
 | `services/splunk_json_store/pg.py` | Calls JSON restore on `init_store()` when DB empty |
 | `setup_tool/seed.py` | Install-time baseline seed step |
 | `scripts/seed/export_demo_postgres_snapshot.py` | JSON snapshot export CLI |
+| `scripts/seed/seed_runbook_judge_demo.py` | Additive/idempotent Runbook tour seed + RAG backfill |
 
 ---
 
@@ -140,3 +163,6 @@ If `postgres_snapshot/manifest.json` is missing, seed uses merged CSVs:
 - Scenario packs: `botsv1_osk_sysmon/`, `attacks_t8372/`, `observability_cpu_latency/`
 
 See [backend/data/demo/README.md](../backend/data/demo/README.md).
+### Non-destructive install smoke test
+
+Run `sudo bash install/smoke-demo-data.sh` to restore both committed demo sources into isolated temporary databases and validate them before deployment. The test covers the baseline scenarios plus the complete Runbook judge tour, Autopilot agent/tool trace, human safety gate, Chat/RAG records, and SPL syntax self-repair. It also validates the currently installed database and, when the backend is running, the Runbook Library, Autopilot, and Chat APIs. The active `tsoc` database is not modified.

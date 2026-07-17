@@ -6,14 +6,17 @@ DEMO_SEED_MODE=""
 
 DEMO_RESTORE_LOG=""
 
-# Files required for moment demo (must match export_postgres_snapshot).
+# Files required for the full JSON fallback (must match export_postgres_snapshot --full).
 DEMO_SNAPSHOT_REQUIRED_FILES=(
     tsoc_users.json
     tsoc_assets.json
     tsoc_relationships.json
     tsoc_identity_rules.json
     tsoc_records.json
+    tsoc_rag_documents.json
     graph_findings.json
+    tsoc_chat_conversations.json
+    tsoc_chat_messages.json
 )
 
 _demo_snapshot_dir() {

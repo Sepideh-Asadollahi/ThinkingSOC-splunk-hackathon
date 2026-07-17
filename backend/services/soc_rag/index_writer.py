@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from config import Settings
 from models.analysis import SocAnalysisResult
@@ -108,5 +108,50 @@ def schedule_alert_index(
     try:
         loop = asyncio.get_running_loop()
         loop.create_task(_run())
+    except RuntimeError:
+        asyncio.run(_run())
+
+
+async def upsert_runbook_artifact_document(
+    settings: Settings,
+    *,
+    record_type: str,
+    event: Dict[str, Any],
+) -> None:
+    """Best-effort Forge indexing kept outside the authoritative write path."""
+    try:
+        from .compact_runbook import compact_runbook_artifact
+
+        doc = compact_runbook_artifact(record_type, event)
+        if doc is not None:
+            await upsert_rag_document(settings, doc)
+    except Exception as exc:
+        logger.warning(
+            "soc rag index runbook failed record_type=%s runbook_id=%s: %s",
+            record_type,
+            event.get("runbook_id"),
+            exc,
+            exc_info=True,
+        )
+
+
+def schedule_runbook_artifact_index(
+    settings: Settings,
+    *,
+    record_type: str,
+    event: Dict[str, Any],
+) -> None:
+    if not settings.tsoc_postgres_dsn:
+        return
+
+    async def _run() -> None:
+        await upsert_runbook_artifact_document(
+            settings,
+            record_type=record_type,
+            event=event,
+        )
+
+    try:
+        asyncio.get_running_loop().create_task(_run())
     except RuntimeError:
         asyncio.run(_run())

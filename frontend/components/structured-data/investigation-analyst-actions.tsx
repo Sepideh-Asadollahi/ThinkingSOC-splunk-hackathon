@@ -56,7 +56,7 @@ function LatestDecision({ entry }: { entry: AnalystActionEntry }) {
 type InvestigationAnalystActionsProps = {
   recordId: string
   disabled?: boolean
-  onActionRecorded?: () => void
+  onActionRecorded?: (action: "acknowledge" | "escalate") => void
 }
 
 export function InvestigationAnalystActions({
@@ -92,7 +92,8 @@ export function InvestigationAnalystActions({
   }, [recordId])
 
   useEffect(() => {
-    void load()
+    const timer = window.setTimeout(() => void load(), 0)
+    return () => window.clearTimeout(timer)
   }, [load])
 
   const submit = async (action: "acknowledge" | "escalate") => {
@@ -106,7 +107,7 @@ export function InvestigationAnalystActions({
       })
       setLatest(res.latest ?? res.results?.[0] ?? null)
       setNote("")
-      onActionRecorded?.()
+      onActionRecorded?.(action)
     } catch (e) {
       const message =
         e instanceof ApiError
@@ -126,7 +127,7 @@ export function InvestigationAnalystActions({
         accent="violet"
         icon={<CheckCircle2Icon className="size-5 text-violet-400" />}
         title="Analyst gate"
-        description="Acknowledge or escalate — recorded for audit; no automated containment"
+        description="Acknowledge starts verified-runbook compilation; Escalate is recorded for human review"
       />
       <div className="space-y-4 px-6 pb-6">
         {loading ? (

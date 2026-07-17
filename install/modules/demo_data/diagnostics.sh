@@ -99,7 +99,7 @@ _demo_log_services_status() {
 }
 
 _demo_log_bundle_complete_audit() {
-    local lines has_users users analyses findings rag reason=""
+    local lines has_users users analyses findings rag judge_records judge_chat reason=""
     _demo_log_section "Bundle-complete audit (skip restore when all pass)"
     lines="$(_demo_query_postgres_counts)" || {
         _demo_log_warn "  Cannot query PostgreSQL — bundle incomplete"
@@ -110,12 +110,16 @@ _demo_log_bundle_complete_audit() {
     analyses="$(echo "$lines" | sed -n '3p' | tr -d '[:space:]')"
     findings="$(echo "$lines" | sed -n '4p' | tr -d '[:space:]')"
     rag="$(echo "$lines" | sed -n '5p' | tr -d '[:space:]')"
+    judge_records="$(echo "$lines" | sed -n '6p' | tr -d '[:space:]')"
+    judge_chat="$(echo "$lines" | sed -n '7p' | tr -d '[:space:]')"
 
     _demo_log "  criterion tsoc_users table exists: ${has_users}"
     _demo_log "  criterion users>=7: ${users:-?} $([[ -n "$users" && "$users" -ge 7 ]] 2>/dev/null && echo PASS || echo FAIL)"
     _demo_log "  criterion analyses>=1: ${analyses:-?} $([[ -n "$analyses" && "$analyses" -ge 1 ]] 2>/dev/null && echo PASS || echo FAIL)"
     _demo_log "  criterion graph_findings>=1: ${findings:-?} $([[ -n "$findings" && "$findings" -ge 1 ]] 2>/dev/null && echo PASS || echo FAIL)"
     _demo_log "  criterion rag>=1: ${rag:-?} $([[ -n "$rag" && "$rag" -ge 1 ]] 2>/dev/null && echo PASS || echo FAIL)"
+    _demo_log "  criterion Runbook judge records>=10: ${judge_records:-?} $([[ -n "$judge_records" && "$judge_records" -ge 10 ]] 2>/dev/null && echo PASS || echo FAIL)"
+    _demo_log "  criterion Runbook judge Chat messages>=2: ${judge_chat:-?} $([[ -n "$judge_chat" && "$judge_chat" -ge 2 ]] 2>/dev/null && echo PASS || echo FAIL)"
 
     if _demo_db_bundle_complete; then
         _demo_log "  Result: COMPLETE — install may skip pg_dump restore (use FORCE_DEMO_RESTORE=true to override)"
@@ -126,6 +130,8 @@ _demo_log_bundle_complete_audit() {
     [[ -z "$analyses" || "$analyses" -lt 1 ]] 2>/dev/null && reason+="analyses<1; "
     [[ -z "$findings" || "$findings" -lt 1 ]] 2>/dev/null && reason+="findings<1; "
     [[ -z "$rag" || "$rag" -lt 1 ]] 2>/dev/null && reason+="rag<1; "
+    [[ -z "$judge_records" || "$judge_records" -lt 10 ]] 2>/dev/null && reason+="runbook judge records<10; "
+    [[ -z "$judge_chat" || "$judge_chat" -lt 2 ]] 2>/dev/null && reason+="runbook judge chat<2; "
     _demo_log "  Result: INCOMPLETE — will restore (${reason:-unknown})"
     return 1
 }
@@ -138,7 +144,7 @@ _demo_log_record_type_breakdown() {
     local out
     out="$(docker exec tsoc-postgres psql -U tsoc -d tsoc -tAc \
         "SELECT tsoc_record_type||'='||COUNT(*)::text FROM tsoc_records
-         GROUP BY 1 ORDER BY 2 DESC, 1;" 2>/dev/null | grep -viE 'WARNING|NOTICE' || true)"
+         GROUP BY tsoc_record_type ORDER BY COUNT(*) DESC, tsoc_record_type;" 2>/dev/null | grep -viE 'WARNING|NOTICE' || true)"
     if [[ -z "$out" ]]; then
         _demo_log "  (no tsoc_records rows or table missing)"
         return 0

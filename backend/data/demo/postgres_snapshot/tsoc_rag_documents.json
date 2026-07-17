@@ -1,5 +1,131 @@
 [
   {
+    "doc_id": "chat:1ec30fe6-3570-4443-aa02-08ba524ddf55:2",
+    "doc_type": "chat_message",
+    "sid": "1ec30fe6-3570-4443-aa02-08ba524ddf55",
+    "search_name": "1",
+    "row_index": 1,
+    "essential": {
+      "seq": 1,
+      "role": "user"
+    },
+    "summary_line": "user: Which correlation findings have the highest risk?",
+    "chunk_text": "Which correlation findings have the highest risk?",
+    "metadata": {
+      "seq": 1,
+      "role": "user",
+      "message_id": 2,
+      "conversation_id": "1ec30fe6-3570-4443-aa02-08ba524ddf55"
+    },
+    "created_at": "2026-06-07T20:16:03.656052+00:00",
+    "updated_at": "2026-06-07T20:16:03.656052+00:00"
+  },
+  {
+    "doc_id": "chat:1ec30fe6-3570-4443-aa02-08ba524ddf55:3",
+    "doc_type": "chat_message",
+    "sid": "1ec30fe6-3570-4443-aa02-08ba524ddf55",
+    "search_name": "2",
+    "row_index": 2,
+    "essential": {
+      "seq": 2,
+      "role": "assistant"
+    },
+    "summary_line": "assistant: **1** result(s):\n1. GF-0007 — Phishing-Driven RDP and PsExec Lateral Movement on SERVER01 [smart_attack_discovery] | ris",
+    "chunk_text": "**1** result(s):\n1. GF-0007 — Phishing-Driven RDP and PsExec Lateral Movement on SERVER01 [smart_attack_discovery] | risk=67",
+    "metadata": {
+      "seq": 2,
+      "role": "assistant",
+      "message_id": 3,
+      "conversation_id": "1ec30fe6-3570-4443-aa02-08ba524ddf55"
+    },
+    "created_at": "2026-06-07T20:16:03.889898+00:00",
+    "updated_at": "2026-06-07T20:16:03.889898+00:00"
+  },
+  {
+    "doc_id": "chat:6c32a6bd-9470-41bc-94f6-dec04b21b757:4",
+    "doc_type": "chat_message",
+    "sid": "6c32a6bd-9470-41bc-94f6-dec04b21b757",
+    "search_name": "1",
+    "row_index": 1,
+    "essential": {
+      "seq": 1,
+      "role": "user"
+    },
+    "summary_line": "user: Which correlation findings have the highest risk?",
+    "chunk_text": "Which correlation findings have the highest risk?",
+    "metadata": {
+      "seq": 1,
+      "role": "user",
+      "message_id": 4,
+      "conversation_id": "6c32a6bd-9470-41bc-94f6-dec04b21b757"
+    },
+    "created_at": "2026-06-07T21:08:26.830330+00:00",
+    "updated_at": "2026-06-07T21:08:26.830330+00:00"
+  },
+  {
+    "doc_id": "chat:6c32a6bd-9470-41bc-94f6-dec04b21b757:5",
+    "doc_type": "chat_message",
+    "sid": "6c32a6bd-9470-41bc-94f6-dec04b21b757",
+    "search_name": "2",
+    "row_index": 2,
+    "essential": {
+      "seq": 2,
+      "role": "assistant"
+    },
+    "summary_line": "assistant: **1** result(s):\n1. GF-0007 — Phishing-Driven RDP and PsExec Lateral Movement on SERVER01 [smart_attack_discovery] | ris",
+    "chunk_text": "**1** result(s):\n1. GF-0007 — Phishing-Driven RDP and PsExec Lateral Movement on SERVER01 [smart_attack_discovery] | risk=67",
+    "metadata": {
+      "seq": 2,
+      "role": "assistant",
+      "message_id": 5,
+      "conversation_id": "6c32a6bd-9470-41bc-94f6-dec04b21b757"
+    },
+    "created_at": "2026-06-07T21:08:26.930048+00:00",
+    "updated_at": "2026-06-07T21:08:26.930048+00:00"
+  },
+  {
+    "doc_id": "chat:7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9:6",
+    "doc_type": "chat_message",
+    "sid": "7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9",
+    "search_name": "1",
+    "row_index": 1,
+    "essential": {
+      "seq": 1,
+      "role": "user"
+    },
+    "summary_line": "user: For source record 330, explain the latest Runbook Autopilot session 49e5647c-b344-4a73-814f-5f5dff5dacac: which agents a",
+    "chunk_text": "For source record 330, explain the latest Runbook Autopilot session 49e5647c-b344-4a73-814f-5f5dff5dacac: which agents and tools participated, why did it stop, and did it execute any containment? Cite the Runbook artifacts.",
+    "metadata": {
+      "seq": 1,
+      "role": "user",
+      "message_id": 6,
+      "conversation_id": "7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9"
+    },
+    "created_at": "2026-07-15T19:07:43.638721+00:00",
+    "updated_at": "2026-07-15T19:07:43.638721+00:00"
+  },
+  {
+    "doc_id": "chat:7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9:7",
+    "doc_type": "chat_message",
+    "sid": "7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9",
+    "search_name": "2",
+    "row_index": 2,
+    "essential": {
+      "seq": 2,
+      "role": "assistant"
+    },
+    "summary_line": "assistant: **Runbook Autopilot session 49e5647c‑b344‑4a73‑814f‑5f5dff5dacac (source record 330)**  \n\n| Step | Agent | Tool | Action",
+    "chunk_text": "**Runbook Autopilot session 49e5647c‑b344‑4a73‑814f‑5f5dff5dacac (source record 330)**  \n\n| Step | Agent | Tool | Action | Outcome |\n|------|-------|------|--------|---------|\n| 1 | **SUPERVISOR** | – | Started bounded workflow | ✔ |\n| 2 | **SUPERVISOR** | – | Delegated source‑readiness to **EVIDENCE_SCOUT** | ✔ |\n| 3 | **EVIDENCE_SCOUT** | `storage.get_record` | Load stored SOC analysis (sid scheduler__admin__search__t8372_c2_at_1727841780.1) | ✔ (Trace 3‑4) |\n| 4 | **EVIDENCE_SCOUT** | `analyst_actions.list` | Verify latest human analyst action | ✔ (Trace 5‑6) |\n| 5 | **EVIDENCE_SCOUT** | – | Pass metadata to **RUNBOOK_ENGINEER** | ✔ (Trace 7) |\n| 6 | **RUNBOOK_ENGINEER** | `runbook.state` | Load latest immutable runbook state | ✔ (Trace 8‑9) |\n| 7 | **RUNBOOK_ENGINEER** | `runbook.library.search` | Search library by exact alert name | ✔ (Trace 10‑11) |\n| 8 | **RUNBOOK_ENGINEER** | – | Request policy decision | ✔ (Trace 12) |\n| 9 | **POLICY_GUARD** | – | Policy decision: read‑only compile & evidence verification allowed; **automatic execution disabled** | ✔ (Trace 13‑15) |\n|10 | **RESPONSE_ADVISOR** | `runbook.safe_response_preview.cache` | Reuse latest non‑executable preview | ✔ (Trace 14) |\n|11 | **SUPERVISOR** | – | Complete session | ✔ (Trace 16) |\n\n### Why the session stopped\n- **Policy Guard** explicitly returned `automatic_execution_performed: false` (Trace 15).  \n- The runbook decision (artifact [2]) was *“approve_for_manual_action”* – human approval is required before any containment or action.  \n- No containment or automated response was executed.\n\n### Did it execute containment?\n- **No**. The session ended with a human‑approval gate; containment actions were not triggered.  \n\n**Runbook artifacts referenced**\n\n- **Runbook ID**: `f06410a1-a19b-43bd-b892-ef3ab172b970` (source record 330) – draft in artifact [3].  \n- **Runbook response decision**: artifact [2] (`approve_for_manual_action`).  \n- **Safe Response Preview**: artifact [8] (preview actions are `PREVIEW_ONLY`).  \n\nThus, the autopilot session completed all pre‑execution checks, confirmed that automatic containment is disabled, and handed control back to the analyst for manual approval.",
+    "metadata": {
+      "seq": 2,
+      "role": "assistant",
+      "message_id": 7,
+      "conversation_id": "7be8f8fa-abd5-4f76-baaf-5186a0ad1dd9"
+    },
+    "created_at": "2026-07-15T19:07:43.802332+00:00",
+    "updated_at": "2026-07-15T19:07:43.802332+00:00"
+  },
+  {
     "doc_id": "corr-alert:ALERT-090",
     "doc_type": "correlation_alert",
     "sid": null,
@@ -17,7 +143,7 @@
       "alert_row_id": "ALERT-090"
     },
     "created_at": "2026-06-07T19:30:07.231750+00:00",
-    "updated_at": "2026-06-07T19:46:30.011572+00:00"
+    "updated_at": "2026-07-16T04:19:52.211820+00:00"
   },
   {
     "doc_id": "corr-alert:ALERT-091",
@@ -37,7 +163,7 @@
       "alert_row_id": "ALERT-091"
     },
     "created_at": "2026-06-07T19:30:06.963495+00:00",
-    "updated_at": "2026-06-07T19:46:29.915240+00:00"
+    "updated_at": "2026-07-16T04:19:52.112354+00:00"
   },
   {
     "doc_id": "corr-alert:ALERT-099",
@@ -57,7 +183,7 @@
       "alert_row_id": "ALERT-099"
     },
     "created_at": "2026-06-07T19:30:06.727548+00:00",
-    "updated_at": "2026-06-07T19:46:29.838087+00:00"
+    "updated_at": "2026-07-16T04:19:52.018400+00:00"
   },
   {
     "doc_id": "corr-alert:ALERT-101",
@@ -77,7 +203,7 @@
       "alert_row_id": "ALERT-101"
     },
     "created_at": "2026-06-07T19:30:06.515319+00:00",
-    "updated_at": "2026-06-07T19:46:29.763772+00:00"
+    "updated_at": "2026-07-16T04:19:51.922725+00:00"
   },
   {
     "doc_id": "corr-alert:ALERT-102",
@@ -97,7 +223,407 @@
       "alert_row_id": "ALERT-102"
     },
     "created_at": "2026-06-07T19:30:06.273540+00:00",
-    "updated_at": "2026-06-07T19:46:29.682525+00:00"
+    "updated_at": "2026-07-16T04:19:51.823403+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-107B3EB8FB94",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-107B3EB8FB94"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-107B3EB8FB94 name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-107B3EB8FB94"
+    },
+    "created_at": "2026-06-07T22:18:38.271778+00:00",
+    "updated_at": "2026-07-16T04:19:53.561660+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-11351D912019",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864920_76",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-11351D912019"
+    },
+    "summary_line": "Alert APT Detection Test (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-11351D912019 name=APT Detection Test sid=scheduler__admin__search__RMD57853912f25a80b59_at_1780864920_76 search_name=APT Detection Test\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-11351D912019"
+    },
+    "created_at": "2026-06-07T20:42:20.382572+00:00",
+    "updated_at": "2026-07-16T04:19:52.778375+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-18A720B85833",
+    "doc_type": "correlation_alert",
+    "sid": "1",
+    "search_name": "s",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-07T20:49:03.814000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-18A720B85833"
+    },
+    "summary_line": "Alert s (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-18A720B85833 name=s sid=1 search_name=s\nrisk_score=55 status=open timestamp=2026-06-07T20:49:03.814000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-18A720B85833"
+    },
+    "created_at": "2026-06-07T20:52:51.989499+00:00",
+    "updated_at": "2026-07-16T04:19:51.291358+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-523522EAEAB1",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871040_929",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-523522EAEAB1"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-523522EAEAB1 name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871040_929 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-523522EAEAB1"
+    },
+    "created_at": "2026-06-07T22:28:24.072902+00:00",
+    "updated_at": "2026-07-16T04:19:53.106173+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-5D72416DEBFC",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780870740_874",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-5D72416DEBFC"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-5D72416DEBFC name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780870740_874 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-5D72416DEBFC"
+    },
+    "created_at": "2026-06-07T22:22:41.408484+00:00",
+    "updated_at": "2026-07-16T04:19:53.677233+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-66DD3BD0EAE4",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864980_86",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-66DD3BD0EAE4"
+    },
+    "summary_line": "Alert APT Detection Test (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-66DD3BD0EAE4 name=APT Detection Test sid=scheduler__admin__search__RMD57853912f25a80b59_at_1780864980_86 search_name=APT Detection Test\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-66DD3BD0EAE4"
+    },
+    "created_at": "2026-06-07T20:52:52.653519+00:00",
+    "updated_at": "2026-07-16T04:19:52.887368+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-7B4611D837A2",
+    "doc_type": "correlation_alert",
+    "sid": "test_sid_verify",
+    "search_name": "Verify Auto Analyze",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-07T20:44:56.429000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-7B4611D837A2"
+    },
+    "summary_line": "Alert Verify Auto Analyze (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-7B4611D837A2 name=Verify Auto Analyze sid=test_sid_verify search_name=Verify Auto Analyze\nrisk_score=55 status=open timestamp=2026-06-07T20:44:56.429000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-7B4611D837A2"
+    },
+    "created_at": "2026-06-07T20:52:52.204544+00:00",
+    "updated_at": "2026-07-16T04:19:51.724423+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-7BE542BB2AE7",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871460_1023",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-7BE542BB2AE7"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-7BE542BB2AE7 name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871460_1023 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-7BE542BB2AE7"
+    },
+    "created_at": "2026-06-07T23:02:35.722137+00:00",
+    "updated_at": "2026-07-16T04:19:53.257855+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-92915B3D8218",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-92915B3D8218"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-92915B3D8218 name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-92915B3D8218"
+    },
+    "created_at": "2026-06-07T23:02:35.774217+00:00",
+    "updated_at": "2026-07-16T04:19:53.360302+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-9505B0749D9B",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-9505B0749D9B"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-9505B0749D9B name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-9505B0749D9B"
+    },
+    "created_at": "2026-06-08T08:42:16.165813+00:00",
+    "updated_at": "2026-07-16T04:19:53.461321+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-9681DB47858C",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-9681DB47858C"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-9681DB47858C name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-9681DB47858C"
+    },
+    "created_at": "2026-06-08T09:14:18.039393+00:00",
+    "updated_at": "2026-07-16T04:19:52.424584+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-9AF2BB87A954",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler_admin_search_W2_at_14232356_132",
+    "search_name": "webhook_alert",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-07T20:46:48.651000000+00:00",
+      "status": "open",
+      "risk_score": 70,
+      "alert_row_id": "ALERT-9AF2BB87A954"
+    },
+    "summary_line": "Alert webhook_alert (risk 70)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-9AF2BB87A954 name=webhook_alert sid=scheduler_admin_search_W2_at_14232356_132 search_name=webhook_alert\nrisk_score=70 status=open timestamp=2026-06-07T20:46:48.651000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-9AF2BB87A954"
+    },
+    "created_at": "2026-06-07T20:52:52.096515+00:00",
+    "updated_at": "2026-07-16T04:19:51.489462+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-A9CF0D9E360C",
+    "doc_type": "correlation_alert",
+    "sid": "sdk-live-test-542916",
+    "search_name": "Suspicious auth failed login alert",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-13T12:00:00.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-A9CF0D9E360C"
+    },
+    "summary_line": "Alert Suspicious auth failed login alert (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-A9CF0D9E360C name=Suspicious auth failed login alert sid=sdk-live-test-542916 search_name=Suspicious auth failed login alert\nrisk_score=55 status=open timestamp=2026-06-13T12:00:00.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-A9CF0D9E360C"
+    },
+    "created_at": "2026-06-13T02:28:59.122920+00:00",
+    "updated_at": "2026-07-16T04:19:51.080942+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-ADC19D71707E",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-ADC19D71707E"
+    },
+    "summary_line": "Alert APT Detection Test (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-ADC19D71707E name=APT Detection Test sid=scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44 search_name=APT Detection Test\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-ADC19D71707E"
+    },
+    "created_at": "2026-06-07T22:18:38.216322+00:00",
+    "updated_at": "2026-07-16T04:19:52.994399+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-CABD882B77DD",
+    "doc_type": "correlation_alert",
+    "sid": "test_sid_123",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-08T00:00:00.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-CABD882B77DD"
+    },
+    "summary_line": "Alert APT Detection Test (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-CABD882B77DD name=APT Detection Test sid=test_sid_123 search_name=APT Detection Test\nrisk_score=55 status=open timestamp=2026-06-08T00:00:00.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-CABD882B77DD"
+    },
+    "created_at": "2026-06-07T20:52:51.939244+00:00",
+    "updated_at": "2026-07-16T04:19:51.186045+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-D2B9AF173EED",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-D2B9AF173EED"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-D2B9AF173EED name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-D2B9AF173EED"
+    },
+    "created_at": "2026-06-08T10:02:56.780547+00:00",
+    "updated_at": "2026-07-16T04:19:52.550475+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-DE2163C0DB4E",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-DE2163C0DB4E"
+    },
+    "summary_line": "Alert New TesT (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-DE2163C0DB4E name=New TesT sid=scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56 search_name=New TesT\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-DE2163C0DB4E"
+    },
+    "created_at": "2026-06-08T09:14:17.924180+00:00",
+    "updated_at": "2026-07-16T04:19:52.318363+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-E3C4CBAFD2DC",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler_123",
+    "search_name": "demo",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-07T20:46:49.533000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-E3C4CBAFD2DC"
+    },
+    "summary_line": "Alert demo (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-E3C4CBAFD2DC name=demo sid=scheduler_123 search_name=demo\nrisk_score=55 status=open timestamp=2026-06-07T20:46:49.533000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-E3C4CBAFD2DC"
+    },
+    "created_at": "2026-06-07T20:52:52.041457+00:00",
+    "updated_at": "2026-07-16T04:19:51.388710+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-F8B6A12E87B5",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864860_69",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T16:48:41.000000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-F8B6A12E87B5"
+    },
+    "summary_line": "Alert APT Detection Test (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-F8B6A12E87B5 name=APT Detection Test sid=scheduler__admin__search__RMD57853912f25a80b59_at_1780864860_69 search_name=APT Detection Test\nrisk_score=55 status=open timestamp=2016-08-24T16:48:41.000000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-F8B6A12E87B5"
+    },
+    "created_at": "2026-06-07T20:42:20.280708+00:00",
+    "updated_at": "2026-07-16T04:19:52.671660+00:00"
+  },
+  {
+    "doc_id": "corr-alert:ALERT-FE83F8C3F3A2",
+    "doc_type": "correlation_alert",
+    "sid": "scheduler__nobody__search_abc123",
+    "search_name": "test_alert",
+    "row_index": 0,
+    "essential": {
+      "_time": "2026-06-07T20:46:47.271000000+00:00",
+      "status": "open",
+      "risk_score": 55,
+      "alert_row_id": "ALERT-FE83F8C3F3A2"
+    },
+    "summary_line": "Alert test_alert (risk 55)",
+    "chunk_text": "Graph correlation alert node\nalert_row_id=ALERT-FE83F8C3F3A2 name=test_alert sid=scheduler__nobody__search_abc123 search_name=test_alert\nrisk_score=55 status=open timestamp=2026-06-07T20:46:47.271000000+00:00\nRelated entities: (none)",
+    "metadata": {
+      "alert_row_id": "ALERT-FE83F8C3F3A2"
+    },
+    "created_at": "2026-06-07T20:52:52.154652+00:00",
+    "updated_at": "2026-07-16T04:19:51.613445+00:00"
   },
   {
     "doc_id": "corr-finding:7fda487b-c5fe-4b88-b153-0958d74e4aec",
@@ -121,7 +647,7 @@
       "finding_type": "smart_attack_discovery"
     },
     "created_at": "2026-06-07T19:39:14.470759+00:00",
-    "updated_at": "2026-06-07T19:46:29.296632+00:00"
+    "updated_at": "2026-07-16T04:19:50.626224+00:00"
   },
   {
     "doc_id": "corr-path:ALERT-090->ALERT-099",
@@ -141,7 +667,7 @@
       "from_alert_row_id": "ALERT-090"
     },
     "created_at": "2026-06-07T19:43:33.572719+00:00",
-    "updated_at": "2026-06-07T19:46:30.101148+00:00"
+    "updated_at": "2026-07-16T04:19:53.783750+00:00"
   },
   {
     "doc_id": "corr-path:ALERT-099->ALERT-101",
@@ -161,7 +687,7 @@
       "from_alert_row_id": "ALERT-099"
     },
     "created_at": "2026-06-07T19:43:33.616234+00:00",
-    "updated_at": "2026-06-07T19:46:30.158525+00:00"
+    "updated_at": "2026-07-16T04:19:53.847919+00:00"
   },
   {
     "doc_id": "corr-path:ALERT-101->ALERT-102",
@@ -181,7 +707,7 @@
       "from_alert_row_id": "ALERT-101"
     },
     "created_at": "2026-06-07T19:30:07.453953+00:00",
-    "updated_at": "2026-06-07T19:46:30.213092+00:00"
+    "updated_at": "2026-07-16T04:19:53.917534+00:00"
   },
   {
     "doc_id": "inventory_asset::asset-dup-a::0",
@@ -213,7 +739,7 @@
       "criticality": "low"
     },
     "created_at": "2026-06-04T15:01:23.370815+00:00",
-    "updated_at": "2026-06-07T19:46:27.854153+00:00"
+    "updated_at": "2026-07-16T04:19:48.670225+00:00"
   },
   {
     "doc_id": "inventory_asset::asset-dup-b::0",
@@ -245,7 +771,7 @@
       "criticality": "high"
     },
     "created_at": "2026-06-04T15:01:23.483332+00:00",
-    "updated_at": "2026-06-07T19:46:27.907304+00:00"
+    "updated_at": "2026-07-16T04:19:48.753625+00:00"
   },
   {
     "doc_id": "inventory_asset::botsv1-we8105desk::0",
@@ -277,7 +803,7 @@
       "criticality": "critical"
     },
     "created_at": "2026-06-04T15:01:23.575217+00:00",
-    "updated_at": "2026-06-07T19:46:27.958186+00:00"
+    "updated_at": "2026-07-16T04:19:48.835389+00:00"
   },
   {
     "doc_id": "inventory_asset::obs-web-prod-01::0",
@@ -309,7 +835,7 @@
       "criticality": "high"
     },
     "created_at": "2026-06-04T15:01:23.720273+00:00",
-    "updated_at": "2026-06-07T19:46:28.068108+00:00"
+    "updated_at": "2026-07-16T04:19:48.958402+00:00"
   },
   {
     "doc_id": "inventory_asset::srv-db-01::0",
@@ -341,7 +867,7 @@
       "criticality": "critical"
     },
     "created_at": "2026-06-04T15:01:23.881715+00:00",
-    "updated_at": "2026-06-07T19:46:28.138537+00:00"
+    "updated_at": "2026-07-16T04:19:49.058679+00:00"
   },
   {
     "doc_id": "inventory_asset::srv-web-01::0",
@@ -373,7 +899,7 @@
       "criticality": "high"
     },
     "created_at": "2026-06-04T15:01:23.986334+00:00",
-    "updated_at": "2026-06-07T19:46:28.198838+00:00"
+    "updated_at": "2026-07-16T04:19:49.143057+00:00"
   },
   {
     "doc_id": "inventory_asset::t8372-desktop-bruce::0",
@@ -405,7 +931,7 @@
       "criticality": "critical"
     },
     "created_at": "2026-06-04T15:01:24.091499+00:00",
-    "updated_at": "2026-06-07T19:46:28.257526+00:00"
+    "updated_at": "2026-07-16T04:19:49.228330+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-asmith-srv-db-01::0",
@@ -427,7 +953,7 @@
       "relationship_id": "rel-asmith-srv-db-01"
     },
     "created_at": "2026-06-04T15:01:24.735718+00:00",
-    "updated_at": "2026-06-07T19:46:28.698678+00:00"
+    "updated_at": "2026-07-16T04:19:49.657766+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-botsv1-leonard-desk::0",
@@ -449,7 +975,7 @@
       "relationship_id": "rel-botsv1-leonard-desk"
     },
     "created_at": "2026-06-04T15:01:25.185834+00:00",
-    "updated_at": "2026-06-07T19:46:29.052063+00:00"
+    "updated_at": "2026-07-16T04:19:50.027236+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-botsv1-ntsystem-desk::0",
@@ -471,7 +997,7 @@
       "relationship_id": "rel-botsv1-ntsystem-desk"
     },
     "created_at": "2026-06-04T15:01:24.201547+00:00",
-    "updated_at": "2026-06-07T19:46:28.321350+00:00"
+    "updated_at": "2026-07-16T04:19:49.324304+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-botsv1-system-desk::0",
@@ -493,7 +1019,7 @@
       "relationship_id": "rel-botsv1-system-desk"
     },
     "created_at": "2026-06-04T15:01:24.494747+00:00",
-    "updated_at": "2026-06-07T19:46:28.529332+00:00"
+    "updated_at": "2026-07-16T04:19:49.496752+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-jdoe-asset-dup-a::0",
@@ -515,7 +1041,7 @@
       "relationship_id": "rel-jdoe-asset-dup-a"
     },
     "created_at": "2026-06-04T15:01:24.827350+00:00",
-    "updated_at": "2026-06-07T19:46:28.779228+00:00"
+    "updated_at": "2026-07-16T04:19:49.738035+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-jdoe-asset-dup-b::0",
@@ -537,7 +1063,7 @@
       "relationship_id": "rel-jdoe-asset-dup-b"
     },
     "created_at": "2026-06-04T15:01:24.910281+00:00",
-    "updated_at": "2026-06-07T19:46:28.863087+00:00"
+    "updated_at": "2026-07-16T04:19:49.839463+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-jdoe-srv-web-01::0",
@@ -559,7 +1085,7 @@
       "relationship_id": "rel-jdoe-srv-web-01"
     },
     "created_at": "2026-06-04T15:01:25.084650+00:00",
-    "updated_at": "2026-06-07T19:46:28.932105+00:00"
+    "updated_at": "2026-07-16T04:19:49.917649+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-obs-web-prod-01::0",
@@ -581,7 +1107,7 @@
       "relationship_id": "rel-obs-web-prod-01"
     },
     "created_at": "2026-06-04T15:01:25.258832+00:00",
-    "updated_at": "2026-06-07T19:46:29.128629+00:00"
+    "updated_at": "2026-07-16T04:19:50.108426+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-t8372-bwayne-bruce::0",
@@ -603,7 +1129,7 @@
       "relationship_id": "rel-t8372-bwayne-bruce"
     },
     "created_at": "2026-06-04T15:01:24.607690+00:00",
-    "updated_at": "2026-06-07T19:46:28.615740+00:00"
+    "updated_at": "2026-07-16T04:19:49.577761+00:00"
   },
   {
     "doc_id": "inventory_relationship::rel-t8372-system-bruce::0",
@@ -625,7 +1151,7 @@
       "relationship_id": "rel-t8372-system-bruce"
     },
     "created_at": "2026-06-04T15:01:24.385533+00:00",
-    "updated_at": "2026-06-07T19:46:28.408263+00:00"
+    "updated_at": "2026-07-16T04:19:49.409280+00:00"
   },
   {
     "doc_id": "inventory_user::NT_AUTHORITY_SYSTEM::0",
@@ -651,7 +1177,7 @@
       "display_name": "NT AUTHORITY\\SYSTEM"
     },
     "created_at": "2026-06-04T15:01:22.710177+00:00",
-    "updated_at": "2026-06-07T19:46:27.259879+00:00"
+    "updated_at": "2026-07-16T04:19:48.081651+00:00"
   },
   {
     "doc_id": "inventory_user::SYSTEM::0",
@@ -677,7 +1203,7 @@
       "display_name": "Local SYSTEM (NT AUTHORITY)"
     },
     "created_at": "2026-06-04T15:01:22.805776+00:00",
-    "updated_at": "2026-06-07T19:46:27.322338+00:00"
+    "updated_at": "2026-07-16T04:19:48.159718+00:00"
   },
   {
     "doc_id": "inventory_user::WAYNECORPINC_bwayne::0",
@@ -703,7 +1229,7 @@
       "display_name": "Bruce Wayne"
     },
     "created_at": "2026-06-04T15:01:22.937703+00:00",
-    "updated_at": "2026-06-07T19:46:27.381883+00:00"
+    "updated_at": "2026-07-16T04:19:48.239094+00:00"
   },
   {
     "doc_id": "inventory_user::asmith::0",
@@ -729,7 +1255,7 @@
       "display_name": "Alice Smith"
     },
     "created_at": "2026-06-04T15:01:23.024630+00:00",
-    "updated_at": "2026-06-07T19:46:27.438085+00:00"
+    "updated_at": "2026-07-16T04:19:48.326856+00:00"
   },
   {
     "doc_id": "inventory_user::jdoe::0",
@@ -755,7 +1281,7 @@
       "display_name": "Jane Doe"
     },
     "created_at": "2026-06-04T15:01:23.092690+00:00",
-    "updated_at": "2026-06-07T19:46:27.663583+00:00"
+    "updated_at": "2026-07-16T04:19:48.401312+00:00"
   },
   {
     "doc_id": "inventory_user::leonard::0",
@@ -781,7 +1307,7 @@
       "display_name": "Leonard Pitt"
     },
     "created_at": "2026-06-04T15:01:23.184153+00:00",
-    "updated_at": "2026-06-07T19:46:27.733319+00:00"
+    "updated_at": "2026-07-16T04:19:48.474050+00:00"
   },
   {
     "doc_id": "inventory_user::platform-ops::0",
@@ -807,7 +1333,7 @@
       "display_name": "Platform Ops on-call"
     },
     "created_at": "2026-06-04T15:01:23.269634+00:00",
-    "updated_at": "2026-06-07T19:46:27.795095+00:00"
+    "updated_at": "2026-07-16T04:19:48.584369+00:00"
   },
   {
     "doc_id": "observability_analysis::REPLACE_WITH_SPLUNK_JOB_SID::0",
@@ -850,7 +1376,7 @@
       "status_code": "503"
     },
     "created_at": "2026-06-07T18:23:27.419049+00:00",
-    "updated_at": "2026-06-07T19:46:26.998533+00:00"
+    "updated_at": "2026-07-16T04:19:44.665053+00:00"
   },
   {
     "doc_id": "soc_analysis::REPLACE_WITH_SPLUNK_JOB_SID::0",
@@ -886,7 +1412,263 @@
       "signature_id": "T1218"
     },
     "created_at": "2026-06-07T18:35:47.250017+00:00",
-    "updated_at": "2026-06-07T19:46:26.797409+00:00"
+    "updated_at": "2026-07-16T04:19:44.415732+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::demo-runbook-source-20260716::0",
+    "doc_type": "soc_analysis",
+    "sid": "demo-runbook-source-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "verdict": "TRUE_POSITIVE",
+      "priority": "high"
+    },
+    "summary_line": "Judge Demo: Suspicious OAuth Token Replay | A synthetic OAuth session for alex.morgan was reused from a new source and client fingerprint before accessing the Demo CRM export resource.",
+    "chunk_text": "SOC analysis: Judge Demo: Suspicious OAuth Token Replay\nsid: demo-runbook-source-20260716\nVerdict: TRUE_POSITIVE\nPriority: high\nNext step: Revoke the affected sessions only after analyst approval, preserve identity evidence, and review account activity.\nJudge rationale: Three independent, read-only searches corroborate location, client, and sensitive-resource anomalies.\nAnalysis summary: A synthetic OAuth session for alex.morgan was reused from a new source and client fingerprint before accessing the Demo CRM export resource.\nDefender: The second source could reflect a corporate proxy, but the fingerprint change and sensitive export require corroboration before closure.\nHunter: Correlated authentication, session, and resource telemetry supports a token-replay hypothesis using synthetic documentation addresses.\nHunter SPL ideas: search index=identity action=success user=\"alex.morgan\" | stats earliest(_time) as first_seen latest(_time) as last_seen values(src) as sources values(country) as countries by user; search index=identity user=\"alex.morgan\" event_type=oauth_session | stats dc(client_fingerprint) as fingerprints values(src) as sources values(app) as apps by session_id user | where fingerprints>1; search index=identi\nRisk context: Demo CRM is a high-value application; all identities and IPs are synthetic.\nEnrichment: Synthetic identity used only for the judge tour.\nMITRE T1528: Steal Application Access Token high\nInvestigation Q: Did the same identity authenticate from incompatible locations? | SPL: search index=identity action=success user=\"alex.morgan\" | stats earliest(_time) as first_seen latest(_time) as last_seen values(src) as sources values(country) as countries by user\nInvestigation Q: Was one OAuth session replayed from a new client fingerprint? | SPL: search index=identity user=\"alex.morgan\" event_type=oauth_session | stats dc(client_fingerprint) as fingerprints values(src) as sources values(app) as apps by session_id user | where fingerprints>1\nInvestigation Q: Did the replayed session access a sensitive application? | SPL: search index=identity session_id=\"demo-session-7\" action=success | stats count values(resource) as resources values(src) as sources by user app risk_level",
+    "metadata": {
+      "sid": "demo-runbook-source-20260716",
+      "track": "security",
+      "verdict": "TRUE_POSITIVE",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "Judge Demo: Suspicious OAuth Token Replay"
+    },
+    "created_at": "2026-07-16T04:19:38.064850+00:00",
+    "updated_at": "2026-07-16T04:19:38.064850+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::demo-runbook-target-20260716::0",
+    "doc_type": "soc_analysis",
+    "sid": "demo-runbook-target-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "verdict": "TRUE_POSITIVE",
+      "priority": "high"
+    },
+    "summary_line": "Judge Demo: Suspicious OAuth Token Replay | A synthetic OAuth session for alex.morgan was reused from a new source and client fingerprint before accessing the Demo CRM export resource.",
+    "chunk_text": "SOC analysis: Judge Demo: Suspicious OAuth Token Replay\nsid: demo-runbook-target-20260716\nVerdict: TRUE_POSITIVE\nPriority: high\nNext step: Revoke the affected sessions only after analyst approval, preserve identity evidence, and review account activity.\nJudge rationale: Three independent, read-only searches corroborate location, client, and sensitive-resource anomalies.\nAnalysis summary: A synthetic OAuth session for alex.morgan was reused from a new source and client fingerprint before accessing the Demo CRM export resource.\nDefender: The second source could reflect a corporate proxy, but the fingerprint change and sensitive export require corroboration before closure.\nHunter: Correlated authentication, session, and resource telemetry supports a token-replay hypothesis using synthetic documentation addresses.\nHunter SPL ideas: search index=identity action=success user=\"alex.morgan\" | stats earliest(_time) as first_seen latest(_time) as last_seen values(src) as sources values(country) as countries by user; search index=identity user=\"alex.morgan\" event_type=oauth_session | stats dc(client_fingerprint) as fingerprints values(src) as sources values(app) as apps by session_id user | where fingerprints>1; search index=identi\nRisk context: Demo CRM is a high-value application; all identities and IPs are synthetic.\nEnrichment: Synthetic identity used only for the judge tour.\nMITRE T1528: Steal Application Access Token high\nInvestigation Q: Did the same identity authenticate from incompatible locations? | SPL: search index=identity action=success user=\"alex.morgan\" | stats earliest(_time) as first_seen latest(_time) as last_seen values(src) as sources values(country) as countries by user\nInvestigation Q: Was one OAuth session replayed from a new client fingerprint? | SPL: search index=identity user=\"alex.morgan\" event_type=oauth_session | stats dc(client_fingerprint) as fingerprints values(src) as sources values(app) as apps by session_id user | where fingerprints>1\nInvestigation Q: Did the replayed session access a sensitive application? | SPL: search index=identity session_id=\"demo-session-7\" action=success | stats count values(resource) as resources values(src) as sources by user app risk_level",
+    "metadata": {
+      "sid": "demo-runbook-target-20260716",
+      "track": "security",
+      "verdict": "TRUE_POSITIVE",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "Judge Demo: Suspicious OAuth Token Replay"
+    },
+    "created_at": "2026-07-16T04:19:37.781848+00:00",
+    "updated_at": "2026-07-16T04:19:37.781848+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321",
+      "verdict": "needs_investigation",
+      "priority": "high"
+    },
+    "summary_line": "1472057321 | New TesT | User bob.smith launched osk.exe from a roaming folder, parented by a temporary file and contacting a suspicious IP (9.9.9.9); no asset/user inventory match, low enrichment confidence, and VirusTotal f",
+    "chunk_text": "SOC analysis: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555\nTime: 1472057321\nVerdict: needs_investigation\nPriority: high\nNext step: Execute a comprehensive Splunk query to retrieve the full process lineage, file hash, and digital signature of the osk.exe instance, verify the hash against the known Microsoft signed version, and simultaneously search for other copies of osk.exe in user profiles and any additional connections to 9.\nJudge rationale: Risk_context indicates unknown asset/user risk due to missing inventory linkage, and enrichment reports low confidence. Threat_intel flags the destination IP as suspicious, providing a material malicious indicator. Defender presents plausible benign explanations but requires signature/hash verification. Hunter highlights a LOLBAS pattern and network C2 angle, recommending broader hunts. Balancing\nAnalysis summary: User bob.smith launched osk.exe from a roaming folder, parented by a temporary file and contacting a suspicious IP (9.9.9.9); no asset/user inventory match, low enrichment confidence, and VirusTotal flags the IP as suspicious, so the event warrants focused investigation.\nDefender: - Alternate: `osk.exe` is a legitimate Windows accessibility binary; its execution can be triggered by user accessibility settings or by legitimate admin scripts that copy it to a user’s Roaming folder for remote UI automation.\n- Alternate: The parent `121214.tmp` may be a benign self‑extracting installer or a temporary file left by a software deployment tool that temporarily stages `osk.exe` before cleanup.\n- Weak signal: Only a single process creation event is observed; there is no concurrent credential‑dumping, privilege‑escalation, or lateral‑movement activity, and no repeat connections to\nHunter: \"narrative\": \"The alert shows osk.exe—a legitimate Windows accessibility binary—executed from a user’s Roaming folder (C:\\\\Users\\\\bob.smith.WAYNECORPINC\\\\AppData\\\\Roaming\\\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\\\osk.exe) with a parent temporary file 121214.tmp. This pattern matches a common LOLBAS technique where a trusted binary is copied to a writable location and launched by a dropper. The outbound connection to the IP 9.9.9.9, flagged as *suspicious* by VirusTotal, adds a network‑exfiltration or C2 angle. No inventory match exists, so the asset/user risk is unknown. \\n\\nHunt hypotheses: \\n\nHunter SPL ideas: index=* (sourcetype=WinEventLog:Security OR sourcetype=Sysmon) EventCode=1 Image=\\\"*\\\\\\\\osk.exe\\\" NOT Image=\\\"*\\\\\\\\System32\\\\\\\\osk.exe\\\" | stats count by Computer, User, Image, _time; index=* (sourcetype=WinEventLog:Security OR sourcetype=Sysmon) ParentImage=\\\"*\\\\\\\\121214.tmp\\\" OR ParentImage=\\\"*\\\\\\\\*.tmp\\\" | stats count by Computer, User, Image, ParentCommandLine, _time; index=* (sourcetype=netfl\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=63 review=NEEDS_HUMAN_REVIEW priority=high\nMITRE T1218.005: Signed Binary Proxy Execution: OSK low\nMITRE T1036: Masquerading low\nMITRE KC-5: Installation low\nMITRE KC-6: Command and Control medium\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780867608, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the SHA256 hash of Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" on Computer=we8105desk.waynecorpinc.local? | SPL: search Image=\"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" Computer=\"we8105desk.waynecorpinc.local\" | eval hash=coalesce(SHA256, Hash, FileHash) | de\nInvestigation Q: Are there additional processes on Computer=we8105desk.waynecorpinc.local with ParentImage=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\121214.tmp\" besides the observed osk.exe? | SPL: search Computer=\"we8105desk.waynecorpinc.local\" ParentImage=\"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/121214.tmp\" NOT Image=\"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-\nInvestigation Q: Do any other hosts have an Image ending with \"\\osk.exe\" that is not located in *\\System32\\osk.exe? | SPL: search Image=\"*/osk.exe\" NOT NOT Computer=\"we8105desk.waynecorpinc.local\" | stats count by Computer Image | where count>0 | table Computer Image count\nInvestigation Q: How many distinct processes across the environment communicated with dest_ip=9.9.9.9? | SPL: stats dc(Image) as distinct_processes\nAdmin org gap Q: Is the execution of osk.exe from a user’s Roaming directory, using a temporary .tmp dropper, an approved and expected activity for workstations in the WAYNECORPINC environment?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555",
+      "_time": "1472057321",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T21:56:14.390249+00:00",
+    "updated_at": "2026-07-16T04:19:42.734998+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T21:18:41.000+04:30",
+      "verdict": "needs_investigation",
+      "priority": "high"
+    },
+    "summary_line": "2016-08-24T21:18:41 | New TesT | A user-level copy of the legitimate osk.exe was executed from a GUID folder under %AppData% and contacted a suspicious external IP; inventory linkage is missing, and while benign explanations exist, t",
+    "chunk_text": "SOC analysis: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058\nTime: 2016-08-24T21:18:41.000+04:30\nVerdict: needs_investigation\nPriority: high\nNext step: Verify the hash of the copied osk.exe against the known Microsoft signed hash and check change‑management or deployment logs for any authorized creation of the GUID folder or 121214.tmp on this host.\nJudge rationale: Risk_context indicates unknown asset/user risk due to no inventory match, and enrichment reports low confidence. Threat_intel flags the destination IP 9.9.9.9 as suspicious, raising the threat level. Defender highlights plausible benign scenarios but acknowledges the need for change‑management verification and hash comparison. Hunter emphasizes the atypical staging location and the suspicious IP,\nAnalysis summary: A user-level copy of the legitimate osk.exe was executed from a GUID folder under %AppData% and contacted a suspicious external IP; inventory linkage is missing, and while benign explanations exist, threat intel flags the IP as suspicious, warranting focused verification.\nDefender: - Alternate: `osk.exe` is a native Windows accessibility tool; copying it to a user profile can be an approved method to bypass AppLocker for remote‑support or accessibility scripts.\n- Alternate: The `.tmp` parent process may be a legitimate installer or update routine that extracts files to `%AppData%\\Roaming` before cleanup.\n- Weak signal: Single execution event, no accompanying credential use, no lateral movement, and no evidence of malicious child processes; the alert lacks corroborating logs (e.g., Sysmon network, authentication, or EDR alerts).\n- Minimal checks: 1) Query the change‑manag\nHunter: The alert shows a copy of the legitimate accessibility binary osk.exe placed in a user’s %AppData%\\Roaming\\{GUID} folder and launched from a temporary file (121214.tmp) that resides in the same folder.  This is atypical for normal OSK usage and suggests a dropper that stages a known Windows binary to bypass application control.  The process contacted the external IP 9.9.9.9, which VirusTotal flags as suspicious.  To assess whether this is an isolated benign case or part of a broader intrusion, the hunt should (1) enumerate all executions of osk.exe from non‑system locations, (2) locate any oth\nHunter SPL ideas: index=* sourcetype=* (Image=\"*\\\\osk.exe\" AND NOT Image=\"C:\\\\Windows\\\\System32\\\\osk.exe\") | stats count by host, User, Image, _time; index=* sourcetype=* (ParentImage=\"*121214.tmp*\" AND Image=\"*\\\\osk.exe*\") | stats count by host, User, _time; index=* sourcetype=* (dest_ip=\"9.9.9.9\") | stats count by src_ip, dest_port, protocol, _time; index=* sourcetype=* (Image=\"*{35ACA89F-933F-6A5D-2776-A3589FB99\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=63 review=NEEDS_HUMAN_REVIEW priority=high\nMITRE T1105: Ingress Tool Transfer low\nMITRE T1036: Masquerading low\nMITRE T1041: Exfiltration Over Command and Control Channel low\nMITRE KC-3: Delivery low\nMITRE KC-5: Installation low\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780869879, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the SHA256 hash of Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" on Computer=we8105desk.waynecorpinc.local? | SPL: search Computer=\"we8105desk.waynecorpinc.local\" Image=\"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" | stats latest(sha256) as sha256 | table sha256\nInvestigation Q: When was ParentImage=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\121214.tmp\" created on Computer=we8105desk.waynecorpinc.local,? | SPL: search index=* Computer=\"we8105desk.waynecorpinc.local\" ParentImage=\"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/121214.tmp\" | stats earliest(_time) as created_time count as occurrences | table cr\nInvestigation Q: Which other hosts have executed Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" besides we8105desk.waynecorpinc.local? | SPL: stats dc(Computer) as Other_Hosts\nInvestigation Q: Are there additional outbound connections to dest_ip=9.9.9.9 from any process on Computer=we8105desk.waynecorpinc.local? | SPL: search Computer=\"we8105desk.waynecorpinc.local\" dest_ip=9.9.9.9 NOT Image=\"'C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe'\" | stats dc(Image) as distin\nAdmin org gap Q: Is the execution of osk.exe from a user’s %AppData%\\Roaming\\{GUID} folder and the outbound connection to 9.9.9.9 an authorized, documented activity (e.g., via a change request or approved remote‑support script) for workstations in the WAYNECORPINC environment?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058",
+      "_time": "2016-08-24T21:18:41.000+04:30",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T22:43:53.077194+00:00",
+    "updated_at": "2026-07-16T04:19:42.360092+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378-1::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378-1",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T21:18:41.000+04:30",
+      "verdict": "needs_investigation",
+      "priority": "medium"
+    },
+    "summary_line": "2016-08-24T21:18:41 | New TesT | A user on we8105desk.waynecorpinc.local launched osk.exe from an unusual per‑user Roaming location via a temporary file, and the process contacted a VirusTotal‑flagged suspicious IP (9.9.9.9). No inve",
+    "chunk_text": "SOC analysis: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378-1\nTime: 2016-08-24T21:18:41.000+04:30\nVerdict: needs_investigation\nPriority: medium\nNext step: Run the suggested SPL query to enumerate all osk.exe launches from user Roaming paths across the environment and collect file hash/signature data for verification.\nJudge rationale: Risk_context indicates unknown asset/user risk due to no inventory match, and enrichment reports low confidence. Threat_intel flags the destination IP as suspicious, raising concern. Defender argues the binary could be a legitimate accessibility tool, but lacks evidence of signed binaries or known deployment. Hunter highlights the anomalous launch chain and recommends broader hunting. Balancing th\nAnalysis summary: A user on we8105desk.waynecorpinc.local launched osk.exe from an unusual per‑user Roaming location via a temporary file, and the process contacted a VirusTotal‑flagged suspicious IP (9.9.9.9). No inventory linkage exists, and the alert confidence is low, but the launch chain and external connection merit further validation before declaring benign.\nDefender: - Alternate: `osk.exe` is a built‑in Windows accessibility binary; a user may launch it manually or via a legitimate IT script (e.g., remote‑assistance, UI automation) – the path under AppData\\Roaming can be created by a deployment tool that copies the binary for per‑user use.\n- Weak signal: only a single process creation event, no accompanying credential‑access, registry, or file‑write activity; no repeated launches from the same host or across the fleet.\n- Contextual note: the parent process is a temporary file (`121214.tmp`) in the same roaming folder, which often appears when installers or\nHunter: The event shows a user‑initiated execution of osk.exe from a per‑user Roaming directory (C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe). The parent process is a temporary file (121214.tmp) in the same folder, a pattern often seen when scripts unpack payloads. The process opened a network connection to 9.9.9.9, which VirusTotal flags as suspicious. While osk.exe is a legitimate Windows accessibility binary, its presence outside %SystemRoot%\\System32 and the unusual launch chain merit deeper hunting. Key hypotheses: (1) other endpoints may have si\nHunter SPL ideas: index=wineventlog sourcetype=WinEventLog:Security EventCode=4688 (Image=\"*\\\\osk.exe\" OR ParentImage=\"*\\\\121214.tmp\") | eval launch_path=coalesce(Image,ParentImage) | stats count earliest(_time) as first_seen latest(_time) as last_seen by Computer, User, launch_path, ParentCommandLine | where count>0; index=wineventlog sourcetype=WinEventLog:Security EventCode=4688 Image=\"*\\\\osk.exe\" | table _time\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=58 review=NEEDS_HUMAN_REVIEW priority=medium\nMITRE T1078: Valid Accounts low\nMITRE KC-4: Exploitation low\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780871647, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the file hash and digital signature status of the osk.exe located at Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" on? | SPL: table _time Computer User dest_ip Image ParentImage ParentCommandLine CommandLine Hashes Signature\nInvestigation Q: Are there any other Computer hosts that have a process creation event with Image=\"*\\\\osk.exe\" and ParentImage=\"*\\\\121214.tmp\"? | SPL: search \"New TesT\" \"*/osk.exe\" \"*/121214.tmp\" \"*/121214.tmp\" \"*/osk.exe\" \"9.9.9.9\" \"WAYNECORPINC/bob.smith\" | dedup Computer | where Computer!=\"we8105desk.waynecorpinc.local\" | table Computer\nInvestigation Q: What is the file hash and digital signature status of the parent file ParentImage=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\121214.tmp\" on Computer=we8105desk.waynecorpinc.local? | SPL: search \"New TesT\" \"we8105desk.waynecorpinc.local\" \"WAYNECORPINC/bob.smith\" \"9.9.9.9\" \"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" \"C:/Users/bob.smit\nInvestigation Q: How many file access events (EventCode=4663) involve the file path \"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" on Computer=we8105desk.waynecorpinc. | SPL: search EventCode=4663 \"New TesT\" \"we8105desk.waynecorpinc.local\" \"WAYNECORPINC/bob.smith\" dest_ip=9.9.9.9 \"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.ex\nAdmin org gap Q: Is execution of osk.exe from a per‑user Roaming directory and outbound traffic to 9.9.9.9 authorized for workstations like we8105desk.waynecorpinc.local?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378-1",
+      "_time": "2016-08-24T21:18:41.000+04:30",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "medium",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T23:11:30.195655+00:00",
+    "updated_at": "2026-07-16T04:19:41.561070+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321",
+      "verdict": "needs_investigation",
+      "priority": "medium"
+    },
+    "summary_line": "1472057321 | New TesT | A user process launched a copied osk.exe from a Roaming GUID folder and opened a connection to a VirusTotal‑flagged suspicious IP; asset and user lack inventory linkage, making risk unknown, so a targ",
+    "chunk_text": "SOC analysis: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56\nTime: 1472057321\nVerdict: needs_investigation\nPriority: medium\nNext step: Collect the hash of the copied C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe and compare it to the known good OSK.exe binary; if the hash differs, escalate for deeper threat hunting.\nJudge rationale: Risk_context notes no confident link to inventory, leaving asset/user risk unknown. Threat_intel flags the destination IP 9.9.9.9 as suspicious, adding modest malicious weight. Defender argues the activity could be benign (legitimate remote‑support or automation) but urges hash verification and ticket correlation. Hunter points to LOLBAS abuse potential and recommends broader pattern checks, yet a\nAnalysis summary: A user process launched a copied osk.exe from a Roaming GUID folder and opened a connection to a VirusTotal‑flagged suspicious IP; asset and user lack inventory linkage, making risk unknown, so a targeted integrity check is needed before deciding on containment.\nDefender: - **Alternate benign use:** `osk.exe` is a native Windows accessibility tool; copying it to a user’s Roaming folder can be part of a legitimate remote‑support script or UI‑automation task.\n- **Parent process context:** The parent is a temporary file (`121214.tmp`) in the same Roaming directory – such files are often generated by installers, updates, or internal automation tools that stage binaries before execution.\n- **Signal weakness:** Only a single process‑creation event is observed, with no accompanying credential use, lateral movement, or additional suspicious processes; the alert’s confi\nHunter: The alert shows a copy of the Windows on‑screen keyboard (osk.exe) placed in a user’s Roaming folder and launched from a temporary file (121214.tmp). While osk.exe is a legitimate accessibility binary, its relocation and execution from a non‑system path is atypical and can be abused as a LOLBAS technique. The process also opened an outbound connection to the IP 9.9.9.9, which VirusTotal flags as suspicious. To assess intent we should (1) determine whether this is an isolated incident or part of a broader pattern on the host or across the environment, (2) verify the integrity of the copied osk.\nHunter SPL ideas: index=* (Image=\"*\\\\osk.exe\" OR dest_ip=\"9.9.9.9\") Computer=\"we8105desk.waynecorpinc.local\" | eval event_type=if(Image!=\"\", \"process\", \"network\") | stats count values(Image) as processes values(dest_ip) as destinations values(User) as users values(ParentImage) as parent_images values(ParentCommandLine) as parent_cmds sum(bytes) as total_bytes by _time, Computer, event_type | sort -_time\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=58 review=NEEDS_HUMAN_REVIEW priority=medium\nMITRE T1036: Masquerading low\nMITRE T1071.001: Application Layer Protocol: Web Protocols low\nMITRE KC-5: Installation low\nMITRE KC-6: Command and Control low\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780895202, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the file hash for Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" on Computer=we8105desk.waynecorpinc.local? | SPL: search \"New TesT\" \"we8105desk.waynecorpinc.local\" \"WAYNECORPINC/bob.smith\" dest_ip=9.9.9.9 \"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" \"C:/Users/bo\nInvestigation Q: What other processes on Computer=we8105desk.waynecorpinc.local have ParentImage=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\121214.tmp\"? | SPL: search index=botsv1 Computer=we8105desk.waynecorpinc.local ParentImage=\"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/121214.tmp\" source=\"WinEventLog:Microsoft-Windows-Sysmon/Operational\" | stats co\nInvestigation Q: What total bytes were sent to dest_ip=9.9.9.9 from Computer=we8105desk.waynecorpinc.local? | SPL: search Computer=\"we8105desk.waynecorpinc.local\" dest_ip=9.9.9.9 | stats sum(bytes) as total_bytes | table total_bytes\nInvestigation Q: Are there any other hosts where Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" was observed? | SPL: search \"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\"\nAdmin org gap Q: Is the execution of osk.exe from a user’s Roaming folder and any outbound network connections to external addresses (e.g., 9.9.9.9) an authorized and documented behavior for workstations in the WAYNECORPINC environment?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56",
+      "_time": "1472057321",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "medium",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-08T09:09:32.228915+00:00",
+    "updated_at": "2026-07-16T04:19:41.171062+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321",
+      "verdict": "needs_investigation",
+      "priority": "high"
+    },
+    "summary_line": "1472057321 | New TesT | A single execution of a copied OSK.exe from a user Roaming folder was observed, with no inventory link and a low‑confidence suspicious IP (9.9.9.9) as the only external indicator; both Defender and Hu",
+    "chunk_text": "SOC analysis: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64\nTime: 1472057321\nVerdict: needs_investigation\nPriority: high\nNext step: Collect the file hash and digital signature of the osk.exe instance and query the environment for any persistence artifacts (scheduled tasks, services) referencing the same GUID path.\nJudge rationale: Risk_context indicates an unknown asset/user with no inventory mapping, making the exposure uncertain. Threat_intel flags the destination IP as suspicious, albeit with minimal malicious votes, which raises the threat level. Defender presents a plausible benign hypothesis but lacks concrete evidence (no hash verification, no ticket reference). Hunter expands the scope, urging correlation of this bi\nAnalysis summary: A single execution of a copied OSK.exe from a user Roaming folder was observed, with no inventory link and a low‑confidence suspicious IP (9.9.9.9) as the only external indicator; both Defender and Hunter recommend further verification before labeling it benign or malicious.\nDefender: - Alternate benign hypothesis: `osk.exe` is the built‑in Windows On‑Screen Keyboard; it may be invoked by accessibility tools, remote‑support scripts, or a legitimate scheduled task that runs from a user’s Roaming folder.\n- Contextual clue: the parent process is a temporary file (`121214.tmp`) in the same Roaming path, which could be a harmless installer or IT automation script that dropped the OSK binary for a one‑off use.\n- Weak signal: only a single process execution event, no accompanying credential use, file creation, or lateral movement observed; no other logs (e.g., authentication, regi\nHunter: The alert shows a single execution of a copied OSK binary (C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe) launched by a temporary script (121214.tmp) under the user WAYNECORPINC\\\\bob.smith. The only external indicator is a suspicious VT‑rated IP (9.9.9.9) contacted from the same host. Hunting should therefore focus on (1) whether this GUID‑named OSK copy appears elsewhere or recurs on the same host, (2) additional network traffic to 9.9.9.9 from any endpoint, (3) other processes spawned by the same parent script, and (4) persistence artifacts (s\nHunter SPL ideas: index=* sourcetype=WinEventLog:Security (Image=\"*\\\\osk.exe\" AND Computer=\"we8105desk.waynecorpinc.local\") OR (ParentImage=\"*121214.tmp*\" AND Computer=\"we8105desk.waynecorpinc.local\") | stats count by _time, Computer, User, Image, ParentImage, ParentCommandLine; index=* sourcetype=netflow dest_ip=\"9.9.9.9\" | stats count by src_ip, dest_ip, _time, transport, bytes; index=* sourcetype=Sysmon EventCod\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=63 review=NEEDS_HUMAN_REVIEW priority=high\nMITRE T1105: Ingress Tool Transfer low\nMITRE KC-5: Installation low\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780895202, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the SHA256 hash of Image=\"C:\\\\Users\\\\bob.smith.WAYNECORPINC\\\\AppData\\\\Roaming\\\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\\\osk.exe\" on Computer=we8105desk.waynecorpinc.local? | SPL: search index=* Image=\"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" Computer=we8105desk.waynecorpinc.local | rex field=Hashes \"(?<SHA256>[A-Fa-f0-9]{6\nInvestigation Q: Are there any scheduled tasks on Computer=we8105desk.waynecorpinc.local whose TaskName contains the GUID \"{35ACA89F-933F-6A5D-2776-A3589FB99832}\"? | SPL: search Computer=\"we8105desk.waynecorpinc.local\" TaskName=\"*{35ACA89F-933F-6A5D-2776-A3589FB99832}*\" | stats count by TaskName\nInvestigation Q: Do any other hosts have a process Image matching \"*\\\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\\\osk.exe\"? | SPL: search \"New TesT\" \"WAYNECORPINC/bob.smith\" dest_ip=9.9.9.9 \"*/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" \"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/121214.tmp\" \"C:/Users/bob.smith.WAYNECORP\nInvestigation Q: Are there additional netflow records from any source IP to dest_ip=9.9.9.9 besides the one observed? | SPL: search \"New TesT\" \"we8105desk.waynecorpinc.local\" \"WAYNECORPINC/bob.smith\" dest_ip=9.9.9.9 Image=\"'C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe'\" Pare\nAdmin org gap Q: Is running osk.exe from a user’s Roaming folder (as launched by 121214.tmp) an approved or documented activity for this workstation, and which team owns this host class?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64",
+      "_time": "1472057321",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-08T09:09:40.475158+00:00",
+    "updated_at": "2026-07-16T04:19:40.682668+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-1::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-1",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "2016-08-24T21:18:41.000+04:30",
+      "verdict": "needs_investigation",
+      "priority": "medium"
+    },
+    "summary_line": "2016-08-24T21:18:41 | New TesT | User bob.smith executed osk.exe from an atypical Roaming GUID folder, establishing an outbound connection to a VirusTotal‑flagged IP (9.9.9.9); the host and user have no inventory linkage, enrichment ",
+    "chunk_text": "SOC analysis: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-1\nTime: 2016-08-24T21:18:41.000+04:30\nVerdict: needs_investigation\nPriority: medium\nNext step: Verify the hash and digital signature of the osk.exe instance and review change‑management/deployment logs for the execution of 121214.tmp, then confirm whether destination IP 9.9.9.9 is an approved external endpoint.\nJudge rationale: Risk_context indicates unknown asset/user risk due to missing inventory linkage and low‑confidence enrichment. Threat_intel flags the destination IP as suspicious, raising potential malicious intent. Defender provides a plausible benign explanation but explicitly calls for hash/signature verification and log checks. Hunter urges broader hunting, but that should follow after confirming the binary's\nAnalysis summary: User bob.smith executed osk.exe from an atypical Roaming GUID folder, establishing an outbound connection to a VirusTotal‑flagged IP (9.9.9.9); the host and user have no inventory linkage, enrichment confidence is low, and threat intel adds modest suspicion, requiring verification before broader hunting.\nDefender: - Alternate benign explanation: `osk.exe` is the built‑in On‑Screen Keyboard; launching from a user’s Roaming folder can occur when an IT script extracts the binary for a remote‑assistance session or accessibility test.\n- Parent `121214.tmp` may be a temporary installer or script (e.g., SCCM, PowerShell deployment) that legitimately invokes `osk.exe` as part of a user‑level configuration change.\n- Signal weakness: only one process creation event, no accompanying credential‑access, lateral‑movement, or file‑write indicators; the alert lacks inventory linkage and has a low confidence enrichment.\nHunter: The alert shows a user‑level execution of osk.exe from an atypical GUID‑named sub‑folder under the user's Roaming profile, launched by a temporary file (121214.tmp). The outbound connection to 9.9.9.9 is flagged as suspicious by VirusTotal. This pattern could indicate a living‑off‑the‑land binary (LoLBin) used to stage a payload, a compromised script that drops osk.exe, or a benign admin tool that was copied to the profile for remote assistance. Hunting should therefore focus on (1) other instances of osk.exe (or any executable) running from non‑standard paths on this host and across the envir\nHunter SPL ideas: index=* sourcetype=*process* (Image=\"*\\\\osk.exe\" OR Image=\"*\\\\{*\\\\osk.exe\") Computer=we8105desk.waynecorpinc.local | eval is_standard_path=if(match(Image,\"\\\\Windows\\\\System32\"),1,0) | where is_standard_path=0 | stats count by Image, _time, User, ParentImage, ParentCommandLine; index=* sourcetype=*network* dest_ip=9.9.9.9 Computer=we8105desk.waynecorpinc.local | stats count earliest(_time) as first\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=58 review=NEEDS_HUMAN_REVIEW priority=medium\nMITRE T1218.004: Signed Binary Proxy Execution: OSK low\nMITRE T1036: Masquerading low\nMITRE KC-6: Command and Control low\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780895202, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the SHA256 hash for Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" on Computer=we8105desk.waynecorpinc.local? | SPL: search \"New TesT\" \"we8105desk.waynecorpinc.local\" \"WAYNECORPINC/bob.smith\" \"9.9.9.9\" \"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" \"C:/Users/bob.smit\nAdmin org gap Q: Do we have an approved process that copies and executes osk.exe from a user’s Roaming folder (e.g., via a .tmp script), and is network traffic to 9.9.9.9 an allowed destination for this type of host?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-1",
+      "_time": "2016-08-24T21:18:41.000+04:30",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "medium",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-08T09:30:50.845789+00:00",
+    "updated_at": "2026-07-16T04:19:40.307067+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-2::1",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-2",
+    "search_name": "New TesT",
+    "row_index": 1,
+    "essential": {
+      "_time": "2016-08-24T21:18:50.000+04:30",
+      "verdict": "needs_investigation",
+      "priority": "high"
+    },
+    "summary_line": "2016-08-24T21:18:50 | New TesT | An osk.exe binary was executed from a user's Roaming folder on an un‑mapped workstation, contacting a VirusTotal‑flagged suspicious IP; the asset and user lack inventory linkage, and the file's authen",
+    "chunk_text": "SOC analysis: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-2\nTime: 2016-08-24T21:18:50.000+04:30\nVerdict: needs_investigation\nPriority: high\nNext step: Collect the file hash and digital signature of the osk.exe instance on the endpoint and compare it to the legitimate Microsoft‑signed osk.exe.\nJudge rationale: Risk_context indicates no confident inventory link, leaving asset and user risk unknown. Threat_intel flags the destination IP as suspicious, raising potential malicious intent. The Hunter analysis treats the atypical path and outbound connection as possible abuse, while the Defender analysis warns the signal is weak but recommends hash verification. Because the unknown asset, suspicious IP, and n\nAnalysis summary: An osk.exe binary was executed from a user's Roaming folder on an un‑mapped workstation, contacting a VirusTotal‑flagged suspicious IP; the asset and user lack inventory linkage, and the file's authenticity is unknown.\nDefender: - Alternate: `osk.exe` is a built‑in Windows accessibility binary; users sometimes copy it to a personal folder for remote support or testing, and the parent process being itself can occur when the executable is launched directly from a shortcut or script.\n- Weak signal: Single execution event with no accompanying credential access, process tree, or file‑write activity; no corroborating authentication or lateral‑movement logs.\n- Minimal checks: (1) Verify the file hash against the genuine Microsoft `osk.exe` signature; (2) Query deployment or scheduled‑task logs to see if a legitimate admin sc\nHunter: The alert shows a Windows On‑Screen Keyboard (osk.exe) binary running from a user’s Roaming folder – a non‑default location for the signed Microsoft utility. The process is its own parent, indicating it was likely launched directly (e.g., via a shortcut or script). It contacts a single external IP (9.9.9.9) that VirusTotal flags as suspicious. Hypotheses: (1) an attacker placed a malicious copy of osk.exe to evade detection and used it as a low‑profile launcher; (2) the binary is being used as a proxy to exfiltrate or beacon to the suspicious IP; (3) legitimate administrative tooling copied th\nHunter SPL ideas: index=* sourcetype=*process* (Image=\"*\\\\osk.exe\" OR ParentImage=\"*\\\\osk.exe\") Computer!=* -Image=\"C:\\\\Windows\\\\System32\\\\osk.exe\" | stats count by Computer, Image, ParentImage, User, _time; index=* sourcetype=*network* dest_ip=9.9.9.9 | stats count, values(src_ip) as src_hosts, earliest(_time) as first_seen, latest(_time) as last_seen by dest_ip; index=* sourcetype=*process* Image=\"C:\\\\Users\\\\bob.\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=63 review=NEEDS_HUMAN_REVIEW priority=high\nMITRE T1036: Masquerading low\nMITRE T1090: Proxy low\nMITRE KC-5: Installation low\nMITRE KC-6: Command and Control low\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780895202, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the SHA256 hash of Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\" on Computer=we8105desk.waynecorpinc.local? | SPL: search \"New TesT\" \"we8105desk.waynecorpinc.local\" \"WAYNECORPINC/bob.smith\" dest_ip=9.9.9.9 \"C:/Users/bob.smith.WAYNECORPINC/AppData/Roaming/{35ACA89F-933F-6A5D-2776-A3589FB99832}/osk.exe\" \"C:/Users/bo\nAdmin org gap Q: Is running osk.exe from a user’s Roaming folder and allowing it to connect to the external IP 9.9.9.9 an approved or expected activity for workstations in this environment?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-2",
+      "_time": "2016-08-24T21:18:50.000+04:30",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 1,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-08T09:32:50.965142+00:00",
+    "updated_at": "2026-07-16T04:19:40.125018+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321",
+      "verdict": "needs_investigation",
+      "priority": "high"
+    },
+    "summary_line": "1472057321 | APT Detection Test | Alert shows osk.exe launched from a user AppData GUID folder with a temporary parent and a single outbound connection to a VirusTotal‑marked suspicious IP; no asset/user inventory match, risk unknown,",
+    "chunk_text": "SOC analysis: APT Detection Test\nsid: scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44\nTime: 1472057321\nVerdict: needs_investigation\nPriority: high\nNext step: Run a Splunk search for all process creation events (e.g., Windows Security EventCode=4688 or Sysmon EventID=1) on we8105desk.waynecorpinc.local around 1472057321 that involve osk.exe and the parent 121214.tmp, and join with any network connection events to 9.9.9.9 to verify the execution chain and\nJudge rationale: Risk_context indicates unknown asset/user risk and no inventory linkage; enrichment confidence is low. Threat_intel flags the destination IP as suspicious, albeit with minimal votes. Defender notes a plausible benign OSK usage but acknowledges weak evidence. Hunter proposes extensive hunting but lacks concrete findings. Given the unknown inventory, the suspicious IP, and the atypical execution pat\nAnalysis summary: Alert shows osk.exe launched from a user AppData GUID folder with a temporary parent and a single outbound connection to a VirusTotal‑marked suspicious IP; no asset/user inventory match, risk unknown, and threat intel is low‑confidence, so further investigation is required.\nDefender: - Alternate: `osk.exe` is the built‑in Windows On‑Screen Keyboard; it may be launched by a user or via an accessibility script, which can reside in a user’s AppData folder.\n- Alternate: The parent `121214.tmp` could be a legitimate temporary installer or IT deployment script that extracts files to `%AppData%` – not uncommon in silent software rollouts.\n- Signal weakness: Only a single process creation event at epoch 1472057321, no accompanying authentication, file‑write, or outbound traffic beyond a single `dest_ip` lookup.\n- Threat intel note: The only IOC is IP 9.9.9.9, flagged as “suspiciou\nHunter: We need to produce JSON with narrative and splunk_search_suggestions (array of strings). Need to expand hunting based on system context and threat intel. Observables: Computer, Image path (osk.exe in AppData with GUID folder), ParentImage 121214.tmp, dest_ip 9.9.9.9, User, CommandLine. Time epoch 1472057321 (~2016-08-24 09:55:21 UTC? Let's compute quickly: 1472057321 seconds since epoch = 2016-08-24 07:55:21 UTC? Actually 1472057321 /86400 = 17046.5 days. Not needed. We need to suggest SPL queries to investigate: - Search for other instances of osk.exe from suspicious path across hosts, time r\nHunter SPL ideas: 1. `index=windows host=we8105desk.waynecorpinc.local Image=\"*\\\\AppData\\\\Roaming\\\\*\\\\osk.exe\" | stats count by Image, _time, User, Computer`; 2. `index=windows sourcetype=WinEventLog:Security (User=\"WAYNECORPINC\\\\bob.smith\" AND (EventCode=4624 OR EventCode=4625)) | stats count by EventCode, src_ip, _time`; `index=process_creation ParentImage=\"*121214.tmp*\" | stats count by Image, Computer, _time`;\nRisk context: No confident link to organizational inventory; treat asset/user risk as unknown. No inventory match; add users/assets or map them under Relationships.\nEnrichment: No inventory match; add users/assets or map them under Relationships.\nTriage: score=63 review=NEEDS_HUMAN_REVIEW priority=high\nMITRE T1036: Masquerading low\nMITRE T1071: Application Layer Protocol low\nMITRE KC-5: Installation low\nMITRE KC-6: Command and Control low\nThreat intel: {\"iocs\": [{\"ioc\": \"9.9.9.9\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/9.9.9.9\", \"vt_id\": \"9.9.9.9\", \"verdict\": \"suspicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 10, \"total_votes\": {\"harmless\": 15, \"malicious\": 5}, \"last_analysis_date\": 1780863319, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 56, \"malicious\": 0, \"suspicious\": 1, \"undetected\": 34}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 suspicious) included in analysis context.\", \"source\": \"virustotal\", \"st\nInvestigation Q: What is the SHA256 hash for Computer=we8105desk.waynecorpinc.local Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\{35ACA89F-933F-6A5D-2776-A3589FB99832}\\osk.exe\"? | SPL: search index=* Computer=\"we8105desk.waynecorpinc.local\" Image=\"*/osk.exe\" | eval sha256=coalesce(hash.sha256,SHA256,FileHash,Hash) | where isnotnull(sha256) | stats count by Computer Image sha256 | ta\nInvestigation Q: What is the SHA256 hash for Computer=we8105desk.waynecorpinc.local Image=\"C:\\Users\\bob.smith.WAYNECORPINC\\AppData\\Roaming\\121214.tmp\"? | SPL: search index=* Computer=\"we8105desk.waynecorpinc.local\" Image=\"*121214.tmp*\" | rex field=_raw \"(?<sha256>[A-Fa-f0-9]{64})\" | stats count by sha256 | where isnotnull(sha256) | sort - count | head 1 | t\nInvestigation Q: What process Image initiated network connections to dest_ip=9.9.9.9 on Computer=we8105desk.waynecorpinc.local? | SPL: search Computer=\"we8105desk.waynecorpinc.local\" dest_ip=\"9.9.9.9\" | stats count by Image | sort -count | head 20 | table Image count\nInvestigation Q: What other Image paths containing \"{35ACA89F-933F-6A5D-2776-A3589FB99832}\" were executed by User=WAYNECORPINC\\bob.smith on Computer=we8105desk.waynecorpinc.local? | SPL: search Computer=\"we8105desk.waynecorpinc.local\" User=\"WAYNECORPINC/bob.smith\" Image=\"*{35ACA89F-933F-6A5D-2776-A3589FB99832}*\" NOT | stats count by Image | sort - count | head 20 | table Image count\nAdmin org gap Q: Is execution of osk.exe (or any executable) from a user’s %AppData% location, especially when launched by a temporary .tmp script, an approved activity for this class of workstation, and is traffic to the external IP 9.9.9.9 an authorized endpoint?",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44",
+      "_time": "1472057321",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "APT Detection Test"
+    },
+    "created_at": "2026-06-07T21:07:15.735984+00:00",
+    "updated_at": "2026-07-16T04:19:43.165629+00:00"
   },
   {
     "doc_id": "soc_analysis::scheduler__admin__search__t8372_c2_at_1727841780.1::0",
@@ -926,7 +1708,47 @@
       "signature_id": "T1071.001"
     },
     "created_at": "2026-06-07T19:27:20.527481+00:00",
-    "updated_at": "2026-06-07T19:46:25.683946+00:00"
+    "updated_at": "2026-07-16T04:19:43.406841+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::scheduler__admin__search__t8372_c2_at_1727841780.1__tsoc_test_1784137255204169669_fb7be5fc74::0",
+    "doc_type": "soc_analysis",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1__tsoc_test_1784137255204169669_fb7be5fc74",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "src": "10.1.1.15",
+      "dest": "198.51.100.10",
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:03:00Z",
+      "verdict": "needs_investigation",
+      "priority": "high",
+      "severity": "critical",
+      "signature": "Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure",
+      "signature_id": "T1071.001"
+    },
+    "summary_line": "2024-10-02T04:03:00 | PaloAlto: Outbound Connection to Known C2 (t8372) | user=WAYNECORPINC\\bwayne src=10.1.1.15 dest=198.51.100.10 host=DESKTOP-BRUCE | Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure | severity=critical | Critical endpoint with high risk scores but only a single outbound firewall event to an undetected domain and a harmless IP; no corroborating telemetry. Defender recommends verifying the updater.exe f",
+    "chunk_text": "SOC analysis: PaloAlto: Outbound Connection to Known C2 (t8372)\nsid: scheduler__admin__search__t8372_c2_at_1727841780.1__tsoc_test_1784137255204169669_fb7be5fc74\nTime: 2024-10-02T04:03:00Z\nEntities: user=WAYNECORPINC\\bwayne src=10.1.1.15 dest=198.51.100.10 host=DESKTOP-BRUCE\nSignal: Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure\nSeverity: critical\nVerdict: needs_investigation\nPriority: high\nNext step: Verify the file hash and digital signature of C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe and confirm whether a scheduled task or approved IT script is configured to run it for user WAYNECORPINC\\bwayne\nJudge rationale: Risk context indicates a critical asset and user with score 9, yet threat intel shows no malicious reputation for the IP or domain. Defender notes a weak signal and recommends file and task verification; Hunter’s broader hunt returned no additional events. The single outbound connection alone is insufficient to rule out malicious activity, so confirming the executable’s legitimacy and execution co\nAnalysis summary: Critical endpoint with high risk scores but only a single outbound firewall event to an undetected domain and a harmless IP; no corroborating telemetry. Defender recommends verifying the updater.exe file and scheduled task, while Hunter suggests broader hunting but finds no additional evidence. The next step is to confirm the legitimacy of the executable and its execution context.\nDefender: - Alternate: updater.exe in %TEMP% could be a legitimate software update or a benign maintenance script executed by a scheduled task or IT automation.\n- Weak signal: single firewall event, no corroborating authentication, process, or endpoint telemetry; the alert is based solely on outbound traffic.\n- Minimal checks: 1) Verify the file hash and digital signature of C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe against the internal software inventory; 2) Confirm whether a scheduled task or approved IT script is configured to run updater.exe for this user; 3) Check if 198.51.100.10 is an intern\nHunter: The alert is based on a single outbound firewall event from DESKTOP-BRUCE to the domain c2.beacon-sync.net (IP 198.51.100.10) with remote IP 1.1.1.1. Threat intel rates 1.1.1.1 as harmless and the domain as undetected, so no immediate malicious reputation is evident. The Defender analysis correctly notes the weak signal – only one firewall record and no corroborating endpoint telemetry. The two preliminary Splunk queries returned 0 rows, confirming that no other events matching the user or host appear in the indexed data set. To move beyond a single‑point observation, we should broaden the hun\nHunter SPL ideas: search index=firewall host=\"DESKTOP-BRUCE\" dest_ip=\"198.51.100.10\" | stats count by _time, src_ip, dest_ip, dest, domain, user | where count>1 | table _time, src_ip, dest_ip, dest, domain, user, count; search index=firewall dest=\"c2.beacon-sync.net\" | stats count by host, src_ip, dest_ip, dest, domain | where count>1 | table host, src_ip, dest_ip, dest, domain, count; search index=firewall dest_ip\nRisk context: Asset t8372-desktop-bruce: criticality=critical, risk_score=9. User WAYNECORPINC\\bwayne: risk_score=9, department=Executive.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=82 review=NEEDS_HUMAN_REVIEW priority=critical\nMITRE T1071.001: Application Layer Protocol: Web Protocols medium\nMITRE KC-6: Command and Control medium\nThreat intel: {\"iocs\": [{\"ioc\": \"1.1.1.1\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/1.1.1.1\", \"tags\": [\"suspicious-udp\"], \"vt_id\": \"1.1.1.1\", \"verdict\": \"harmless\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": 89, \"total_votes\": {\"harmless\": 148, \"malicious\": 39}, \"last_analysis_date\": 1784135441, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 57, \"malicious\": 0, \"suspicious\": 0, \"undetected\": 34}}, {\"ioc\": \"c2.beacon-sync.net\", \"link\": \"https://www.virustotal.com/api/v3/domains/\nInvestigation Q: Does host=DESKTOP-BRUCE have a scheduled task that runs Image='C:\\Users\\bwayne\\AppData\\Local\\Temp\\updater.exe' for user=WAYNECORPINC\\bwayne? | SPL: search index=wineventlog source=\"TERM(WinEventLog:Microsoft-Windows-TaskScheduler/Operational)\" host=DESKTOP-BRUCE Image=\"TERM(C:/Users/bwayne/AppData/Local/Temp/updater.exe)\" user=TERM(WAYNECORPINC/b\nAdmin org gap Q: Is the execution of updater.exe from C:\\Users\\bwayne\\AppData\\Local\\Temp on DESKTOP-BRUCE a legitimate, approved scheduled task or software update for user bwayne, and is outbound traffic to 198.51.100.10 (c2.beacon-sync.net) part of normal update operations?",
+    "metadata": {
+      "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1__tsoc_test_1784137255204169669_fb7be5fc74",
+      "src": "10.1.1.15",
+      "dest": "198.51.100.10",
+      "host": "DESKTOP-BRUCE",
+      "user": "WAYNECORPINC\\bwayne",
+      "_time": "2024-10-02T04:03:00Z",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "severity": "critical",
+      "row_index": 0,
+      "signature": "Outbound C2 from DESKTOP-BRUCE (bwayne) to known C2 infrastructure",
+      "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+      "signature_id": "T1071.001"
+    },
+    "created_at": "2026-07-15T17:49:48.316253+00:00",
+    "updated_at": "2026-07-16T04:19:38.277322+00:00"
   },
   {
     "doc_id": "soc_analysis::scheduler__admin__search__t8372_phish_at_1727841600.1::0",
@@ -964,7 +1786,7 @@
       "signature_id": "T1566"
     },
     "created_at": "2026-06-07T18:46:50.766971+00:00",
-    "updated_at": "2026-06-07T19:46:26.583210+00:00"
+    "updated_at": "2026-07-16T04:19:44.123315+00:00"
   },
   {
     "doc_id": "soc_analysis::scheduler__admin__search__t8372_ps_download_at_1727841660.1::0",
@@ -1000,7 +1822,7 @@
       "signature_id": "T1059.001"
     },
     "created_at": "2026-06-07T18:59:12.367270+00:00",
-    "updated_at": "2026-06-07T19:46:26.352103+00:00"
+    "updated_at": "2026-07-16T04:19:43.903710+00:00"
   },
   {
     "doc_id": "soc_analysis::scheduler__admin__search__t8372_schtasks_at_1727841720.1::0",
@@ -1036,6 +1858,793 @@
       "signature_id": "T1053.005"
     },
     "created_at": "2026-06-07T19:19:21.002654+00:00",
-    "updated_at": "2026-06-07T19:46:26.094034+00:00"
+    "updated_at": "2026-07-16T04:19:43.654050+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::sdk-live-test::0",
+    "doc_type": "soc_analysis",
+    "sid": "sdk-live-test",
+    "search_name": "Suspicious auth failed login alert",
+    "row_index": 0,
+    "essential": {
+      "src": "1.2.3.4",
+      "dest": "10.0.0.10",
+      "host": "web-prod-01",
+      "user": "jdoe",
+      "_time": "2026-06-13T12:00:00Z",
+      "verdict": "needs_investigation",
+      "priority": "high"
+    },
+    "summary_line": "2026-06-13T12:00:00 | Suspicious auth failed login alert | user=jdoe src=1.2.3.4 dest=10.0.0.10 host=web-prod-01 | A single failed login from a VT‑malicious IP (1.2.3.4) to the high‑criticality Payment API server by user jdoe triggers mixed signals: Defender notes a possible legitimate VPN script, while Hunter fla",
+    "chunk_text": "SOC analysis: Suspicious auth failed login alert\nsid: sdk-live-test\nTime: 2026-06-13T12:00:00Z\nEntities: user=jdoe src=1.2.3.4 dest=10.0.0.10 host=web-prod-01\nVerdict: needs_investigation\nPriority: high\nNext step: Query authentication logs for the past 24 hours to enumerate all success and failure events for user jdoe from source IP 1.2.3.4 and cross‑reference that IP against the organization’s approved VPN/remote‑access allow‑list.\nJudge rationale: Risk_context highlights a high‑criticality asset (risk_score 4) and a user with moderate risk (score 3). Threat_intel reports the source IP as malicious (VT verdict malicious, negative reputation, 9 malicious votes). Defender provides a plausible benign hypothesis but offers no concrete evidence that the VPN IP is authorized, only a suggestion to check the allow‑list. Given the asset’s importance\nAnalysis summary: A single failed login from a VT‑malicious IP (1.2.3.4) to the high‑criticality Payment API server by user jdoe triggers mixed signals: Defender notes a possible legitimate VPN script, while Hunter flags the malicious reputation and high‑value target as warranting deeper look.\nDefender: - Alternate: The failed login could stem from a routine credential‑rotation or health‑check script run by platform‑ops; the source IP (1.2.3.4) is a corporate VPN exit node that VirusTotal flags but is internally approved.\n- Weak signal: The alert contains only one failed authentication event, with no accompanying successful login, no lateral‑movement alerts, and no suspicious process creation on the high‑value server.\n- Minimal check: Cross‑reference 1.2.3.4 against the organization’s authorized VPN/remote‑access IP list or firewall allow‑list.\n- Minimal check: Search the ticketing system for\nHunter: The alert shows a single failed authentication from IP 1.2.3.4 (VT malicious) to the high‑value Payment API host (web‑prod‑01) by user jdoe. Because the IP has a malicious reputation, we should treat it as a potential credential‑stuffing or compromised VPN endpoint. Hunt hypotheses: (1) the attacker may have tried additional logins—successes or more failures—from the same source or for the same user on any asset; (2) the source IP could be used for lateral movement or remote command execution after a successful login; (3) other services (e.g., SSH, RDP, API calls) may show anomalous activity f\nHunter SPL ideas: index=auth (src=\"1.2.3.4\" OR user=\"jdoe\") | stats count by _time, action, src, user, dest, host | sort -_time; index=process host=\"web-prod-01\" src=\"1.2.3.4\" | table _time, user, process, cmdline, pid, parent_pid; index=* src=\"1.2.3.4\" | stats count by host, sourcetype, action | sort -count; index=auth (user=\"jdoe\") (action=\"success\" OR action=\"failure\") | where src=\"1.2.3.4\" | table _time, action\nRisk context: Asset obs-web-prod-01: criticality=high, risk_score=4. User jdoe: risk_score=3, department=IT.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=77 review=NEEDS_HUMAN_REVIEW priority=high\nMITRE T1110.001: Password Guessing low\nMITRE KC-4: Exploitation low\nThreat intel: {\"iocs\": [{\"ioc\": \"1.2.3.4\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/1.2.3.4\", \"tags\": [\"suspicious-udp\"], \"vt_id\": \"1.2.3.4\", \"verdict\": \"malicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": -20, \"total_votes\": {\"harmless\": 7, \"malicious\": 9}, \"last_analysis_date\": 1781283316, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 52, \"malicious\": 2, \"suspicious\": 1, \"undetected\": 36}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 malicious) included in analysis context.\", \"\nInvestigation Q: Are there any successful authentication events for user=jdoe from src=1.2.3.4 on host=web-prod-01? | SPL: | table _time host user src dest action\nAdmin org gap Q: Is the VPN exit IP 1.2.3.4 on the approved allow‑list for remote access to web‑prod‑01, and is user jdoe authorized to log into that server?",
+    "metadata": {
+      "sid": "sdk-live-test",
+      "src": "1.2.3.4",
+      "dest": "10.0.0.10",
+      "host": "web-prod-01",
+      "user": "jdoe",
+      "_time": "2026-06-13T12:00:00Z",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "Suspicious auth failed login alert"
+    },
+    "created_at": "2026-06-13T02:27:14.004831+00:00",
+    "updated_at": "2026-07-16T04:19:39.134875+00:00"
+  },
+  {
+    "doc_id": "soc_analysis::unknown::0",
+    "doc_type": "soc_analysis",
+    "sid": "",
+    "search_name": "Suspicious auth failed login alert",
+    "row_index": 0,
+    "essential": {
+      "src": "1.2.3.4",
+      "dest": "10.0.0.10",
+      "host": "web-prod-01",
+      "user": "jdoe",
+      "verdict": "needs_investigation",
+      "priority": "high"
+    },
+    "summary_line": "Suspicious auth failed login alert | user=jdoe src=1.2.3.4 dest=10.0.0.10 host=web-prod-01 | Failed login from malicious‑rated IP 1.2.3.4 against high‑criticality web server by IT user jdoe; threat intel flags IP as malicious but Defender notes possible VPN false‑positive, so further validati",
+    "chunk_text": "SOC analysis: Suspicious auth failed login alert\nEntities: user=jdoe src=1.2.3.4 dest=10.0.0.10 host=web-prod-01\nVerdict: needs_investigation\nPriority: high\nNext step: Query internal VPN and firewall logs to confirm whether source IP 1.2.3.4 is an authorized corporate endpoint for user jdoe.\nJudge rationale: Risk context shows a high‑criticality asset (risk_score 4) and a user with elevated risk (risk_score 3). Threat intel reports the IP as malicious (VT verdict malicious, reputation -20). Defender raises a plausible benign hypothesis (authorized VPN) but admits the signal is weak (single failed login). Hunter recommends correlating authentication and network logs to discriminate. Given the high asse\nAnalysis summary: Failed login from malicious‑rated IP 1.2.3.4 against high‑criticality web server by IT user jdoe; threat intel flags IP as malicious but Defender notes possible VPN false‑positive, so further validation is required.\nDefender: - Alternate benign hypothesis: The source IP 1.2.3.4 may be a corporate VPN or jump‑host used by the IT user jdoe for legitimate remote administration of web‑prod‑01; VPN endpoints sometimes appear on public threat‑intel feeds due to shared infrastructure.\n- Weak signal: The alert reports a single failed authentication event with no accompanying successful login, no new process creation, and no lateral‑movement indicators in the preview data.\n- Minimal checks: (1) Query the internal VPN / firewall logs to see if 1.2.3.4 is an authorized corporate endpoint for the IT department; (2) Review the\nHunter: \"narrative\": \"The alert records a failed authentication from the external IP 1.2.3.4 (VT marks it malicious) against the high‑value web server web-prod-01 (asset IP 10.0.0.5) using the corporate user jdoe. Two competing hypotheses arise: (1) a malicious actor is attempting credential‑spraying or brute‑force from a compromised external host; (2) the IP belongs to an authorized corporate VPN/jump‑host and was mis‑tagged by public feeds. To discriminate, we should (a) enumerate all authentication events involving this source IP or this user to see if there are repeated failures, a subsequent succ\nHunter SPL ideas: search index=* (sourcetype=wineventlog:security OR sourcetype=linux_secure) (src=\\\"1.2.3.4\\\" OR user=\\\"jdoe\\\") | eval event_time=_time | stats count, values(eventcode) as event_codes, min(_time) as first_seen, max(_time) as last_seen by src, user, host | where count>1; search index=* (sourcetype=wineventlog:security OR sourcetype=linux_secure) src=\\\"1.2.3.4\\\" user=\\\"jdoe\\\" (eventcode=4624 OR event\nRisk context: Asset srv-web-01: criticality=high, risk_score=4. User jdoe: risk_score=3, department=IT.\nEnrichment: Matched asset via alert.host → hostname; Matched user via alert.user → user_id\nTriage: score=77 review=NEEDS_HUMAN_REVIEW priority=high\nMITRE T1110.001: Password Guessing low\nMITRE KC-4: Exploitation low\nThreat intel: {\"iocs\": [{\"ioc\": \"1.2.3.4\", \"link\": \"https://www.virustotal.com/api/v3/ip_addresses/1.2.3.4\", \"tags\": [\"suspicious-udp\"], \"vt_id\": \"1.2.3.4\", \"verdict\": \"malicious\", \"vt_type\": \"ip_address\", \"ioc_type\": \"ip\", \"reputation\": -20, \"total_votes\": {\"harmless\": 7, \"malicious\": 9}, \"last_analysis_date\": 1781283316, \"last_analysis_stats\": {\"timeout\": 0, \"harmless\": 52, \"malicious\": 2, \"suspicious\": 1, \"undetected\": 36}}], \"note\": \"VirusTotal: 1 IOC hit(s) (1 malicious) included in analysis context.\", \"\nInvestigation Q: How many successful login events (eventcode=4624) exist for src=1.2.3.4, user=jdoe on host=web-prod-01? | SPL: search \"Suspicious auth failed login alert\" host=\"web-prod-01\" \"10.0.0.10\" \"jdoe\" \"1.2.3.4\" EventCode=4624 | stats count as successful_logins\nAdmin org gap Q: Is the source IP 1.2.3.4 an authorized VPN or jump‑host for the IT department, and does our remote‑login policy allow user jdoe to authenticate from that address?",
+    "metadata": {
+      "sid": "",
+      "src": "1.2.3.4",
+      "dest": "10.0.0.10",
+      "host": "web-prod-01",
+      "user": "jdoe",
+      "track": "security",
+      "verdict": "needs_investigation",
+      "doc_type": "soc_analysis",
+      "priority": "high",
+      "row_index": 0,
+      "search_name": "Suspicious auth failed login alert"
+    },
+    "created_at": "2026-06-13T02:25:02.168227+00:00",
+    "updated_at": "2026-07-16T04:19:39.366410+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780868820_555",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T21:47:13.948260+00:00",
+    "updated_at": "2026-07-16T04:19:37.293793+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780870740_874::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780870740_874",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780870740_874\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780870740_874",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T22:19:14.484868+00:00",
+    "updated_at": "2026-07-16T04:19:37.206110+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871040_929::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871040_929",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871040_929\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871040_929",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T22:24:13.620547+00:00",
+    "updated_at": "2026-07-16T04:19:37.129733+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871460_1023::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871460_1023",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871460_1023\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871460_1023",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T22:31:13.853711+00:00",
+    "updated_at": "2026-07-16T04:19:37.051971+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780871700_1058",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T22:35:14.851887+00:00",
+    "updated_at": "2026-07-16T04:19:36.954072+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780873620_1378",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-07T23:07:17.102743+00:00",
+    "updated_at": "2026-07-16T04:19:36.871421+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909260_56",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-08T09:01:19.368296+00:00",
+    "updated_at": "2026-07-16T04:19:36.797836+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780909320_64",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-08T09:02:15.845748+00:00",
+    "updated_at": "2026-07-16T04:19:36.696697+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325",
+    "search_name": "New TesT",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | New TesT",
+    "chunk_text": "Alert: New TesT\nsid: scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "New TesT"
+    },
+    "created_at": "2026-06-08T09:29:22.881497+00:00",
+    "updated_at": "2026-07-16T04:19:36.600722+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD57853912f25a80b59_at_1780864860_69::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864860_69",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | APT Detection Test",
+    "chunk_text": "Alert: APT Detection Test\nsid: scheduler__admin__search__RMD57853912f25a80b59_at_1780864860_69\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864860_69",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "APT Detection Test"
+    },
+    "created_at": "2026-06-07T20:41:13.462490+00:00",
+    "updated_at": "2026-07-16T04:19:37.696484+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD57853912f25a80b59_at_1780864920_76::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864920_76",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | APT Detection Test",
+    "chunk_text": "Alert: APT Detection Test\nsid: scheduler__admin__search__RMD57853912f25a80b59_at_1780864920_76\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864920_76",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "APT Detection Test"
+    },
+    "created_at": "2026-06-07T20:42:13.360716+00:00",
+    "updated_at": "2026-07-16T04:19:37.653733+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD57853912f25a80b59_at_1780864980_86::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864980_86",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | APT Detection Test",
+    "chunk_text": "Alert: APT Detection Test\nsid: scheduler__admin__search__RMD57853912f25a80b59_at_1780864980_86\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780864980_86",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "APT Detection Test"
+    },
+    "created_at": "2026-06-07T20:43:15.316029+00:00",
+    "updated_at": "2026-07-16T04:19:37.596756+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44::0",
+    "doc_type": "splunk_alert",
+    "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "_time": "1472057321"
+    },
+    "summary_line": "1472057321 | APT Detection Test",
+    "chunk_text": "Alert: APT Detection Test\nsid: scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44\nTime: 1472057321",
+    "metadata": {
+      "sid": "scheduler__admin__search__RMD57853912f25a80b59_at_1780865880_44",
+      "_time": "1472057321",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "APT Detection Test"
+    },
+    "created_at": "2026-06-07T20:58:14.474164+00:00",
+    "updated_at": "2026-07-16T04:19:37.374027+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::sdk-live-test::0",
+    "doc_type": "splunk_alert",
+    "sid": "sdk-live-test",
+    "search_name": "Suspicious auth failed login alert",
+    "row_index": 0,
+    "essential": {
+      "src": "1.2.3.4",
+      "dest": "10.0.0.10",
+      "host": "web-prod-01",
+      "user": "jdoe"
+    },
+    "summary_line": "Suspicious auth failed login alert | user=jdoe src=1.2.3.4 dest=10.0.0.10 host=web-prod-01",
+    "chunk_text": "Alert: Suspicious auth failed login alert\nsid: sdk-live-test\nEntities: user=jdoe src=1.2.3.4 dest=10.0.0.10 host=web-prod-01",
+    "metadata": {
+      "sid": "sdk-live-test",
+      "src": "1.2.3.4",
+      "dest": "10.0.0.10",
+      "host": "web-prod-01",
+      "user": "jdoe",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "Suspicious auth failed login alert"
+    },
+    "created_at": "2026-06-13T02:26:11.913686+00:00",
+    "updated_at": "2026-07-16T04:19:34.552374+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::test_sid_123::0",
+    "doc_type": "splunk_alert",
+    "sid": "test_sid_123",
+    "search_name": "APT Detection Test",
+    "row_index": 0,
+    "essential": {
+      "host": "test-host",
+      "user": "admin",
+      "_time": "2026-06-08T00:00:00"
+    },
+    "summary_line": "2026-06-08T00:00:00 | APT Detection Test | user=admin host=test-host",
+    "chunk_text": "Alert: APT Detection Test\nsid: test_sid_123\nTime: 2026-06-08T00:00:00\nEntities: user=admin host=test-host",
+    "metadata": {
+      "sid": "test_sid_123",
+      "host": "test-host",
+      "user": "admin",
+      "_time": "2026-06-08T00:00:00",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "APT Detection Test"
+    },
+    "created_at": "2026-06-07T20:44:49.932752+00:00",
+    "updated_at": "2026-07-16T04:19:37.517081+00:00"
+  },
+  {
+    "doc_id": "splunk_alert::test_sid_verify::0",
+    "doc_type": "splunk_alert",
+    "sid": "test_sid_verify",
+    "search_name": "Verify Auto Analyze",
+    "row_index": 0,
+    "essential": {
+      "host": "h1",
+      "user": "u1"
+    },
+    "summary_line": "Verify Auto Analyze | user=u1 host=h1",
+    "chunk_text": "Alert: Verify Auto Analyze\nsid: test_sid_verify\nEntities: user=u1 host=h1",
+    "metadata": {
+      "sid": "test_sid_verify",
+      "host": "h1",
+      "user": "u1",
+      "doc_type": "splunk_alert",
+      "row_index": 0,
+      "search_name": "Verify Auto Analyze"
+    },
+    "created_at": "2026-06-07T20:44:56.550832+00:00",
+    "updated_at": "2026-07-16T04:19:37.454551+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_approval:46f219a39cd0bf2f9bde",
+    "doc_type": "runbook_approval",
+    "sid": "demo-runbook-source-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "decision": "approve",
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "source_record_id": 395
+    },
+    "summary_line": "Runbook Approval for Runbook demo-rb-oauth-token-replay-v1",
+    "chunk_text": "Forge artifact type: runbook_approval\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"decision\": \"approve\", \"analyst\": \"demo.soc.lead\", \"note\": \"Approved after parser validation, source evidence review, and shadow replay.\", \"created_at\": \"2026-07-16T08:45:00+00:00\"}",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_approval",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-16T04:19:46.099095+00:00",
+    "updated_at": "2026-07-16T04:19:46.099095+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_autopilot_session:c746900ff95cfdaca8ec",
+    "doc_type": "runbook_autopilot",
+    "sid": "demo-runbook-source-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "status": "COMPLETED",
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "session_id": "demo-autopilot-oauth-token-replay-v1",
+      "source_record_id": 395
+    },
+    "summary_line": "Runbook Autopilot — COMPLETED; Review the approved runbook reuse on the second exact-match alert.",
+    "chunk_text": "Runbook Autopilot session: demo-autopilot-oauth-token-replay-v1\nObjective: Advance a source-verified runbook through policy, shadow evidence, and safe response review.\nMode: ADVANCE; status: COMPLETED\nAgents: SUPERVISOR, EVIDENCE_SCOUT, RUNBOOK_ENGINEER, POLICY_GUARD, RESPONSE_ADVISOR\nTools used: splunk.mcp.search, splunk.rest.oneshot_fallback, runbook.compiler, runbook.policy.evaluate, runbook.safe_response.preview\nRunbook ID: demo-rb-oauth-token-replay-v1; Runbook status: SOURCE_VERIFIED\nResponse preview ID: demo-preview-oauth-token-replay-v1\nNext recommended action: Review the approved runbook reuse on the second exact-match alert.\nHuman approval required: true; automatic execution performed: false.\nTrace 1: agent=SUPERVISOR, kind=AGENT_STARTED, status=RUNNING, tool=-, summary=Started the bounded Runbook Autopilot tour., duration_ms=115.\nTrace 2: agent=SUPERVISOR, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Assigned evidence collection to Evidence Scout., duration_ms=150.\nTrace 3: agent=EVIDENCE_SCOUT, kind=TOOL_CALL, status=RUNNING, tool=splunk.mcp.search, summary=Requested read-only identity evidence through Splunk MCP., duration_ms=185.\nTrace 4: agent=EVIDENCE_SCOUT, kind=TOOL_RESULT, status=SUCCEEDED, tool=splunk.rest.oneshot_fallback, summary=MCP and REST-fallback coverage returned parser-valid source evidence., duration_ms=220.\nTrace 5: agent=EVIDENCE_SCOUT, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Passed bounded evidence to Runbook Engineer., duration_ms=255.\nTrace 6: agent=RUNBOOK_ENGINEER, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.compiler, summary=Compiled three reusable investigation intents., duration_ms=290.\nTrace 7: agent=RUNBOOK_ENGINEER, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Requested policy and exact-match evaluation., duration_ms=325.\nTrace 8: agent=POLICY_GUARD, kind=POLICY_DECISION, status=SUCCEEDED, tool=runbook.policy.evaluate, summary=Confirmed exact Alert Name, different SID, source evidence, and human gate., duration_ms=360.\nTrace 9: agent=POLICY_GUARD, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Requested a non-executable response preview., duration_ms=395.\nTrace 10: agent=RESPONSE_ADVISOR, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.safe_response.preview, summary=Prepared human-reviewed response options in PREVIEW_ONLY mode., duration_ms=430.\nTrace 11: agent=RESPONSE_ADVISOR, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Returned the preview and audit trail to Supervisor., duration_ms=465.\nTrace 12: agent=SUPERVISOR, kind=AGENT_COMPLETED, status=SUCCEEDED, tool=-, summary=Completed the tour after recorded human approval; no response was auto-executed., duration_ms=500.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_autopilot_session",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-16T04:19:47.247657+00:00",
+    "updated_at": "2026-07-16T04:19:47.247657+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_autopilot_session:fe11a97b65b912011cd1",
+    "doc_type": "runbook_autopilot",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "status": "AWAITING_HUMAN_APPROVAL",
+      "runbook_id": "f06410a1-a19b-43bd-b892-ef3ab172b970",
+      "session_id": "49e5647c-b344-4a73-814f-5f5dff5dacac",
+      "source_record_id": 330
+    },
+    "summary_line": "Runbook Autopilot — AWAITING_HUMAN_APPROVAL; Review evidence gaps and rebuild before Runbook approval.",
+    "chunk_text": "Runbook Autopilot session: 49e5647c-b344-4a73-814f-5f5dff5dacac\nObjective: Assess the existing Runbook, verify its evidence gate, inspect available tools, and prepare the next safe analyst action.\nMode: ADVANCE; status: AWAITING_HUMAN_APPROVAL\nAgents: SUPERVISOR, EVIDENCE_SCOUT, RUNBOOK_ENGINEER, POLICY_GUARD, RESPONSE_ADVISOR\nTools used: storage.get_record, analyst_actions.list, runbook.state, runbook.library.search, runbook.safe_response_preview.cache\nRunbook ID: f06410a1-a19b-43bd-b892-ef3ab172b970; Runbook status: PARSER_VALID\nResponse preview ID: 53d3adb6-de16-4823-8c8d-d393526c5572\nNext recommended action: Review evidence gaps and rebuild before Runbook approval.\nHuman approval required: true; automatic execution performed: false.\nTrace 1: agent=SUPERVISOR, kind=AGENT_STARTED, status=RUNNING, tool=-, summary=Autopilot accepted the objective and opened a bounded workflow., duration_ms=0.\nTrace 2: agent=SUPERVISOR, kind=HANDOFF, status=RUNNING, tool=-, summary=Delegated source readiness and acknowledgment checks to Evidence Scout., duration_ms=0.\nTrace 3: agent=EVIDENCE_SCOUT, kind=TOOL_CALL, status=RUNNING, tool=storage.get_record, summary=Loading the stored SOC analysis without exposing credentials., duration_ms=0.\nTrace 4: agent=EVIDENCE_SCOUT, kind=TOOL_RESULT, status=SUCCEEDED, tool=storage.get_record, summary=Stored SOC analysis loaded., duration_ms=8.\nTrace 5: agent=EVIDENCE_SCOUT, kind=TOOL_CALL, status=RUNNING, tool=analyst_actions.list, summary=Checking the latest human analyst action., duration_ms=0.\nTrace 6: agent=EVIDENCE_SCOUT, kind=TOOL_RESULT, status=SUCCEEDED, tool=analyst_actions.list, summary=Source acknowledgment is present., duration_ms=7.\nTrace 7: agent=EVIDENCE_SCOUT, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Passed the bounded source metadata to Runbook Engineer., duration_ms=0.\nTrace 8: agent=RUNBOOK_ENGINEER, kind=TOOL_CALL, status=RUNNING, tool=runbook.state, summary=Loading the latest immutable Runbook state., duration_ms=0.\nTrace 9: agent=RUNBOOK_ENGINEER, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.state, summary=Latest Runbook state loaded., duration_ms=19.\nTrace 10: agent=RUNBOOK_ENGINEER, kind=TOOL_CALL, status=RUNNING, tool=runbook.library.search, summary=Searching the library by exact Alert Name., duration_ms=0.\nTrace 11: agent=RUNBOOK_ENGINEER, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.library.search, summary=Exact-name Runbook candidates evaluated., duration_ms=187.\nTrace 12: agent=RUNBOOK_ENGINEER, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Requested an explicit gate decision from Policy Guard., duration_ms=0.\nTrace 13: agent=POLICY_GUARD, kind=POLICY_DECISION, status=SUCCEEDED, tool=-, summary=Read-only compile and evidence verification are allowed; approval and execution remain human-only., duration_ms=0.\nTrace 14: agent=RESPONSE_ADVISOR, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.safe_response_preview.cache, summary=Reused the latest non-executable Response Preview; no duplicate LLM call was made., duration_ms=0.\nTrace 15: agent=POLICY_GUARD, kind=POLICY_DECISION, status=SUCCEEDED, tool=-, summary=Automatic production execution and containment remain disabled., duration_ms=0.\nTrace 16: agent=SUPERVISOR, kind=AGENT_COMPLETED, status=SUCCEEDED, tool=-, summary=Autopilot completed its bounded work and returned control to the analyst., duration_ms=0.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_autopilot_session",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:48.535276+00:00",
+    "updated_at": "2026-07-16T04:19:47.729624+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_draft:21a434a51726c3707d25",
+    "doc_type": "runbook_draft",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "status": "FAILED",
+      "revision": 1,
+      "runbook_id": "364b5273-9026-4e17-996c-887ef1132ba6",
+      "source_record_id": 330
+    },
+    "summary_line": "Runbook Investigate Outbound Connection to Known C2 from Endpoint — FAILED",
+    "chunk_text": "Runbook title: Investigate Outbound Connection to Known C2 from Endpoint\nSummary: Use this procedure when a Palo Alto firewall alert indicates an outbound connection from an endpoint to a known C2 domain or IP, and the process image is a suspicious executable (e.g., updater.exe). The procedure focuses on identifying the parent process, checking for persistence, and correlating network and user activity.\nRunbook ID: 364b5273-9026-4e17-996c-887ef1132ba6\nSource record: 330\nAlert Name: PaloAlto: Outbound Connection to Known C2 (t8372)\nStatus: FAILED\nRevision: 1\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: Escalate if the parent process is a known malicious or unusual process (e.g., not a legitimate updater), or if persistence mechanisms are found, or if multiple connections to known bad destinations are observed. Close if the parent process is a legitimate software updater and no other indicators. Abstain if process creation logs are unavailable or incomplete.\nStep 1: Identify Parent Process of Suspicious Executable. Intent: What is the parent process image (ParentImage) for the process with Image containing a suspicious executable name (e.g., updater.exe) on the affected host?. Expected evidence: ParentImage field value from Windows Event Log (Event ID 4688) or Sysmon Event ID 1 for the process creation event.. Stop condition: If no process creation events are found for the given Image, abstain from further analysis..\nStep 2: Check for Persistence Mechanisms. Intent: Are there any scheduled tasks, services, or startup entries associated with the parent process or the suspicious executable created around the time of the alert?. Expected evidence: List of persistence mechanisms (e.g., scheduled tasks, services, registry run keys) with creation timestamps near the alert time.. Stop condition: If no persistence artifacts are found, continue to step 3..\nStep 3: Correlate Network Connections and User Activity. Intent: What other outbound connections were made from the affected host around the time of the alert, and what user logon events are associated with the affected user?. Expected evidence: Network connection logs (e.g., from firewall or EDR) showing other destinations, and user logon events (Event ID 4624) for the affected user.. Stop condition: If no additional connections or anomalous user activity, consider closing as false positive..\nLimitations: Threat intelligence feed may not cover all C2 domains; only one alert row was analyzed in the original incident.; No EDR data was available in the original incident; this procedure assumes Windows Event Logs or Sysmon are available.; User and asset risk scores are based on inventory data which may be outdated or incomplete.; The procedure does not cover all possible C2 techniques (e.g., DNS tunneling, HTTPS).\nEvidence metrics: parser-valid steps=1, successful steps=0, evidence rows=0.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_draft",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:52.684030+00:00",
+    "updated_at": "2026-07-16T04:19:45.867090+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_draft:2a8180461b78f141b6b1",
+    "doc_type": "runbook_draft",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-2",
+    "search_name": "New TesT",
+    "row_index": 1,
+    "essential": {
+      "status": "FAILED",
+      "revision": 2,
+      "runbook_id": "57b2254e-663a-4e88-b81f-d9a7ed158e33",
+      "source_record_id": 257
+    },
+    "summary_line": "Runbook Verify Executable Integrity and Legitimacy — FAILED",
+    "chunk_text": "Runbook title: Verify Executable Integrity and Legitimacy\nSummary: Establish whether an executable instance on an endpoint is legitimate by collecting its hash and digital signature and comparing them to known Microsoft-signed values. Use when an alert reports execution of a file from an atypical location with a suspicious outbound connection and no inventory linkage.\nRunbook ID: 57b2254e-663a-4e88-b81f-d9a7ed158e33\nSource record: 257\nAlert Name: New TesT\nStatus: FAILED\nRevision: 2\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If the hash matches the known Microsoft hash and the signature is valid, close as benign. If the hash does not match or the signature is invalid, flag for further investigation. If hash or signature data is missing or inconclusive, abstain from decision and request additional evidence.\nStep 1: Collect Executable Hash and Signature. Intent: Collect the SHA256 hash and digital signature of the executable instance on the endpoint.. Expected evidence: Hash value and signature metadata (issuer, validity period, thumbprint).. Stop condition: Hash and signature are successfully retrieved from the endpoint..\nStep 2: Compare to Known Microsoft Signature. Intent: Compare the collected hash and signature to the known legitimate Microsoft-signed osk.exe hash and signature database.. Expected evidence: Comparison result indicating match or mismatch and signature validity status.. Stop condition: Comparison outcome is determined..\nStep 3: Determine Legitimacy. Intent: Determine if the executable is legitimate or requires further investigation based on hash/signature comparison.. Expected evidence: Verdict: benign, suspicious, or malicious.. Stop condition: Verdict is reached or evidence is insufficient to decide..\nLimitations: Missing inventory linkage limits contextual risk assessment; Unknown asset/user risk may affect threat prioritization; Potential false positives if legitimate hash database is incomplete; Outbound IP context not evaluated in this procedure\nEvidence metrics: parser-valid steps=3, successful steps=0, evidence rows=0.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_draft",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:52.229651+00:00",
+    "updated_at": "2026-07-16T04:19:45.342188+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_draft:5f3d18fe71bb4f24e658",
+    "doc_type": "runbook_draft",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "status": "PARSER_VALID",
+      "revision": 3,
+      "runbook_id": "f06410a1-a19b-43bd-b892-ef3ab172b970",
+      "source_record_id": 330
+    },
+    "summary_line": "Runbook Investigate Parent Process of Suspicious Updater — PARSER_VALID",
+    "chunk_text": "Runbook title: Investigate Parent Process of Suspicious Updater\nSummary: Determine the parent process of the updater executable that initiated an outbound C2 connection, to assess whether the process chain is legitimate or malicious.\nRunbook ID: f06410a1-a19b-43bd-b892-ef3ab172b970\nSource record: 330\nAlert Name: PaloAlto: Outbound Connection to Known C2 (t8372)\nStatus: PARSER_VALID\nRevision: 3\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If the ParentImage is identified as a known malicious or suspicious process, escalated to higher priority investigation; if benign or no evidence, close the alert; if evidence is inconclusive or missing, abstain and request additional data\nStep 1: Query Process Creation Events. Intent: Identify the ParentImage of the process creation event for the image matching \"updater.exe\" on the host referenced in the alert. Expected evidence: A ParentImage field value associated with the matching process creation event. Stop condition: Evidence found or no matching events in the data source.\nStep 2: Assess Parent Process Reputation. Intent: Evaluate whether the retrieved ParentImage is known to be benign or associated with malicious activity. Expected evidence: Reputation or known malicious indicator for the ParentImage. Stop condition: Reputation determined or no reputation data available.\nStep 3: Document Findings and Next Steps. Intent: Record the ParentImage and its reputation assessment, and recommend further action if suspicious. Expected evidence: Summary of ParentImage and reputation status. Stop condition: All evidence reviewed and documented.\nLimitations: Only one process creation event available; no threat intelligence for the ParentImage; host and image names are specific to this incident and may not generalize\nEvidence metrics: parser-valid steps=3, successful steps=0, evidence rows=0.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_draft",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:51.940154+00:00",
+    "updated_at": "2026-07-16T04:19:45.053992+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_draft:c66bd5d835df4e7a0050",
+    "doc_type": "runbook_draft",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "status": "PARSER_VALID",
+      "revision": 2,
+      "runbook_id": "7f966317-2cd1-4ef9-92af-90a07917b930",
+      "source_record_id": 330
+    },
+    "summary_line": "Runbook Determine Parent Process Image for Specific Process Creation — PARSER_VALID",
+    "chunk_text": "Runbook title: Determine Parent Process Image for Specific Process Creation\nSummary: Establish the parent process image for a process creation event on a host matching a given image pattern, to assess potential malicious activity.\nRunbook ID: 7f966317-2cd1-4ef9-92af-90a07917b930\nSource record: 330\nAlert Name: PaloAlto: Outbound Connection to Known C2 (t8372)\nStatus: PARSER_VALID\nRevision: 2\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If ParentImage evidence is found, close investigation; if no evidence or contradictory evidence, abstain.\nStep 1: Identify Parent Image. Intent: Identify the parent process image for a process creation event matching a specified host and image pattern. Expected evidence: A process creation event record containing the ParentImage field for the matching host and image. Stop condition: Evidence found or no matching events.\nLimitations: Process creation logs may be missing or incomplete; ParentImage may not be recorded; host or image pattern may not match any events; potential false positives if benign parent processes exist.\nEvidence metrics: parser-valid steps=1, successful steps=0, evidence rows=0.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_draft",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:52.103323+00:00",
+    "updated_at": "2026-07-16T04:19:45.224755+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_draft:db8a02bf783292f5cffa",
+    "doc_type": "runbook_draft",
+    "sid": "demo-runbook-source-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "status": "SOURCE_VERIFIED",
+      "revision": 1,
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "source_record_id": 395
+    },
+    "summary_line": "Runbook Investigate OAuth Token Replay with Identity Correlation — SOURCE_VERIFIED",
+    "chunk_text": "Runbook title: Investigate OAuth Token Replay with Identity Correlation\nSummary: Evidence-grounded procedure for validating an OAuth session seen from a new location and client fingerprint.\nRunbook ID: demo-rb-oauth-token-replay-v1\nSource record: 395\nAlert Name: Judge Demo: Suspicious OAuth Token Replay\nStatus: SOURCE_VERIFIED\nRevision: 1\nSource verdict: TRUE_POSITIVE\nDecision rule: Escalate when location, fingerprint, and sensitive-resource evidence corroborate replay; otherwise abstain.\nStep 1: Correlate identity locations. Intent: Compare successful authentication sources for the affected identity.. Expected evidence: Distinct sources, countries, and event timestamps.. Stop condition: Stop and abstain when authentication telemetry is unavailable..\nStep 2: Validate session fingerprint reuse. Intent: Determine whether one OAuth session appears under multiple client fingerprints.. Expected evidence: A session identifier with more than one fingerprint and source.. Stop condition: Stop and abstain when session identifiers cannot be correlated..\nStep 3: Measure sensitive resource access. Intent: Correlate the suspect session with high-value application resources.. Expected evidence: Successful access to a risk-labelled resource.. Stop condition: Escalate for human review; never execute containment automatically..\nLimitations: Exact Alert Name matching is mandatory.; The workflow is read-only and all response actions remain human-gated.; Addresses, identities, and applications in this tour are synthetic.\nEvidence metrics: parser-valid steps=3, successful steps=3, evidence rows=3.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_draft",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-16T04:19:44.909614+00:00",
+    "updated_at": "2026-07-16T04:19:44.909614+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_draft:f2f837583f2d161237b4",
+    "doc_type": "runbook_draft",
+    "sid": "scheduler__admin__search__RMD5379db7c923f8a3ce_at_1780910940_325-2",
+    "search_name": "New TesT",
+    "row_index": 1,
+    "essential": {
+      "status": "FAILED",
+      "revision": 1,
+      "runbook_id": "1602a2f4-48c0-4e0e-a853-17c45f7a50b9",
+      "source_record_id": 257
+    },
+    "summary_line": "Runbook Verify Integrity of Suspicious Executable — FAILED",
+    "chunk_text": "Runbook title: Verify Integrity of Suspicious Executable\nSummary: Establish whether an executable running from an atypical location is legitimate by collecting its hash and digital signature and comparing them to known Microsoft signatures. Use this procedure when an alert indicates execution of a file from a non‑standard path and outbound traffic to a suspicious IP, but inventory linkage is weak.\nRunbook ID: 1602a2f4-48c0-4e0e-a853-17c45f7a50b9\nSource record: 257\nAlert Name: New TesT\nStatus: FAILED\nRevision: 1\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If the hash matches the known Microsoft‑signed osk.exe and no other malicious indicators are present, close the alert as benign. If the hash does not match and the destination IP is flagged as suspicious, escalated for deeper analysis. If hash or signature evidence is missing or contradictory, abstain and request additional data.\nStep 1: Collect Executable Hash and Signature. Intent: Retrieve the SHA256 hash and digital signature of the executable instance identified in the alert. Expected evidence: Hash value and signature metadata for the suspect file. Stop condition: Hash and signature successfully retrieved or retrieval fails.\nStep 2: Compare to Known Legitimate Hash. Intent: Compare the collected hash to the known SHA256 hash of the legitimate Microsoft‑signed osk.exe. Expected evidence: Result of hash comparison (match or mismatch) and any signature verification outcome. Stop condition: Comparison result available or comparison cannot be performed.\nStep 3: Assess Outcome and Escalate if Needed. Intent: Determine next action based on hash match status and presence of suspicious outbound traffic. Expected evidence: Decision to close as benign, escalated for further investigation, or abstain due to insufficient evidence. Stop condition: Decision reached or evidence insufficient.\nLimitations: Weak or missing inventory linkage between asset and user; Potential absence of a valid digital signature on the suspect file; Reliance on a single known hash for comparison; newer legitimate versions may differ; Outbound IP may be spoofed or benign but flagged by threat intel\nEvidence metrics: parser-valid steps=1, successful steps=0, evidence rows=0.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_draft",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:52.420688+00:00",
+    "updated_at": "2026-07-16T04:19:45.612153+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_response_decision:c5bc0b251327016c892a",
+    "doc_type": "runbook_response_decision",
+    "sid": "demo-runbook-source-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "decision": "approve_for_manual_action",
+      "preview_id": "demo-preview-oauth-token-replay-v1",
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "source_record_id": 395
+    },
+    "summary_line": "Runbook Response Decision for Runbook demo-rb-oauth-token-replay-v1",
+    "chunk_text": "Forge artifact type: runbook_response_decision\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"preview_id\": \"demo-preview-oauth-token-replay-v1\", \"decision\": \"approve_for_manual_action\", \"analyst\": \"demo.soc.lead\", \"note\": \"Approved for a separate manual response process; this product performed no execution.\", \"automatic_execution_performed\": false, \"created_at\": \"2026-07-16T08:47:00+00:00\"}",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_response_decision",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-16T04:19:46.988312+00:00",
+    "updated_at": "2026-07-16T04:19:46.988312+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_response_decision:eb2ba0a1b42a970e0aed",
+    "doc_type": "runbook_response_decision",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "decision": "approve_for_manual_action",
+      "preview_id": "53d3adb6-de16-4823-8c8d-d393526c5572",
+      "runbook_id": "f06410a1-a19b-43bd-b892-ef3ab172b970",
+      "source_record_id": 330
+    },
+    "summary_line": "Runbook Response Decision for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970",
+    "chunk_text": "Forge artifact type: runbook_response_decision\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"preview_id\": \"53d3adb6-de16-4823-8c8d-d393526c5572\", \"decision\": \"approve_for_manual_action\", \"analyst\": \"analyst\", \"note\": \"Live validation: evidence basis, target, operational impact, rollback, and verification were reviewed for manual handling only.\", \"automatic_execution_performed\": false, \"created_at\": \"2026-07-15T18:36:03.193185+00:00\"}",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_response_decision",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:53.256071+00:00",
+    "updated_at": "2026-07-16T04:19:47.106757+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_response_preview:3f955c9f50a85193e4e3",
+    "doc_type": "runbook_response_preview",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "status": "READY_FOR_REVIEW",
+      "preview_id": "53d3adb6-de16-4823-8c8d-d393526c5572",
+      "runbook_id": "f06410a1-a19b-43bd-b892-ef3ab172b970",
+      "source_record_id": 330
+    },
+    "summary_line": "Safe Response Preview — 3 action(s), execution disabled",
+    "chunk_text": "Safe Response Preview for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970.\nEvidence basis: ANALYSIS_ONLY.\nDecision summary: Given the high triage score, critical severity, and evidence of outbound C2 activity, the analyst should first collect forensic artifacts from the host to establish the process chain. Simultaneously, escalation to a higher priority ensures that senior responders are aware. Continuous monitoring of the destination IP will provide ongoing visibility. If forensic evidence confirms malicious activity, further containment actions may be warranted; if evidence is inconclusive, the analyst should request additional data before proceeding..\nExecution supported: false. Every action requires human approval.\nPreview action COLLECT_FORENSICS: Collect forensic artifacts from DESKTOP-BRUCE; target DESKTOP-BRUCE; risk high; rationale The alert indicates an outbound connection from a critical asset to a known C2 domain, with the user being an executive. Forensic collection will provide evidence of the process chain and potential compromise.; expected effect Capture process, registry, and network artifacts that can confirm or refute malicious activity; rollback If collection is incomplete, re‑initiate after system is stable; no destructive changes are made; mode PREVIEW_ONLY.\nPreview action ESCALATE_INCIDENT: Escalate incident to higher priority; target 330; risk high; rationale The triage score of 77 and critical severity warrant higher visibility. Escalation ensures that senior analysts and incident response teams are notified promptly.; expected effect Incident is moved to the high‑priority queue and notifications are sent to stakeholders; rollback If escalation is deemed unnecessary, revert the incident priority and remove notifications; mode PREVIEW_ONLY.\nPreview action MONITOR_ONLY: Monitor outbound traffic to 198.51.100.10; target 198.51.100.10; risk high; rationale Continuous monitoring will detect any further C2 activity from the asset or other hosts, providing early warning of persistence or lateral movement.; expected effect Real‑time visibility into any additional connections to the C2 IP; rollback Disable or adjust monitoring filters if they generate excessive noise; mode PREVIEW_ONLY.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_response_preview",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:53.070024+00:00",
+    "updated_at": "2026-07-16T04:19:46.703738+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_response_preview:faec27877eb13838d6b9",
+    "doc_type": "runbook_response_preview",
+    "sid": "demo-runbook-source-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "status": "READY_FOR_REVIEW",
+      "preview_id": "demo-preview-oauth-token-replay-v1",
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "source_record_id": 395
+    },
+    "summary_line": "Safe Response Preview — 2 action(s), execution disabled",
+    "chunk_text": "Safe Response Preview for Runbook demo-rb-oauth-token-replay-v1.\nEvidence basis: SOURCE_EVIDENCE.\nDecision summary: Present two evidence-backed options to the analyst. No command, API call, or automatic response is executed..\nExecution supported: false. Every action requires human approval.\nPreview action REVOKE_SESSIONS: Review session revocation; target alex.morgan; risk high; rationale Corroborated replay evidence justifies a human-reviewed containment option.; expected effect Invalidate active sessions associated with the synthetic identity.; rollback Restore access through the documented identity recovery process.; mode PREVIEW_ONLY.\nPreview action COLLECT_FORENSICS: Preserve identity audit evidence; target judge-demo-oauth-replay; risk low; rationale Evidence preservation supports review without changing external systems.; expected effect Preserve the relevant audit window for investigation.; rollback Remove the temporary hold after case closure according to policy.; mode PREVIEW_ONLY.",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_response_preview",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-16T04:19:46.546910+00:00",
+    "updated_at": "2026-07-16T04:19:46.546910+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_run:a4a3ee941a7015ee24c2",
+    "doc_type": "runbook_run",
+    "sid": "demo-runbook-target-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "status": "REUSED",
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "source_record_id": 395,
+      "target_record_id": 396
+    },
+    "summary_line": "Runbook Run for Runbook demo-rb-oauth-token-replay-v1",
+    "chunk_text": "Forge artifact type: runbook_run\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"target_record_id\": 396, \"status\": \"REUSED\", \"duration_ms\": 2460, \"estimated_minutes_saved\": 24.0, \"total_evidence_rows\": 3, \"created_at\": \"2026-07-16T09:20:00+00:00\"}",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_run",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-16T04:19:46.161763+00:00",
+    "updated_at": "2026-07-16T04:19:46.161763+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_shadow_run:4736f190cd3423118a20",
+    "doc_type": "runbook_shadow_run",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1__tsoc_test_1784137255204169669_fb7be5fc74",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "status": "FAILED",
+      "runbook_id": "f06410a1-a19b-43bd-b892-ef3ab172b970",
+      "source_record_id": 330,
+      "target_record_id": 375
+    },
+    "summary_line": "Runbook Shadow Run for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970",
+    "chunk_text": "Forge artifact type: runbook_shadow_run\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"target_record_id\": 375, \"status\": \"FAILED\", \"duration_ms\": 282264, \"projected_minutes_saved\": 20.296, \"total_evidence_rows\": 0, \"created_at\": \"2026-07-15T18:01:34.699555+00:00\"}",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_shadow_run",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:52.918832+00:00",
+    "updated_at": "2026-07-16T04:19:46.326696+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_shadow_run:7226e529cbfbe7477a17",
+    "doc_type": "runbook_shadow_run",
+    "sid": "scheduler__admin__search__t8372_c2_at_1727841780.1__tsoc_test_1784137255204169669_fb7be5fc74",
+    "search_name": "PaloAlto: Outbound Connection to Known C2 (t8372)",
+    "row_index": 0,
+    "essential": {
+      "status": "FAILED",
+      "runbook_id": "f06410a1-a19b-43bd-b892-ef3ab172b970",
+      "source_record_id": 330,
+      "target_record_id": 375
+    },
+    "summary_line": "Runbook Shadow Run for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970",
+    "chunk_text": "Forge artifact type: runbook_shadow_run\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"target_record_id\": 375, \"status\": \"FAILED\", \"duration_ms\": 86699, \"projected_minutes_saved\": 23.555, \"total_evidence_rows\": 0, \"created_at\": \"2026-07-15T17:53:14.138290+00:00\"}",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_shadow_run",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-15T19:05:52.984385+00:00",
+    "updated_at": "2026-07-16T04:19:46.427378+00:00"
+  },
+  {
+    "doc_id": "verified_runbook_shadow_run:e5a54cbff99c33628aad",
+    "doc_type": "runbook_shadow_run",
+    "sid": "demo-runbook-target-20260716",
+    "search_name": "Judge Demo: Suspicious OAuth Token Replay",
+    "row_index": 0,
+    "essential": {
+      "status": "EVIDENCE_FOUND",
+      "runbook_id": "demo-rb-oauth-token-replay-v1",
+      "source_record_id": 395,
+      "target_record_id": 396
+    },
+    "summary_line": "Runbook Shadow Run for Runbook demo-rb-oauth-token-replay-v1",
+    "chunk_text": "Forge artifact type: runbook_shadow_run\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"target_record_id\": 396, \"status\": \"EVIDENCE_FOUND\", \"duration_ms\": 2310, \"projected_minutes_saved\": 24.0, \"total_evidence_rows\": 3, \"created_at\": \"2026-07-16T08:42:00+00:00\"}",
+    "metadata": {
+      "source": "thinking_soc_forge",
+      "record_type": "verified_runbook_shadow_run",
+      "automatic_execution": false
+    },
+    "created_at": "2026-07-16T04:19:46.219415+00:00",
+    "updated_at": "2026-07-16T04:19:46.219415+00:00"
   }
 ]

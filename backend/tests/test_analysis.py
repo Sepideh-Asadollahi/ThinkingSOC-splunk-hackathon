@@ -75,6 +75,25 @@ def test_investigation_questions_max_default_three(test_settings) -> None:
     assert len(items) == 3
 
 
+def test_explicit_question_limit_overrides_analysis_default(test_settings) -> None:
+    from services.investigation.investigation_questions_spl import investigation_questions_for_verdict
+
+    settings = test_settings.model_copy(
+        update={"tsoc_investigation_questions_max": 1}
+    )
+    many = [f"Runbook step {i}?" for i in range(3)]
+
+    items = investigation_questions_for_verdict(
+        "needs_investigation",
+        many,
+        settings=settings,
+        max_items=3,
+        normalized={},
+    )
+
+    assert len(items) == 3
+
+
 @pytest.mark.asyncio
 async def test_run_analysis_fallback_unit(
     test_settings: Settings, force_soc_analysis_langgraph_fallback

@@ -36,6 +36,21 @@ from models.observability import (
     ObservabilityBatchBySidResponse,
     ObservabilityRunRequest,
 )
+from models.runbook import (
+    RunbookApproval,
+    RunbookApprovalBody,
+    RunbookCompatibleTargets,
+    RunbookExportBundle,
+    RunbookImportBody,
+    RunbookImportResponse,
+    RunbookLibraryResponse,
+    RunbookRevisionBody,
+    RunbookRun,
+    RunbookRunBody,
+    RunbookRuntimeStatus,
+    VerifiedRunbookDraft,
+    VerifiedRunbookState,
+)
 from services.soc_rag.models import (
     SocChatConversationDetail,
     SocChatConversationSummary,
@@ -53,6 +68,8 @@ ReqModel = Union[
     AnalysisRouteRequest,
     AgentTriageRequest,
     SplAssistantSuggestRequest,
+    RunbookApprovalBody,
+    RunbookRunBody,
 ]
 ResModel = TypeVar("ResModel", bound=BaseModel)
 
@@ -641,6 +658,116 @@ class TsocSdkClient:
         """POST /api/v1/investigation/records/{record_id}/analyst-actions — Record acknowledge/escalate."""
         return self._post_raw("/api/v1/investigation/records/{0}/analyst-actions".format(record_id), body)
 
+    def verified_runbook_state(self, record_id: int) -> VerifiedRunbookState:
+        """GET the latest Forge draft, approval, and target run for an investigation."""
+        return self._get_model(
+            "/api/v1/investigation/records/{0}/runbook".format(record_id),
+            VerifiedRunbookState,
+        )
+
+    def runbook_runtime_status(self) -> RunbookRuntimeStatus:
+        """GET non-secret Forge policy and dependency readiness."""
+        return self._get_model(
+            "/api/v1/investigation/runbook-settings",
+            RunbookRuntimeStatus,
+        )
+
+    def compatible_runbook_targets(
+        self,
+        record_id: int,
+        *,
+        limit: int = 12,
+    ) -> RunbookCompatibleTargets:
+        """GET minimal exact-detection candidates for guided runbook reuse."""
+        payload = self._get_raw(
+            "/api/v1/investigation/records/{0}/runbook/compatible-targets".format(
+                record_id
+            ),
+            {"limit": limit},
+        )
+        return RunbookCompatibleTargets.model_validate(payload)
+
+    def runbook_library(
+        self, *, search_name: Optional[str] = None
+    ) -> RunbookLibraryResponse:
+        """GET every immutable runbook revision grouped by exact Alert Name."""
+        payload = self._get_raw(
+            "/api/v1/investigation/runbooks",
+            {"search_name": search_name},
+        )
+        return RunbookLibraryResponse.model_validate(payload)
+
+    def export_runbooks(
+        self,
+        *,
+        runbook_id: Optional[str] = None,
+        search_name: Optional[str] = None,
+    ) -> RunbookExportBundle:
+        """GET the evidence-free v1 portable runbook bundle."""
+        payload = self._get_raw(
+            "/api/v1/investigation/runbooks/export",
+            {"runbook_id": runbook_id, "search_name": search_name},
+        )
+        return RunbookExportBundle.model_validate(payload)
+
+    def import_runbooks(
+        self, body: Union[RunbookImportBody, Dict[str, Any]]
+    ) -> RunbookImportResponse:
+        """POST a portable bundle as inert or freshly verified local drafts."""
+        return self._post_model(
+            "/api/v1/investigation/runbooks/import",
+            body,
+            RunbookImportResponse,
+        )
+
+    def revise_runbook(
+        self,
+        runbook_id: str,
+        body: Union[RunbookRevisionBody, Dict[str, Any]],
+    ) -> VerifiedRunbookDraft:
+        """PATCH complete content into a new immutable revision."""
+        return patch_json_model(
+            url="{0}/api/v1/investigation/runbooks/{1}".format(
+                self.base_url, runbook_id
+            ),
+            headers=self._headers(),
+            timeout_seconds=self.timeout_seconds,
+            body=body,
+            out_model=VerifiedRunbookDraft,
+        )
+
+    def build_verified_runbook(self, record_id: int) -> VerifiedRunbookDraft:
+        """POST a new runbook compilation for an acknowledged SOC investigation."""
+        return self._post_model(
+            "/api/v1/investigation/records/{0}/runbook".format(record_id),
+            {},
+            VerifiedRunbookDraft,
+        )
+
+    def decide_verified_runbook(
+        self,
+        record_id: int,
+        body: Union[RunbookApprovalBody, Dict[str, Any]],
+    ) -> RunbookApproval:
+        """Approve or reject the latest source-verified runbook."""
+        return self._post_model(
+            "/api/v1/investigation/records/{0}/runbook/approval".format(record_id),
+            body,
+            RunbookApproval,
+        )
+
+    def run_verified_runbook(
+        self,
+        target_record_id: int,
+        body: Union[RunbookRunBody, Dict[str, Any]],
+    ) -> RunbookRun:
+        """Execute an approved runbook against one exact-search-name target."""
+        return self._post_model(
+            "/api/v1/investigation/records/{0}/runbook-runs".format(target_record_id),
+            body,
+            RunbookRun,
+        )
+
     # ----- Triage -----
 
     def triage_queue(
@@ -657,4 +784,3 @@ class TsocSdkClient:
     def health(self) -> Dict[str, Any]:
         """GET /api/v1/health — Backend liveness check."""
         return self._get_raw("/api/v1/health")
-

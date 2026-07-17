@@ -35,6 +35,16 @@ During install.sh you choose:
 Default install directory: /opt/thinking-soc-splunk-hackathon
   Override: TSOC_INSTALL_DIR=/other/path sudo bash install.sh
 
+Unattended install / smoke-test controls:
+  NON_INTERACTIVE=true              use defaults without /dev/tty prompts
+  TSOC_LOAD_DEMO_DATA=true|false    load the committed full demo bundle
+  TSOC_SETUP_SYSTEMD=true|false     select systemd or background services
+  TSOC_RESET_EXISTING_STACK=true    explicitly permit deletion of only the
+                                    ThinkingSOC containers/data volumes
+
+TSOC_RESET_EXISTING_STACK is intentionally unset by default. Never enable it
+on an existing deployment unless replacing its ThinkingSOC database is intended.
+
 EOF
 }
 
@@ -53,11 +63,12 @@ _tsoc_tcp_port_in_use() {
 
 ensure_frontend_production_build() {
     local frontend_dir="$INSTALL_DIR/frontend"
+    local force="${1:-false}"
     if [[ ! -d "$frontend_dir/node_modules" ]]; then
         err "Frontend node_modules missing — run: cd frontend && npm install"
         return 1
     fi
-    if [[ -f "$frontend_dir/.next/BUILD_ID" ]]; then
+    if [[ "$force" != true && -f "$frontend_dir/.next/BUILD_ID" ]]; then
         ok "Frontend production build present (.next/BUILD_ID)"
         return 0
     fi
@@ -95,6 +106,16 @@ _wait_for_http() {
     return 1
 }
 
+_wait_for_backend_service() {
+    if declare -F _wait_for_backend_with_embedding_notice >/dev/null 2>&1; then
+        _wait_for_backend_with_embedding_notice "$@"
+        return $?
+    fi
+    # Standalone helpers such as scripts/start-tsoc-services.sh source this
+    # module without embedding.sh. Keep those commands self-contained.
+    _wait_for_http "$@"
+}
+
 _backend_startup_diagnose() {
     warn "Backend /health not ready yet — common causes:"
     info "  · First start loads the embedding model into RAM (~1–3 min even after download)"
@@ -118,26 +139,36 @@ start_application_services() {
     fi
 
     if _tsoc_tcp_port_in_use 9876; then
-        ok "Backend already listening on port 9876"
+        if _tsoc_curl_ok "http://127.0.0.1:9876/health"; then
+            ok "Backend already listening on port 9876 and healthy"
+        else
+            err "Port 9876 is occupied but GET /health failed; refusing to treat it as ThinkingSOC"
+            return 1
+        fi
     else
         info "Starting backend API (log: ${log_dir}/backend.log) …"
         (
             cd "$INSTALL_DIR/backend"
-            nohup "$venv_python" run.py >>"${log_dir}/backend.log" 2>&1 &
+            nohup setsid "$venv_python" run.py >>"${log_dir}/backend.log" 2>&1 &
             echo $! >"${log_dir}/backend.pid"
         )
-        _wait_for_backend_with_embedding_notice "http://127.0.0.1:9876/health" "Backend API" 300 2 || true
+        _wait_for_backend_service "http://127.0.0.1:9876/health" "Backend API" 300 2 || true
     fi
 
     if _tsoc_tcp_port_in_use 3000; then
-        ok "Frontend already listening on port 3000"
+        if _tsoc_curl_ok "http://127.0.0.1:3000/login"; then
+            ok "Frontend already listening on port 3000 and reachable"
+        else
+            err "Port 3000 is occupied but GET /login failed; refusing to treat it as ThinkingSOC"
+            return 1
+        fi
     else
         ensure_frontend_production_build || return 1
         info "Starting frontend UI — production (npm run start, log: ${log_dir}/frontend.log) …"
         (
             cd "$INSTALL_DIR/frontend"
             export NODE_ENV=production
-            nohup npm run start >>"${log_dir}/frontend.log" 2>&1 &
+            nohup setsid npm run start >>"${log_dir}/frontend.log" 2>&1 &
             echo $! >"${log_dir}/frontend.pid"
         )
         _wait_for_http "http://127.0.0.1:3000/login" "Frontend UI" 60 2 || true
@@ -164,11 +195,46 @@ stop_application_services() {
             local pid
             pid="$(cat "$pid_file" 2>/dev/null || true)"
             if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
-                kill "$pid" 2>/dev/null || true
+                # New installs run each service in its own process group so npm
+                # and its next-server child stop together. The direct-PID
+                # fallback keeps compatibility with older pid files.
+                kill -TERM -- "-${pid}" 2>/dev/null || kill "$pid" 2>/dev/null || true
                 ok "Stopped ${name} (pid ${pid})"
             fi
             rm -f "$pid_file"
         fi
+    done
+
+    # Recover safely from stale/missing pid files: stop only listeners whose
+    # working directory belongs to this exact checkout. Never kill an unrelated
+    # process merely because it owns one of the expected ports.
+    local spec service port pid cwd
+    for spec in "backend:9876" "frontend:3000"; do
+        service="${spec%%:*}"
+        port="${spec##*:}"
+        while read -r pid; do
+            [[ "$pid" =~ ^[0-9]+$ ]] || continue
+            kill -0 "$pid" 2>/dev/null || continue
+            cwd="$(readlink -f "/proc/${pid}/cwd" 2>/dev/null || true)"
+            if [[ "$cwd" == "$INSTALL_DIR" || "$cwd" == "$INSTALL_DIR/"* ]]; then
+                kill "$pid" 2>/dev/null || true
+                ok "Stopped unmanaged ${service} listener from this checkout (pid ${pid})"
+            else
+                warn "Did not stop pid ${pid} on port ${port}; cwd is outside ${INSTALL_DIR}"
+            fi
+        done < <(ss -ltnpH 2>/dev/null \
+            | grep -E ":${port}([[:space:]]|$)" \
+            | grep -oE 'pid=[0-9]+' \
+            | cut -d= -f2 \
+            | sort -u || true)
+    done
+
+    local i
+    for ((i = 1; i <= 20; i++)); do
+        if ! _tsoc_tcp_port_in_use 9876 && ! _tsoc_tcp_port_in_use 3000; then
+            return 0
+        fi
+        sleep 0.25
     done
 }
 
@@ -222,7 +288,7 @@ EOF
     run_cmd systemctl start tsoc-frontend.service
 
     info "Starting backend — /health should respond within ~1–3 min (RAG loads in background) …"
-    if ! _wait_for_backend_with_embedding_notice "http://127.0.0.1:9876/health" "Backend API" 180 2; then
+    if ! _wait_for_backend_service "http://127.0.0.1:9876/health" "Backend API" 180 2; then
         _backend_startup_diagnose
     fi
     _wait_for_http "http://127.0.0.1:3000/login" "Frontend UI" 60 2 || true

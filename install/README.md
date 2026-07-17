@@ -38,19 +38,20 @@ They do **not** use `npm run dev` (dev/HMR is only for local UI development).
 
 Docker must stay up: `tsoc-postgres`, `tsoc-qdrant`, `tsoc-neo4j`.
 
-### Demo data (moment snapshot)
+### Demo data (full snapshot)
 
 If you answer **Yes** to **Load demo data** during `install.sh`:
 
 - **No extra apt packages** are required (no `postgresql-client`, `pg_dump`, or `jq` on the host).
 - The installer already provides **Docker PostgreSQL** and **Python `asyncpg`** in `backend/.venv`.
-- Data is restored automatically from the full backup `backend/data/demo/postgres_dump/tsoc_demo.sql` (a `pg_dump` replica: inventory, all `tsoc_records`, all `graph_findings`, all `tsoc_rag_documents`). Falls back to the JSON snapshot under `backend/data/demo/postgres_snapshot/` if the backup is missing.
+- Data is restored automatically from the full backup `backend/data/demo/postgres_dump/tsoc_demo.sql` (a `pg_dump` replica: inventory, all `tsoc_records`, all `graph_findings`, all `tsoc_rag_documents`, and Chat). Falls back to the full JSON snapshot under `backend/data/demo/postgres_snapshot/` if the backup is missing.
+- The restored data includes the additive **Judge Demo: Suspicious OAuth Token Replay** tour: same-name/different-SID alerts, source-verified Runbook, human approval, Shadow Run, safe-response preview, five-agent Autopilot trace, and a preloaded Chat/RAG guide. Existing demo scenarios remain present.
 - Fallback: CSV files under `backend/data/demo/` if the snapshot bundle is missing.
 
 Refresh the bundled snapshot after changing a live database:
 
 ```bash
-cd backend && .venv/bin/python scripts/seed/export_demo_postgres_snapshot.py
+bash scripts/backup-demo-db.sh --json-full
 ```
 
 **Full documentation:** [docs/24-demo-postgresql-data.md](../docs/24-demo-postgresql-data.md)
@@ -64,6 +65,12 @@ sudo bash /opt/thinking-soc-splunk-hackathon/scripts/reload-demo-snapshot.sh
 ```
 
 During `install.sh`, demo load + service restart run automatically when you choose **Load demo data**.
+
+The install Smoke Test also performs a non-destructive restore of both the SQL dump and JSON fallback into temporary databases. It verifies that previous demo scenarios remain available and that the Runbook judge tour includes same-name/different-SID reuse, three parser-valid evidence steps, human approval, Shadow Run, five-agent Autopilot trace, safe response preview, Chat/RAG content, and SPL syntax self-repair. The temporary databases are always removed afterward. Run this check again at any time:
+
+```bash
+sudo bash install/smoke-demo-data.sh
+```
 
 **Troubleshooting empty Analysis/Correlation on a new server:** read the installer's demo restore log:
 
@@ -94,6 +101,23 @@ If nothing is detected, no prompt — a new stack is created automatically.
 | Compose project | `tsoc` |
 
 Older installs may have left `backend_tsoc_*` volumes; the installer removes those too when resetting.
+
+For an unattended CI or disposable-server smoke test, the same safety decision
+must be explicit; it is never inferred from `NON_INTERACTIVE=true`:
+
+```bash
+sudo env \
+  NON_INTERACTIVE=true \
+  TSOC_LOAD_DEMO_DATA=true \
+  TSOC_SETUP_SYSTEMD=false \
+  TSOC_RESET_EXISTING_STACK=true \
+  TSOC_INSTALL_STATE_FILE=/tmp/tsoc-clean-install.progress \
+  bash install.sh
+```
+
+`TSOC_RESET_EXISTING_STACK=true` removes only the named ThinkingSOC containers
+and volumes listed above. Do not set it when the current ThinkingSOC database
+must be preserved.
 
 ### Vector embedding model download (default `bge-base`, ~220 MB)
 

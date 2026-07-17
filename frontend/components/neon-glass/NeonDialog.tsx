@@ -59,7 +59,7 @@ type NeonDialogHeaderWithIconProps = {
   accent?: NeonAccent
   variant?: "default" | "danger"
   icon?: React.ReactNode
-  title: string
+  title: React.ReactNode
   description?: string
 }
 

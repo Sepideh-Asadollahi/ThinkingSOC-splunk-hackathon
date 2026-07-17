@@ -12,6 +12,14 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/
+/playwright/.cache/
+/playwright/.auth/
+/storage-state*.json
+**/trace.zip
 
 # next.js
 /.next/
@@ -23,6 +31,19 @@
 # misc
 .DS_Store
 *.pem
+*.tmp
+*.temp
+*.part
+
+# local screenshots and browser recordings
+/artifacts/
+*.mp4
+*.webm
+*.mkv
+*.mov
+*contact-sheet*.png
+*sample-preview*.png
+*final-frame*.png
 
 # debug
 npm-debug.log*

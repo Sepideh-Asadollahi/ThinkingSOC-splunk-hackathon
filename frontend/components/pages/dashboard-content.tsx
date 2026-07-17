@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
 import {
   BrainCircuitIcon,
+  BookOpenCheckIcon,
   GitBranchIcon,
   LayoutDashboardIcon,
   PlugIcon,
   RefreshCwIcon,
+  MessageSquareTextIcon,
   UsersIcon,
 } from "lucide-react"
 
@@ -17,6 +19,7 @@ import {
   DashboardKpiGrid,
   DashboardPriorityChart,
   DashboardRecordTypesChart,
+  DashboardRunbookOperations,
   DashboardSystemResources,
   DashboardTopPriorityTable,
   DashboardVerdictChart,
@@ -35,6 +38,8 @@ import type { DashboardOverview } from "@/lib/api/types"
 import { cn } from "@/lib/utils"
 
 const quickLinks = [
+  { title: "Runbook Library", href: "/runbooks/library", icon: BookOpenCheckIcon },
+  { title: "SOC Chat", href: "/soc-chat", icon: MessageSquareTextIcon },
   { title: "Inventory", href: "/inventory", icon: UsersIcon },
   { title: "Relationships", href: "/relationships", icon: GitBranchIcon },
   { title: "Analysis", href: "/analysis", icon: BrainCircuitIcon },
@@ -94,7 +99,8 @@ export function DashboardContent() {
   }, [])
 
   useEffect(() => {
-    void load()
+    const timer = window.setTimeout(() => void load(), 0)
+    return () => window.clearTimeout(timer)
   }, [load])
 
   useEffect(() => {
@@ -116,7 +122,7 @@ export function DashboardContent() {
               Overview
             </h1>
             <p className="text-sm text-slate-400">
-              Live platform status — ingest, pipelines, triage, and inventory
+              Live platform status — ingest, triage, Forge, Autopilot, Chat, and inventory
               {overview?.generated_at ? (
                 <span className="text-slate-500">
                   {" "}
@@ -160,6 +166,8 @@ export function DashboardContent() {
         {overview?.postgres_configured ? (
         <>
           <DashboardKpiGrid kpis={overview.kpis} />
+
+          <DashboardRunbookOperations ops={overview.runbook_ops} />
 
           <div className="grid gap-4 lg:grid-cols-3">
             <div className="lg:col-span-2 flex [&>*]:min-h-0 [&>*]:w-full">

@@ -162,6 +162,7 @@ async def _run_one(
     earliest_time, latest_time = all_time_bounds(settings)
 
     use_mcp = bool(getattr(settings, "tsoc_spl_execute_via_mcp", True))
+    mcp_failure: Optional[str] = None
     if use_mcp and mcp_configured(settings):
         mcp_result = await execute_spl_via_mcp(
             settings,
@@ -174,13 +175,18 @@ async def _run_one(
         if not mcp_result.error:
             if (mcp_result.row_count or 0) > 0:
                 return mcp_result.model_copy(
-                    update={"rows": _readable_rows(mcp_result.rows or [])}
+                    update={
+                        "rows": _readable_rows(mcp_result.rows or []),
+                        "execution_transport": "mcp",
+                    }
                 )
+            mcp_failure = "MCP returned zero rows"
             logger.info(
                 "MCP run_query returned 0 rows, fallback to REST oneshot spl_len=%d",
                 len(spl),
             )
         else:
+            mcp_failure = str(mcp_result.error)
             logger.info("MCP run_query failed, fallback to REST oneshot: %s", mcp_result.error)
 
     try:
@@ -197,7 +203,16 @@ async def _run_one(
             row_count=len(rows),
             rows=_readable_rows(capped),
             truncated=len(rows) > _MAX_ROWS,
+            execution_transport="rest",
         )
     except Exception as e:
         logger.info("investigation_spl_execute failed spl_len=%d: %s", len(spl), e)
-        return SplSearchResult(row_count=0, rows=[], error=str(e))
+        rest_error = str(e)
+        combined = (
+            "MCP unavailable ({0}); Splunk REST API failed ({1})".format(
+                mcp_failure, rest_error
+            )
+            if mcp_failure
+            else "Splunk REST API failed ({0})".format(rest_error)
+        )
+        return SplSearchResult(row_count=0, rows=[], error=combined)

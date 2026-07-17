@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 SNAPSHOT_DIR = DEMO_DATA_DIR / "postgres_snapshot"
 MANIFEST_FILE = "manifest.json"
 
-# Moment-in-time demo: full inventory + identity, last N analysis records only.
+# Committed full demo bundle: inventory, analyses, findings, RAG, Chat, and Runbooks.
 DEMO_RECORD_LIMIT = 6
 
 # Correlation page (/correlation) = graph_findings: include only the newest finding.

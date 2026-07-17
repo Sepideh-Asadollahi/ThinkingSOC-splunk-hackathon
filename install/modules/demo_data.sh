@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Demo moment snapshot (backend/data/demo/postgres_snapshot) — loader for install/modules/demo_data/*.sh
+# Full demo snapshot (backend/data/demo/postgres_snapshot) — loader for install/modules/demo_data/*.sh
 #
 # Submodules (load order):
 #   vars.sh            DEMO_SEED_MODE, path helpers, required JSON file list

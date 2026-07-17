@@ -57,6 +57,14 @@ const sampleWorkflow: InvestigationWorkflowExport = {
       },
     ],
   },
+  verified_runbook: {
+    record_id: 42,
+    draft: null,
+    latest_approval: null,
+    latest_run: null,
+    latest_response_preview: null,
+    latest_response_decision: null,
+  },
   fetch_errors: [],
 }
 

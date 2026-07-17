@@ -1,6 +1,6 @@
 # Dashboard — analyst overview
 
-The **Dashboard** is the default landing page in the analyst UI. It provides a live, at-a-glance view of platform health, pipeline activity, triage distribution, inventory size, and backend host resources.
+The **Dashboard** is the default landing page in the analyst UI. It provides a live, at-a-glance view of platform health, pipeline activity, triage distribution, the complete Forge/Runbook lifecycle, Autopilot and Chat adoption, inventory size, and backend host resources.
 
 **Related:** [08-triage-priority-layer.md](./08-triage-priority-layer.md) (triage queue) · [12-correlation-graph-service.md](./12-correlation-graph-service.md) (correlation / Neo4j) · [14-inventory-service.md](./14-inventory-service.md) (inventory) · [20-investigation-workflow.md](./20-investigation-workflow.md) (investigation detail) · [11-environment-configuration.md](./11-environment-configuration.md) (env)
 
@@ -13,6 +13,7 @@ flowchart TB
   subgraph frontend ["Next.js Frontend"]
     Page["/dashboard page\n→ DashboardContent"]
     KPI["DashboardKpiGrid\n6 metric cards"]
+    RunbookOps["DashboardRunbookOperations\nForge lifecycle + guarded outcomes"]
     Activity["DashboardActivityChart\n30-day stacked area"]
     Health["DashboardHealthGauge\nhealth score + 4 integration chips"]
     SysRes["DashboardSystemResources\nCPU + memory bars"]
@@ -37,6 +38,7 @@ flowchart TB
     Users["tsoc_users"]
     Assets["tsoc_assets"]
     Findings["graph_findings"]
+    Chat["tsoc_chat_conversations\ntsoc_chat_messages"]
   end
 
   Page --> Route
@@ -45,12 +47,14 @@ flowchart TB
   Stats --> Users
   Stats --> Assets
   Stats --> Findings
+  Stats --> Chat
   Builder --> TriageQ --> Records
   Builder --> IntProbe
   Builder --> SysCollect
 
   Route --> Page
   Page --> KPI
+  Page --> RunbookOps
   Page --> Activity
   Page --> Health
   Page --> SysRes
@@ -77,12 +81,13 @@ flowchart TB
 | `postgres_configured` | `bool` | Always `true` on success (503 when DSN missing) |
 | `system_resources` | `SystemResources` | Backend host CPU and memory via `psutil` |
 | `kpis` | `DashboardKpis` | Six headline metrics (see §2) |
-| `activity_timeline` | `ActivityTimelinePoint[]` | Daily buckets for the last **30** days (see §3) |
+| `activity_timeline` | `ActivityTimelinePoint[]` | Daily buckets for the last **30** days (see §4) |
 | `record_type_counts` | `CountByType[]` | `COUNT(*)` per `tsoc_record_type` |
 | `triage_by_verdict` | `CountByVerdict[]` | Verdict distribution from triage sample |
 | `triage_by_priority` | `CountByPriority[]` | Priority distribution from triage sample |
 | `track_split` | `TrackSplit` | Security vs observability counts from triage sample (API only — not rendered in the dashboard UI) |
 | `integrations` | `DashboardIntegrations` | `postgres`, `llm`, `mcp`, `neo4j` booleans |
+| `runbook_ops` | `DashboardRunbookOps` | Forge lifecycle, guarded execution outcomes, Evidence, saved time, Autopilot, response previews, and Chat counts |
 | `health_score` | `int` | 0–100 integration readiness score |
 | `top_priority` | `TopPriorityItem[]` | Top 5 triage items by score |
 
@@ -117,7 +122,37 @@ Triage-derived KPIs and charts use a **sample of up to 50** items from `build_tr
 
 ---
 
-## 3. Activity timeline (30 days)
+## 3. Runbook operations
+
+The **Runbook operations** panel is a live PostgreSQL rollup, not a static product-tour card. It uses the latest revision per Runbook source and the latest approval for that exact source/Runbook pair.
+
+### Forge lifecycle
+
+Four rectangular stages make review readiness visible:
+
+| Stage | Definition |
+|-------|------------|
+| **Latest Runbooks** | Latest immutable revision for every source investigation |
+| **Source verified** | Latest revisions whose status is `SOURCE_VERIFIED` |
+| **Human approved** | Source-verified revisions whose latest decision is `approve` |
+| **Reusable alert names** | Distinct exact Alert Names with a source-verified, approved Runbook |
+
+### Guarded execution outcomes
+
+| Metric | Source / meaning |
+|--------|------------------|
+| **Executions** | All `verified_runbook_run` records |
+| **Reused with evidence** | Run status `REUSED` |
+| **Safe abstention / no evidence** | Run status `NO_EVIDENCE`; the system executed read-only steps but did not overclaim evidence |
+| **Failed** | Parser/tool/runtime failure recorded as `FAILED` |
+| **Evidence rows** | Sum of `total_evidence_rows` across guarded executions |
+| **Time saved** | Sum of `estimated_minutes_saved`; an estimate, not a billing measurement |
+
+The panel also shows Shadow Runs, safe-response previews, total/completed Autopilot sessions, and persisted SOC Chat conversations/messages. Quick actions open **Runbook Library**, **Forge & Policies**, and **SOC Chat**. Runbook execution remains exact-Alert-Name, parser-validated, read-only, human-gated, and MCP-first with Splunk REST fallback.
+
+---
+
+## 4. Activity timeline (30 days)
 
 Stacked area chart titled **Pipeline activity** showing daily event counts over the last **30 days** (`fetch_activity_by_day(settings, days=30)`).
 
@@ -154,7 +189,7 @@ Other dashboard charts (verdict pie, priority bar, record types) have **no time 
 
 ---
 
-## 4. Health score and integrations
+## 5. Health score and integrations
 
 ### Health score (0–100)
 
@@ -182,7 +217,7 @@ Integration probes are cached in-process for **45 seconds** to keep dashboard lo
 
 ---
 
-## 5. Triage distribution charts
+## 6. Triage distribution charts
 
 Both charts derive counts from the **50-item triage sample** (same source as KPIs).
 
@@ -210,13 +245,13 @@ Empty state: *No priority data yet*.
 
 ---
 
-## 6. Record type counts
+## 7. Record type counts
 
 Vertical bar chart showing the **top 8** `tsoc_record_type` values by count (full list is in the API response). Typical types: `splunk_ingest`, `soc_analysis`, `observability_analysis`, `agentic_ops_analysis`, `investigation_analyst_action`, `admin_org_gap_suggest`, `llm_chat_audit`.
 
 ---
 
-## 7. Top priority table
+## 8. Top priority table
 
 Top **5** items from the triage sample (already sorted by `triage_score` descending). Each row shows:
 
@@ -239,7 +274,7 @@ A **View all** link opens `/analysis`.
 
 ---
 
-## 8. System resources
+## 9. System resources
 
 Host metrics collected on the **backend process host** via `psutil`:
 
@@ -255,7 +290,7 @@ The UI renders CPU and memory as percentage bars with GiB detail for memory.
 
 ---
 
-## 9. UI error handling
+## 10. UI error handling
 
 When live metrics fail to load, the page shows a destructive alert with a contextual message:
 
@@ -269,12 +304,14 @@ Skeleton placeholder cards appear during the initial load.
 
 ---
 
-## 10. Quick navigation
+## 11. Quick navigation
 
 Bottom bar with shortcut links to:
 
 | Link | Route |
 |------|-------|
+| Runbook Library | `/runbooks/library` |
+| SOC Chat | `/soc-chat` |
 | Inventory | `/inventory` |
 | Relationships | `/relationships` |
 | Analysis | `/analysis` |

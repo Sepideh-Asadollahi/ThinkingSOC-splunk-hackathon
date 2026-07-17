@@ -211,7 +211,7 @@ Users, assets, and user–asset **relationships** are stored in PostgreSQL. The 
 
 MCP is **optional** for execute. SPL **generation** uses Splunk REST **`/predict`** (UI `write_spl` path), then LiteLLM or rule-based `search` fallback. See [13-cim-investigation-spl-mcp.md](./13-cim-investigation-spl-mcp.md). Status: `GET /api/v1/mcp/status`.
 
-**Investigation SPL:** `/predict` per question → parser validate → MCP execute (All Time) → LiteLLM refine on error/0 rows (max 2). See [13-cim-investigation-spl-mcp.md](./13-cim-investigation-spl-mcp.md).
+**Investigation SPL:** `/predict` per question → deterministic syntax repair → parser validate → MCP execute (All Time) → LiteLLM refine on error/0 rows (max 3). See [13-cim-investigation-spl-mcp.md](./13-cim-investigation-spl-mcp.md).
 
 **Hunter / Judge MCP (SOC LangGraph):** When `TSOC_MCP_ENABLED` and `TSOC_MCP_HUNTER_JUDGE_ENABLED` are true, the Security pipeline gathers live Splunk evidence **before** the Hunter and Judge LLM stages (`backend/splunk/mcp/hunter_judge_context.py`):
 

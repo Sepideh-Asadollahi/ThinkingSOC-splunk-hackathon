@@ -3,6 +3,7 @@ from __future__ import annotations
 import httpx
 
 from api.app_errors import AppError, map_exception, splunk_rest_error
+from services.llm.litellm_service import LiteLLMProviderError
 
 
 def test_map_splunk_404_to_job_not_found():
@@ -18,6 +19,21 @@ def test_map_value_error_to_bad_request():
     mapped = map_exception(ValueError("sid missing"))
     assert mapped.status_code == 400
     assert mapped.code == "invalid_request"
+
+
+def test_map_llm_provider_error_preserves_retry_metadata():
+    mapped = map_exception(
+        LiteLLMProviderError(
+            "LLM provider is temporarily busy",
+            kind="provider_busy",
+            retryable=True,
+            attempts=4,
+        )
+    )
+    assert mapped.status_code == 503
+    assert mapped.code == "llm_provider_busy"
+    assert mapped.retryable is True
+    assert mapped.details == {"attempts": 4}
 
 
 def test_build_error_body_shape():

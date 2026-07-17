@@ -4,18 +4,31 @@
 
 Demo data is loaded in this order:
 
-0. **`postgres_dump/tsoc_demo.sql`** — **primary**: full `pg_dump` backup of the demo DB. `install.sh` restores it with `psql` (`DROP` + recreate every table with data), so a new server is an exact replica — inventory, **all** `tsoc_records`, **all** `graph_findings`, **all** `tsoc_rag_documents`. Capture: `bash scripts/backup-demo-db.sh`; restore: `bash scripts/restore-demo-db.sh`.
-1. **`postgres_snapshot/`** — JSON fallback (moment snapshot) when the dump is absent and `manifest.json` is present:
-   - **Full** Asset + Identity: `tsoc_users`, `tsoc_assets`, `tsoc_relationships`, `tsoc_identity_rules` (legacy table — enrichment uses built-in field maps, not this table)
-   - **Up to 6 newest** `tsoc_records` by `id` (latest analysis moment only)
-   - **Newest 1** `graph_findings` row (Correlation page)
+0. **`postgres_dump/tsoc_demo.sql`** — **primary**: full `pg_dump` backup of the demo DB. `install.sh` restores it with `psql` (`DROP` + recreate every table with data), so a new server is an exact replica — inventory, **all** `tsoc_records`, **all** `graph_findings`, **all** `tsoc_rag_documents`, and Chat history. Capture: `bash scripts/backup-demo-db.sh`; restore: `bash scripts/restore-demo-db.sh`.
+1. **`postgres_snapshot/`** — full JSON fallback when the dump is absent and `manifest.json` is present. The committed manifest contains every row from inventory, records, RAG, correlation, and Chat tables.
 2. **CSV fallback** — `tsoc_*.csv` at repo root and scenario subdirectories (see below).
 
-Refresh the snapshot from a running database (full inventory + up to 6 newest records + newest correlation finding):
+## Installed Runbook judge tour
+
+The full dump and JSON fallback include an additive, fully linked synthetic scenario named **`Judge Demo: Suspicious OAuth Token Replay`**. It does not replace any previous demo row and contains:
+
+- two `soc_analysis` alerts with the exact same Alert Name and different stable SIDs;
+- analyst acknowledgement, a three-step `SOURCE_VERIFIED` Runbook, and recorded human approval;
+- an evidence-bearing Shadow Run and an approved `REUSED` run against the second SID;
+- a `PREVIEW_ONLY` Safe Response plus a decision whose automatic-execution flag is false;
+- a five-agent Runbook Autopilot trace covering MCP, REST fallback, compiler, policy, and response-advisor tools;
+- compact RAG documents and a **Judge tour — Runbook Autopilot** Chat conversation.
+
+All identities, applications, addresses, timestamps, and evidence rows in this tour are synthetic. Rebuild or verify it idempotently without deleting other data:
 
 ```bash
-cd backend && .venv/bin/python scripts/seed/export_demo_postgres_snapshot.py
-# Optional: --record-limit 4
+backend/.venv/bin/python backend/scripts/seed/seed_runbook_judge_demo.py
+```
+
+Refresh the full JSON snapshot from a running database:
+
+```bash
+cd backend && .venv/bin/python scripts/seed/export_demo_postgres_snapshot.py --full
 ```
 
 ## `postgres_snapshot/`

@@ -14,7 +14,8 @@ Modes:
 Examples:
   python3 scripts/test_splunk_webhook.py scripts/samples/splunk-webhook-example.json
   # console mode auto-uses result rows from JSON (--offline) when Splunk is not running
-  python3 scripts/test_splunk_webhook.py --live-splunk attack.json   # force Splunk REST on :8089
+  # --keep-sid is required when querying an existing live Splunk search job
+  python3 scripts/test_splunk_webhook.py --live-splunk --keep-sid attack.json
   python3 scripts/test_splunk_webhook.py -v --mode webhook attack.json
 """
 
@@ -34,6 +35,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from uuid import uuid4
 
 
 class ScriptError(Exception):
@@ -462,6 +464,54 @@ def _row_from_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     if isinstance(many, list) and many and isinstance(many[0], dict):
         return many[0]
     return {}
+
+
+def assign_unique_test_sid(payload: Dict[str, Any]) -> Tuple[Optional[str], str]:
+    """Replace captured webhook SID values with one unique SID for this run.
+
+    The source file is never changed. ``orig_sid`` keeps the captured Splunk SID
+    for diagnostics while every identity-bearing webhook row receives the same
+    generated SID, so multi-row payloads still represent one alert instance.
+    """
+    row = _row_from_payload(payload)
+    original_sid = _first_non_empty(
+        payload.get("sid"),
+        payload.get("job_sid"),
+        row.get("sid"),
+    )
+    raw_prefix = original_sid or "tsoc_webhook"
+    safe_prefix = "".join(
+        char if char.isalnum() or char in "._-" else "_" for char in raw_prefix
+    ).strip("._-")[:96] or "tsoc_webhook"
+    unique_sid = "{0}__tsoc_test_{1}_{2}".format(
+        safe_prefix,
+        time.time_ns(),
+        uuid4().hex[:10],
+    )
+
+    if original_sid:
+        payload["orig_sid"] = original_sid
+    payload["sid"] = unique_sid
+    if "job_sid" in payload:
+        payload["job_sid"] = unique_sid
+
+    identity_rows: List[Dict[str, Any]] = []
+    one = payload.get("result")
+    if isinstance(one, dict):
+        identity_rows.append(one)
+    many = payload.get("results")
+    if isinstance(many, list):
+        identity_rows.extend(item for item in many if isinstance(item, dict))
+    normalized = payload.get("normalized")
+    if isinstance(normalized, dict) and "sid" in normalized:
+        identity_rows.append(normalized)
+
+    for item in identity_rows:
+        if original_sid and not _first_non_empty(item.get("orig_sid")):
+            item["orig_sid"] = original_sid
+        item["sid"] = unique_sid
+
+    return original_sid, unique_sid
 
 
 def _build_normalized(payload: Dict[str, Any], row: Dict[str, Any]) -> Dict[str, Any]:
@@ -1025,12 +1075,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="console: always call Splunk REST for job rows (needs Splunk on SPLUNK_MGMT_URL)",
     )
+    p.add_argument(
+        "--keep-sid",
+        action="store_true",
+        help="Do not generate a unique SID; use only for an existing live Splunk search job.",
+    )
     p.add_argument("-v", "--verbose", action="store_true", help="Log full JSON bodies (DEBUG)")
     p.add_argument("--base-url", default=base, help="Backend base URL")
     p.add_argument("--token", default=token, help="TSOC_INGEST_TOKEN")
     p.add_argument("--no-poll", action="store_true")
-    p.add_argument("--poll-timeout", type=float, default=120.0)
-    p.add_argument("--timeout", type=float, default=300.0)
+    p.add_argument("--poll-timeout", type=float, default=220.0)
+    p.add_argument("--timeout", type=float, default=800.0)
     p.add_argument(
         "--row-index",
         type=int,
@@ -1082,6 +1137,16 @@ def main() -> int:
 
         summary.step("Load JSON: {0}".format(path.name))
         payload = _load_json(path)
+        if args.keep_sid:
+            log.info("Keep captured SID (--keep-sid)")
+        else:
+            original_sid, unique_sid = assign_unique_test_sid(payload)
+            summary.step("Generate unique SID for this test run")
+            log.info(
+                "SID rotated: original=%s generated=%s",
+                original_sid or "(missing)",
+                unique_sid,
+            )
         handoff = normalize_splunk_ingest_payload(payload)
         summary.sid = handoff.get("sid")
         summary.search_name = handoff.get("search_name")

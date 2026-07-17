@@ -28,7 +28,7 @@ def spl_validation_is_error(validation: Optional[RootCauseSplValidation]) -> boo
 
 
 def _spl_error_refine_max_attempts(settings: Settings) -> int:
-    return max(0, min(2, int(getattr(settings, "tsoc_spl_execute_refine_max_attempts", 2) or 0)))
+    return max(0, min(3, int(getattr(settings, "tsoc_spl_execute_refine_max_attempts", 3) or 0)))
 
 
 def _spl_error_refine_enabled(settings: Settings) -> bool:
@@ -463,7 +463,7 @@ async def refine_root_cause_spl_until_valid(
         return rc, False
 
     limit = _spl_error_refine_max_attempts(settings) if max_attempts is None else max(
-        0, min(2, int(max_attempts))
+        0, min(3, int(max_attempts))
     )
     any_fixed = False
     rows = splunk_results or []

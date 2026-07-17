@@ -167,6 +167,7 @@ def map_exception(exc: BaseException, *, context: str | None = None) -> AppError
             reason=f"{prefix}LLM provider call failed".strip(),
             status_code=provider_error_http_status(exc),
             retryable=exc.retryable,
+            details={"attempts": exc.attempts},
         )
 
     if isinstance(exc, httpx.HTTPStatusError):

@@ -34,6 +34,7 @@ from services.investigation.spl_predict_pipeline import (
     build_predict_prompt,
     generate_spl_via_predict,
 )
+from services.investigation.spl_syntax_sanitize import repair_missing_boolean_operators
 from services.investigation.spl_tstats_sanitize import sanitize_spl_draft
 from splunk.client import SplunkRestClient
 
@@ -141,7 +142,9 @@ async def validate_investigation_question_items(
     norm = normalized or {}
     rows = splunk_results or []
     for item in items:
-        spl = sanitize_spl_draft(item.spl or "")
+        raw_spl = item.spl or ""
+        deterministic_repair = repair_missing_boolean_operators(raw_spl) != raw_spl
+        spl = sanitize_spl_draft(raw_spl)
         rc = RootCauseSpl(
             spl=spl,
             explanation=item.explanation,
@@ -152,6 +155,42 @@ async def validate_investigation_question_items(
         )
         rc.validation = await validate_root_cause_spl(settings, rc)
         notes = list(item.notes or [])
+        if deterministic_repair:
+            if "auto_repaired_spl_syntax" not in notes:
+                notes.append("auto_repaired_spl_syntax")
+            logger.warning(
+                "investigation_spl repaired missing boolean operator question=%s",
+                (item.question or "")[:80],
+            )
+        saia = item.spl_saia_analysis
+        if (
+            spl_validation_is_error(rc.validation)
+            and saia is not None
+            and saia.optimized
+            and (saia.spl_before_optimize or "").strip()
+        ):
+            fallback_spl = sanitize_spl_draft(saia.spl_before_optimize or "")
+            fallback_rc = RootCauseSpl(
+                spl=fallback_spl,
+                explanation=item.explanation,
+                time_window=item.time_window,
+                pivots=item.pivots,
+                notes=list(notes),
+            )
+            fallback_rc.validation = await validate_root_cause_spl(
+                settings,
+                fallback_rc,
+            )
+            if not spl_validation_is_error(fallback_rc.validation):
+                logger.warning(
+                    "investigation_spl rejected SAIA optimization; using parser-valid input "
+                    "question=%s",
+                    (item.question or "")[:80],
+                )
+                spl = fallback_spl
+                rc = fallback_rc
+                if "saia_optimization_rejected_parser_fallback" not in notes:
+                    notes.append("saia_optimization_rejected_parser_fallback")
         if refine_on_error and spl_validation_is_error(rc.validation):
             rc, fixed = await refine_root_cause_spl_until_valid(
                 settings,
@@ -403,8 +442,8 @@ async def run_investigation_item_execute_refine_loop(
     mcp_client: Any = None,
 ) -> InvestigationQuestionItem:
     """Execute SPL; on error or 0 rows, refine with LiteLLM (max N attempts)."""
-    max_refine = int(getattr(settings, "tsoc_spl_execute_refine_max_attempts", 2) or 0)
-    max_refine = max(0, min(2, max_refine))
+    max_refine = int(getattr(settings, "tsoc_spl_execute_refine_max_attempts", 3) or 0)
+    max_refine = max(0, min(3, max_refine))
 
     validated = await validate_investigation_question_items(
         settings,
@@ -466,7 +505,11 @@ async def run_investigation_item_execute_refine_loop(
                     "notes": rc.notes,
                 }
             )
-        if refined_rc is None or not refined_rc.spl:
+        execution_error = bool(
+            current.spl_results
+            and (current.spl_results.error or "").strip()
+        )
+        if (refined_rc is None or not refined_rc.spl) and not execution_error:
             fb = build_zero_row_fallback_spl(
                 current.question or "",
                 normalized,
@@ -549,6 +592,7 @@ async def finalize_investigation_questions_for_verdict(
     verdict: str,
     raw: Any,
     *,
+    max_items: Optional[int] = None,
     legacy_root_spl: Any = None,
     normalized: Optional[Dict[str, Any]] = None,
     search_name: str = "",
@@ -563,6 +607,7 @@ async def finalize_investigation_questions_for_verdict(
         verdict,
         raw,
         settings=settings,
+        max_items=max_items,
         legacy_root_spl=legacy_root_spl,
         normalized=normalized,
     )
@@ -642,6 +687,6 @@ async def finalize_investigation_questions_for_verdict(
     logger.info(
         "investigation_spl execute+refine done questions=%d max_refine=%d",
         len(finalized),
-        getattr(settings, "tsoc_spl_execute_refine_max_attempts", 2),
+        getattr(settings, "tsoc_spl_execute_refine_max_attempts", 3),
     )
     return finalized

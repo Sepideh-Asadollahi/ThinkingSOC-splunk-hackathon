@@ -2,60 +2,68 @@
 
 ## Project Name
 
-ThinkingSOC Agentic Ops Router
+ThinkingSOC Forge — Verified Incident-to-Runbook Compiler
 
 ## Track
 
-**Security** (Devpost form)
+**Hackathon track:** Work & Productivity
 
 ## What it does
 
-Our project receives Splunk alerts via Webhook, enriches by `sid` using Splunk REST, classifies each alert into Security or Observability, runs the corresponding analysis pipeline, and returns actionable next steps plus analyst-ready SPL suggestions.
+ThinkingSOC Forge turns one acknowledged SOC investigation into a reusable, executable investigation procedure. GPT-5.6 compiles accepted evidence and questions into one to three generalized intents. ThinkingSOC then generates fresh read-only SPL, validates and executes every step on Splunk, shows the evidence, requires human approval, and can rerun the approved runbook on a different stored alert with the same detection name.
 
 Core capabilities:
 
-- Auto routing (`security`, `observability`, `dual`, `manual_review`)
-- Security pipeline: Defender + Hunter + Judge
-- Observability pipeline: Diagnoser + Responder + Ops Judge
-- Agent triage endpoint with next actions
-- Splunk-native SPL via **REST `/predict`** (UI path) + **MCP `splunk_run_query`** execute (All Time); LiteLLM fallback
-- MCP metadata enrichment on triage (`mcp_context`, `mcp_used`)
-- PostgreSQL evidence storage
-- Developer SDK + CLI for integration
+- Strict GPT-5.6 structured compilation that emits intents, never trusted SPL
+- Deterministic `PARSER_VALID`, `SOURCE_VERIFIED`, `REUSED`, `NO_EVIDENCE`, and `FAILED` status
+- Existing SAIA/LiteLLM generation, sanitizer, Splunk parser, MCP/REST execution, and refinement path
+- Separate analyst acknowledgment and runbook approval gates
+- Exact-`search_name` reuse with target-specific SPL and evidence
+- Append-only PostgreSQL audit artifacts and observed time-saved metrics
+- One integrated Forge panel in the existing Security Investigation workflow
 
 ## How we built it
 
 - Backend: FastAPI (Python)
-- AI orchestration: LiteLLM + LangGraph + **Splunk MCP Server** (app 7931)
+- AI orchestration: GPT-5.6 through the existing LiteLLM gateway; LangGraph remains part of the baseline SOC analysis
 - Data source: Splunk alert webhook + Splunk REST job results + MCP tools (`splunk_*`, `saia_*`)
 - Storage: PostgreSQL
-- Devtools: typed SDK (sync/async), CLI, evaluation runner
+- Devtools: typed SDK, focused backend/frontend tests, and live evidence-pack generator
+- Development: Codex implemented and tested the new vertical slice; humans selected the scope, verification semantics, safety gates, and demo evidence
 
 ## Challenges we ran into
 
-- Handling row-wise webhook payloads with shared `sid`
-- Unifying Security and Observability into one route contract
-- Producing deterministic fallback behavior when LLM is disabled/unavailable
-- Keeping outputs consistently structured for automation and scoring
+- Generalizing one incident without leaking source-specific entities into durable runbook intent
+- Keeping “verified” honest: one source execution is useful evidence, not universal proof
+- Reusing the existing SPL pipeline without creating a second compiler or unsafe execution path
+- Invalidating stale approvals whenever a new immutable draft is compiled
 
 ## Accomplishments that we're proud of
 
-- End-to-end agentic alert triage flow
-- Clear split between Security and Observability reasoning
-- Actionable operator outputs (next actions + SPL)
-- Submission-ready evidence pack generation with scoring report
+- One coherent acknowledge → compile → verify → approve → reuse workflow
+- Model output cannot choose its own status or approval
+- Every target run regenerates and revalidates SPL against current alert context
+- Live artifacts record model metadata, parser/execution results, runtime, and time saved
+
+## Potential impact and measurable economics
+
+Forge measures runtime and keeps the analyst-entered manual baseline visible, so a buyer can calculate value from local alert volume rather than an unsupported industry-wide savings percentage.
+
+An illustrative six-analyst U.S. private-sector SOC case uses official BLS wage and benefit inputs plus explicit operational assumptions. At 30 approved compatible repeats per business day, a measured reduction from 25 to 5 minutes would return 2,600 analyst hours/year (1.25 FTE of capacity) and about $223,000/year in gross capacity value. The eligible repeat lane would be five times faster. These are scenario outputs, not claimed customer results; live evidence-pack timings, local ticket baselines, failure/rework rates, and actual operating cost must replace the assumptions.
+
+Full sources, formulas, sensitivity, break-even, and cash-vs-capacity treatment: `docs/27-forge-us-soc-economic-impact.md`.
 
 ## What we learned
 
-- Agent pipelines need strong contracts and deterministic fallbacks
-- Scoring and evaluation artifacts improve trust and judging clarity
-- Developer experience (SDK/CLI/examples) significantly reduces integration friction
+- Structured AI becomes operationally useful when deterministic evidence gates surround it
+- Reusable intent is safer than persisting source-specific generated queries
+- Honest status labels and visible failures build more trust than a single opaque AI score
 
 ## What's next
 
-- Frontend analyst workstation for triage workflow
-- Expanded scenario matrix and benchmark suite
-- Deeper MCP orchestration (multi-step agent tool loops)
+- Historical replay over a labeled cohort and a quality scorecard
+- Semantic matching only after an approved runbook corpus exists
+- Version history, drift detection, and revalidation without rewriting audit history
 
 ## Repository and setup
 
@@ -77,10 +85,16 @@ Attach outputs from:
 - `submission/evidence/<run_id>/05_eval_report.json`
 - `submission/evidence/<run_id>/manifest.json`
 - `submission/evidence/<run_id>/06_mcp_status.json`
+- `submission/evidence/<run_id>/07_forge_source_record.json`
+- `submission/evidence/<run_id>/08_forge_compile.json`
+- `submission/evidence/<run_id>/09_forge_approval.json`
+- `submission/evidence/<run_id>/10_forge_target_run.json`
+- `submission/evidence/<run_id>/11_forge_metrics.json`
 
-## Splunk MCP (bonus / Grand narrative)
+## Runtime integrations
 
 - Install Splunkbase app **7931**, configure MCP bearer token (`audience=mcp`)
-- Demo: `GET /api/v1/mcp/status` → `POST /api/v1/agents/triage` with `mcp_used: true` → SPL `source: splunk_mcp_saia`
-- Docs: `docs/02-platform/11-splunk-mcp-integration.md`
-
+- Demo: acknowledge a stored source record → build and approve Forge runbook → execute on an exact-match target
+- Docs: `docs/25-verified-runbook-forge.md` and `docs/15-splunk-mcp-integration.md`
+- Product/demo narrative: `docs/26-hackathon-forge-product-guide.md`
+- U.S. SOC impact model: `docs/27-forge-us-soc-economic-impact.md`

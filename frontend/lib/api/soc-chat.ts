@@ -54,6 +54,7 @@ export type SocChatStoredMessage = SocChatMessage & {
   message_id?: number | null
   seq?: number | null
   sql_meta?: SocChatSqlMeta | null
+  citations?: SocChatCitation[]
 }
 
 export type SocChatConversationDetail = {

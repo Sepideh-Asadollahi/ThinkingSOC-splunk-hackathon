@@ -14,6 +14,9 @@ from services.splunk_json_store import (
 )
 
 ANALYST_ACTION_RECORD_TYPE = "investigation_analyst_action"
+VERIFIED_RUNBOOK_DRAFT_RECORD_TYPE = "verified_runbook_draft"
+VERIFIED_RUNBOOK_APPROVAL_RECORD_TYPE = "verified_runbook_approval"
+VERIFIED_RUNBOOK_RUN_RECORD_TYPE = "verified_runbook_run"
 
 # Pipeline stages shown in Event timeline (one Splunk alert = sid + row_index).
 TIMELINE_PIPELINE_RECORD_TYPES = frozenset(
@@ -24,6 +27,9 @@ TIMELINE_PIPELINE_RECORD_TYPES = frozenset(
         "observability_analysis",
         "admin_org_gap_suggest",
         ANALYST_ACTION_RECORD_TYPE,
+        VERIFIED_RUNBOOK_DRAFT_RECORD_TYPE,
+        VERIFIED_RUNBOOK_APPROVAL_RECORD_TYPE,
+        VERIFIED_RUNBOOK_RUN_RECORD_TYPE,
     }
 )
 
@@ -57,6 +63,9 @@ _RECORD_SORT_RANK: Dict[str, int] = {
     "observability_analysis": 40,
     "admin_org_gap_suggest": 50,
     "investigation_analyst_action": 60,
+    "verified_runbook_draft": 70,
+    "verified_runbook_approval": 80,
+    "verified_runbook_run": 90,
     "soc_analysis_audit": 70,
 }
 
@@ -70,6 +79,9 @@ def _step_meta(record_type: str) -> tuple[str, str]:
         "observability_analysis": ("Observability analysis", "Ops diagnoser/responder pipeline completed"),
         "admin_org_gap_suggest": ("Admin org gap", "Organizational knowledge gap suggested"),
         "investigation_analyst_action": ("Analyst decision", "Human acknowledge or escalate recorded"),
+        "verified_runbook_draft": ("Runbook compiled", "Reusable intents generated and verified on the source"),
+        "verified_runbook_approval": ("Runbook decision", "Human approval or rejection recorded"),
+        "verified_runbook_run": ("Runbook reused", "Approved procedure executed on a compatible alert"),
         "soc_analysis_audit": ("Analysis audit", "Pipeline audit metadata stored"),
     }
     return mapping.get(record_type, (record_type.replace("_", " ").title(), "Stored record"))
@@ -133,6 +145,14 @@ def _filter_timeline_rows(
         if rtype == ANALYST_ACTION_RECORD_TYPE:
             pl = row.get("payload") if isinstance(row.get("payload"), dict) else {}
             if pl.get("investigation_record_id") not in (record_id, str(record_id)):
+                continue
+        if rtype in (VERIFIED_RUNBOOK_DRAFT_RECORD_TYPE, VERIFIED_RUNBOOK_APPROVAL_RECORD_TYPE):
+            pl = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+            if pl.get("source_record_id") not in (record_id, str(record_id)):
+                continue
+        if rtype == VERIFIED_RUNBOOK_RUN_RECORD_TYPE:
+            pl = row.get("payload") if isinstance(row.get("payload"), dict) else {}
+            if pl.get("target_record_id") not in (record_id, str(record_id)):
                 continue
         filtered.append(row)
     return _dedupe_timeline_records(filtered, anchor)
@@ -315,6 +335,22 @@ def _timeline_detail(row: Dict[str, Any]) -> Optional[str]:
             parts.append(str(note)[:120])
         return " — ".join(parts) if parts else None
 
+    if rtype == VERIFIED_RUNBOOK_DRAFT_RECORD_TYPE:
+        status = payload.get("status") or "DRAFT"
+        title = payload.get("title")
+        count = len(payload.get("steps") or [])
+        return f"{status} · {count} step(s)" + (f" · {title}" if title else "")
+
+    if rtype == VERIFIED_RUNBOOK_APPROVAL_RECORD_TYPE:
+        decision = payload.get("decision") or "recorded"
+        analyst = payload.get("analyst") or "analyst"
+        return f"{decision} by {analyst}"
+
+    if rtype == VERIFIED_RUNBOOK_RUN_RECORD_TYPE:
+        status = payload.get("status") or "FAILED"
+        saved = payload.get("estimated_minutes_saved")
+        return f"{status}" + (f" · estimated {saved} minutes saved" if saved is not None else "")
+
     if rtype == "enrichment_resolve":
         conf = payload.get("confidence")
         user = payload.get("resolved_user_id")
@@ -370,6 +406,31 @@ async def build_investigation_timeline(
             order="asc",
         )
         rows = _filter_timeline_rows(rows, anchor, record_id)
+        # Run records belong to the target sid by design. Also project runs that
+        # originated from this source investigation into its timeline so the full
+        # compile → approve → reuse story remains visible on the source record.
+        if str(anchor.get("tsoc_record_type") or "") == "soc_analysis":
+            run_rows = await search_stored_events(
+                settings,
+                record_type=VERIFIED_RUNBOOK_RUN_RECORD_TYPE,
+                limit=limit,
+                order="asc",
+            )
+            existing_ids = {row.get("id") for row in rows}
+            for run_row in run_rows:
+                payload = (
+                    run_row.get("payload")
+                    if isinstance(run_row.get("payload"), dict)
+                    else {}
+                )
+                if payload.get("source_record_id") not in (
+                    record_id,
+                    str(record_id),
+                ):
+                    continue
+                if run_row.get("id") not in existing_ids:
+                    rows.append(run_row)
+                    existing_ids.add(run_row.get("id"))
         if anchor.get("id") and not any(r.get("id") == anchor.get("id") for r in rows):
             if _is_timeline_pipeline_record(str(anchor.get("tsoc_record_type") or "")):
                 rows.append(anchor)

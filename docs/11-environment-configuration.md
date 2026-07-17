@@ -9,7 +9,7 @@ Runtime settings for the hackathon demo are loaded from **environment variables*
 
 **Never commit** `.env`, `.env.local`, or real API keys. Field names match [`backend/config.py`](../backend/config.py) (`Settings` via pydantic-settings, `UPPER_SNAKE_CASE`).
 
-Some built-in keys can be overridden at runtime through the **Integrations** API (`services/platform/integration_settings.py`); env / `.env` remains the bootstrap default.
+Some built-in keys can be set at runtime through the **Integrations** API (`services/platform/integration_settings.py`). Explicit process environment variables and values present in `backend/.env` are authoritative and take precedence. A persisted Integration setting is used only when that field is absent from env / `.env`.
 
 **URL query parameters cannot override configuration.** The backend returns HTTP `400` if a request includes env-style query keys (e.g. `?auto_analyze=true`, `?TSOC_INGEST_AUTO_ANALYZE=false`). Use `backend/.env` or admin integration settings only.
 
@@ -31,7 +31,7 @@ flowchart TB
 
   subgraph frontendEnv ["frontend/.env.local"]
     Auth["Auth\nAUTH_SECRET, TSOC_DEMO_USER"]
-    Proxy["Proxy\nTSOC_BACKEND_URL\nTSOC_PROXY_TIMEOUT_MS"]
+    Proxy["Proxy\nTSOC_BACKEND_URL\nTSOC_PROXY_TIMEOUT_MS\nTSOC_PROXY_LLM_TIMEOUT_MS"]
     Public["Public\nNEXT_PUBLIC_TSOC_APP_URL"]
   end
 
@@ -242,6 +242,10 @@ All SOC LLM calls (Defender, Hunter, Judge, SPL review, chat, Text-to-SQL) use *
 | `LITELLM_API_KEY` | — | **Required for AI-assisted analysis** in demos; post-install wizard always prompts for it. If unset, provider keys below may be used; otherwise pipelines use rule fallbacks. |
 | `LITELLM_API_BASE` | — | Optional API base URL (e.g. NVIDIA NIM, Azure OpenAI). |
 | `LITELLM_TIMEOUT_SECONDS` | `120` | HTTP timeout for LLM requests. |
+| `LITELLM_RPM` | `30` | Process-wide sliding-window limit for LLM requests per minute; excess calls wait asynchronously for the next slot. |
+| `LITELLM_MAX_RETRIES` | `3` | Retries after the initial attempt for transient failures only; provider-internal retries are disabled to avoid multiplying calls. |
+| `LITELLM_RETRY_BASE_SECONDS` | `5` | Initial exponential-backoff delay (`5s`, `10s`, `20s` with the defaults). |
+| `LITELLM_RETRY_MAX_SECONDS` | `60` | Maximum delay between retry attempts. |
 | `LITELLM_MAX_TOKENS` | `131072` | Global completion token cap per request. |
 | `LITELLM_CHAT_DEFAULT_TEMPERATURE` | — | Default for `POST /api/v1/llm/chat` when body omits `temperature`. |
 | `OPENAI_API_KEY` | — | Provider key (LiteLLM) when `LITELLM_API_KEY` is empty. |
@@ -319,7 +323,7 @@ Investigation uses **`search` only** (no `tstats` / `datamodel` in the active pi
 | `TSOC_SPL_PREDICT_POLL_INTERVAL_SECONDS` | `0.75` | Poll interval for `/predict`. |
 | `TSOC_SPL_LLM_REVIEW` | `true` | Analysis LLM reviews/fixes SPL after predict/MCP. |
 | `TSOC_SPL_LLM_REFINE_ON_ERROR` | `true` | On parser errors, pass error text to LiteLLM and re-validate. |
-| `TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS` | `2` | Post-execute refine loops per question (0–2). |
+| `TSOC_SPL_EXECUTE_REFINE_MAX_ATTEMPTS` | `3` | Post-execute refine loops per question (0–3). |
 | `TSOC_SPL_EXECUTE_VIA_MCP` | `true` | Prefer MCP `splunk_run_query`; fallback REST oneshot. |
 | `TSOC_INVESTIGATION_SPL_TIME_WINDOW` | `earliest=1 latest=now` | Default Splunk time range for investigation jobs. |
 | `TSOC_EXECUTE_INVESTIGATION_SPL` | `true` | `false` — generate SPL only, do not execute. |
@@ -415,8 +419,9 @@ Copy [`frontend/.env.example`](../frontend/.env.example) to `frontend/.env.local
 | `TSOC_DEMO_PASSWORD` | — | Demo login password. |
 | `TSOC_BACKEND_URL` | `http://127.0.0.1:9876` | Server-side proxy target (Next.js → FastAPI). |
 | `TSOC_INGEST_TOKEN` | *(empty)* | Must **match** `backend/.env` when ingest protection is enabled. See [TSOC_INGEST_TOKEN](./11-environment-configuration.md#tsoc_ingest_token-optional-ingest-auth). |
-| `TSOC_PROXY_TIMEOUT_MS` | `300000` | Undici timeout (ms) for `/api/backend/*` (non-chat). |
-| `TSOC_PROXY_CHAT_TIMEOUT_MS` | `600000` | Undici timeout (ms) for chat proxy routes. |
+| `TSOC_PROXY_TIMEOUT_MS` | `300000` | Undici timeout (ms) for ordinary `/api/backend/*` requests. |
+| `TSOC_PROXY_LLM_TIMEOUT_MS` | `900000` | Timeout for LLM-heavy POST routes, allowing slow providers and bounded retries to finish. |
+| `TSOC_PROXY_CHAT_TIMEOUT_MS` | — | Legacy fallback name used only when `TSOC_PROXY_LLM_TIMEOUT_MS` is unset. |
 | `TSOC_DEV_ORIGIN` | `127.0.0.1,localhost` | Comma-separated browser hosts for Next dev HMR / CORS. |
 | `NEXT_PUBLIC_TSOC_APP_URL` | — | Public UI URL hint (shown in UI; no secrets). |
 | `NEXT_PUBLIC_TSOC_SPLUNK_HOST` | — | Splunk host hint for UI links. |

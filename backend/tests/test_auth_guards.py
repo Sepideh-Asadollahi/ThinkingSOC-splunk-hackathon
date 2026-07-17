@@ -17,6 +17,23 @@ from main import app
         ("get", "/api/v1/soc/chat/conversations/demo-id", None),
         ("delete", "/api/v1/soc/chat/conversations/demo-id", None),
         ("get", "/api/v1/integrations/settings", None),
+        ("get", "/api/v1/investigation/runbook-settings", None),
+        ("get", "/api/v1/investigation/runbooks", None),
+        ("get", "/api/v1/investigation/runbooks/export", None),
+        ("post", "/api/v1/investigation/runbooks/import", {}),
+        ("patch", "/api/v1/investigation/runbooks/rb-1", {}),
+        ("post", "/api/v1/investigation/records/10/runbook", None),
+        ("get", "/api/v1/investigation/records/10/runbook", None),
+        (
+            "post",
+            "/api/v1/investigation/records/10/runbook/approval",
+            {"runbook_id": "rb-1", "decision": "approve"},
+        ),
+        (
+            "post",
+            "/api/v1/investigation/records/20/runbook-runs",
+            {"source_record_id": 10, "runbook_id": "rb-1"},
+        ),
     ],
 )
 def test_auth_guard_requires_bearer_token(

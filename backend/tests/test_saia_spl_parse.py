@@ -101,6 +101,29 @@ def test_parse_markdown_reasoning_and_spl_block() -> None:
     assert "| table Computer" in spl
 
 
+def test_parse_unclosed_markdown_fence_keeps_index_base_search() -> None:
+    """Regression: streamed SAIA responses may omit the closing code fence."""
+    raw = {
+        "results": [
+            {
+                "response": (
+                    "**Reasoning**\nUse audit data.\n\n**SPL**\n\n"
+                    "```splunk-spl\n"
+                    "index=audit_summary sourcetype=stash user=admin result=failure\n"
+                    "| timechart span=1d count as failed_logins by host\n"
+                    "| sort _time\n"
+                )
+            }
+        ]
+    }
+    spl, expl = _parse_saia_spl_result(raw)
+    assert spl.startswith("index=audit_summary")
+    assert "sourcetype=stash" in spl
+    assert "| timechart span=1d" in spl
+    assert "| sort _time" in spl
+    assert "Reasoning" in expl
+
+
 def test_parse_explain_text_from_mcp_results_wrapper() -> None:
     raw = {
         "results": [

@@ -5,6 +5,7 @@ from __future__ import annotations
 from services.investigation.spl_syntax_sanitize import (
     dedupe_search_field_clauses,
     quote_spl_colon_field_values,
+    repair_missing_boolean_operators,
     sanitize_spl_syntax,
     strip_spl_backticks,
 )
@@ -56,3 +57,24 @@ def test_sanitize_fixes_llm_markdown_and_duplicates() -> None:
     assert " and " not in out
     # EventID / index typos are LLM+parser refine — not hardcoded here
     assert "EventID=3" in out
+
+
+def test_sanitize_preserves_boolean_and_inside_eval() -> None:
+    raw = (
+        'search index=firewall | eval is_benign=if(isnotnull(Sub_Status) '
+        'AND (Sub_Status="Valid" OR Sub_Status="Trusted"),1,0) | stats count'
+    )
+    assert sanitize_spl_syntax(raw) == raw
+
+
+def test_sanitize_repairs_missing_boolean_after_null_check() -> None:
+    raw = (
+        'search index=firewall | eval is_benign=if(isnotnull(Sub_Status) '
+        '(Sub_Status="Valid" OR Sub_Status="Trusted"),1,0) | stats count'
+    )
+    expected = (
+        'search index=firewall | eval is_benign=if(isnotnull(Sub_Status) '
+        'AND (Sub_Status="Valid" OR Sub_Status="Trusted"),1,0) | stats count'
+    )
+    assert repair_missing_boolean_operators(raw) == expected
+    assert sanitize_spl_syntax(raw) == expected

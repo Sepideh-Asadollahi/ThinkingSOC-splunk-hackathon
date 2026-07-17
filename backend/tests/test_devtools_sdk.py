@@ -35,6 +35,33 @@ def _ok_response(data: dict):
     return r
 
 
+def _runbook_json(runbook_id: str = "rb-1") -> dict:
+    return {
+        "runbook_id": runbook_id,
+        "source_record_id": 0,
+        "title": "Imported checks",
+        "summary": "Portable checks",
+        "applicable_search_name": "Suspicious Login",
+        "source_verdict": "needs_investigation",
+        "steps": [
+            {
+                "step_id": "step-1",
+                "title": "Inspect",
+                "intent": "Inspect authentication evidence",
+                "expected_evidence": "Authentication rows",
+                "stop_condition": "Stop without telemetry",
+            }
+        ],
+        "decision_rule": "Escalate on corroboration",
+        "limitations": [],
+        "source_results": [],
+        "status": "DRAFT",
+        "model": "portable-import",
+        "compile_duration_ms": 1,
+        "created_at": "2026-07-14T10:00:00Z",
+    }
+
+
 def _http_error(status_code: int, text: str = "error"):
     import httpx
 
@@ -167,6 +194,70 @@ def test_sdk_search_events() -> None:
         result = client.search_events(record_type="soc_analysis", limit=10)
     assert result["count"] == 2
     assert len(result["results"]) == 2
+
+
+def test_sdk_compatible_runbook_targets() -> None:
+    data = {
+        "source_record_id": 10,
+        "search_name": "Suspicious Login",
+        "count": 1,
+        "results": [
+            {
+                "record_id": 20,
+                "search_name": "Suspicious Login",
+                "created_at": None,
+                "sid": "sid-20",
+                "row_index": 0,
+                "summary": "Compatible investigation",
+                "review_verdict": "TRUE_POSITIVE",
+            }
+        ],
+    }
+    client = TsocSdkClient(base_url=_BASE)
+    with patch("httpx.Client.get") as request:
+        request.return_value = _ok_response(data)
+        result = client.compatible_runbook_targets(10, limit=8)
+
+    assert result.results[0].record_id == 20
+    assert request.call_args.kwargs["params"] == {"limit": 8}
+
+
+def test_sdk_runbook_library_and_revision_methods() -> None:
+    draft = _runbook_json()
+    client = TsocSdkClient(base_url=_BASE)
+    with patch("httpx.Client.get") as request:
+        request.return_value = _ok_response(
+            {
+                "count": 1,
+                "alert_count": 1,
+                "groups": [
+                    {
+                        "alert_name": "Suspicious Login",
+                        "count": 1,
+                        "runbooks": [{"draft": draft}],
+                    }
+                ],
+            }
+        )
+        library = client.runbook_library(search_name="Suspicious Login")
+    assert library.groups[0].runbooks[0].draft.runbook_id == "rb-1"
+    assert request.call_args.kwargs["params"] == {"search_name": "Suspicious Login"}
+
+    with patch("httpx.Client.patch") as request:
+        request.return_value = _ok_response(_runbook_json("rb-2"))
+        revised = client.revise_runbook(
+            "rb-1",
+            {
+                "title": "Imported checks",
+                "summary": "Portable checks",
+                "applicable_search_name": "Suspicious Login",
+                "steps": draft["steps"],
+                "decision_rule": "Escalate on corroboration",
+                "limitations": [],
+                "verify_on_source": False,
+            },
+        )
+    assert revised.runbook_id == "rb-2"
 
 
 def test_sdk_get_event() -> None:
@@ -398,6 +489,49 @@ async def test_async_sdk_search_events() -> None:
         m.return_value = _ok_response(data)
         result = await client.search_events(limit=5)
     assert result["count"] == 1
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_compatible_runbook_targets() -> None:
+    data = {
+        "source_record_id": 10,
+        "search_name": "Suspicious Login",
+        "count": 0,
+        "results": [],
+    }
+    client = AsyncTsocSdkClient(base_url=_BASE)
+    with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as request:
+        request.return_value = _ok_response(data)
+        result = await client.compatible_runbook_targets(10, limit=6)
+
+    assert result.count == 0
+    assert request.call_args.kwargs["params"] == {"limit": 6}
+
+
+@pytest.mark.asyncio
+async def test_async_sdk_runbook_export() -> None:
+    data = {
+        "schema_version": "thinking-soc.runbook-library/v1",
+        "exported_at": "2026-07-14T10:00:00Z",
+        "runbooks": [
+            {
+                "title": "Imported checks",
+                "summary": "Portable checks",
+                "applicable_search_name": "Suspicious Login",
+                "steps": _runbook_json()["steps"],
+                "decision_rule": "Escalate on corroboration",
+                "limitations": [],
+            }
+        ],
+    }
+    client = AsyncTsocSdkClient(base_url=_BASE)
+    with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as request:
+        request.return_value = _ok_response(data)
+        result = await client.export_runbooks(search_name="Suspicious Login")
+    assert result.schema_version == "thinking-soc.runbook-library/v1"
+    assert request.call_args.kwargs["params"] == {
+        "search_name": "Suspicious Login",
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -1505,4 +1639,3 @@ def test_cli_chat_conversations_prints_json(capsys) -> None:
         main()
     captured = capsys.readouterr()
     assert captured.out.strip() == "[]"
-

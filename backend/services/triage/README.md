@@ -7,7 +7,7 @@ Post-analysis triage and priority scoring. Computes investigation priority from 
 | File | Description |
 |------|-------------|
 | `triage_priority.py` | Scoring engine — computes triage priority from analysis outputs and verdicts |
-| `triage_queue.py` | Shared Analysis page queue with track/status filtering |
+| `triage_queue.py` | Shared Analysis page queue with pipeline/status filtering |
 
 ## Related docs
 

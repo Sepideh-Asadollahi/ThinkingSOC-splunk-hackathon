@@ -106,6 +106,16 @@ async def test_build_dashboard_overview_parallel_fetch(
         await asyncio.sleep(0.05)
         return []
 
+    async def slow_runbook_ops(_settings: Settings) -> dict:
+        await asyncio.sleep(0.05)
+        return {
+            "latest_runbooks": 4,
+            "source_verified": 3,
+            "human_approved": 2,
+            "reused": 1,
+            "evidence_rows": 6,
+        }
+
     with patch(
         "services.platform.dashboard_overview.splunk_store_configured",
         return_value=True,
@@ -130,6 +140,9 @@ async def test_build_dashboard_overview_parallel_fetch(
     ), patch(
         "services.platform.dashboard_overview._collect_triage_items",
         side_effect=slow_triage,
+    ), patch(
+        "services.platform.dashboard_overview.fetch_runbook_ops",
+        side_effect=slow_runbook_ops,
     ):
         t0 = time.perf_counter()
         overview = await build_dashboard_overview(settings)
@@ -137,4 +150,7 @@ async def test_build_dashboard_overview_parallel_fetch(
 
     assert overview.kpis.total_records == 1
     assert overview.kpis.users == 2
+    assert overview.runbook_ops.latest_runbooks == 4
+    assert overview.runbook_ops.human_approved == 2
+    assert overview.runbook_ops.evidence_rows == 6
     assert elapsed < 0.25

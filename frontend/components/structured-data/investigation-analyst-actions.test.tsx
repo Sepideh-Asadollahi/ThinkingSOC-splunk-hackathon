@@ -85,7 +85,7 @@ describe("InvestigationAnalystActions", () => {
         note: "Reviewed",
       })
     })
-    expect(onRecorded).toHaveBeenCalled()
+    expect(onRecorded).toHaveBeenCalledWith("acknowledge")
     expect(await screen.findByText("Acknowledged")).toBeInTheDocument()
   })
 

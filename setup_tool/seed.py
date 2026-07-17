@@ -1,4 +1,4 @@
-"""Demo seed: PostgreSQL moment snapshot (primary) or CSV inventory fallback."""
+"""Demo seed: full PostgreSQL JSON snapshot (primary) or CSV fallback."""
 
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ async def _verify_demo_counts(dsn: str) -> bool:
 
 async def _seed_from_snapshot(dsn: str) -> bool:
     snapshot_manifest = DEMO_DATA_DIR / "postgres_snapshot" / "manifest.json"
-    LOG.info("[SEED] Loading moment demo snapshot from %s …", snapshot_manifest)
+    LOG.info("[SEED] Loading full demo snapshot from %s …", snapshot_manifest)
     _prepare_backend_for_seed(dsn)
 
     from config import get_settings

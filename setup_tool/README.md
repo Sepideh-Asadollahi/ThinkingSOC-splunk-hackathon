@@ -9,7 +9,7 @@ Modular implementation of root `setup.py` (venv, deps, Docker Postgres, schema, 
 
 When inventory tables are empty and `--no-seed` is not set:
 
-1. If `backend/data/demo/postgres_snapshot/manifest.json` exists → load moment snapshot (full Asset/Identity + up to 6 newest `tsoc_records` + newest correlation finding) via `init_store()` / `restore_postgres_snapshot_if_empty()`.
+1. If `backend/data/demo/postgres_snapshot/manifest.json` exists → load the committed full JSON snapshot (inventory, analyses, findings, RAG, Chat, and Runbooks) via `init_store()` / `restore_postgres_snapshot_if_empty()`.
 2. Else → CSV inventory fallback under `backend/data/demo/`.
 
 See [docs/24-demo-postgresql-data.md](../docs/24-demo-postgresql-data.md).

@@ -20,6 +20,7 @@ from models.dashboard import (
     DashboardIntegrations,
     DashboardKpis,
     DashboardOverview,
+    DashboardRunbookOps,
     TopPriorityItem,
     TrackSplit,
 )
@@ -31,6 +32,7 @@ from services.splunk_json_store.stats import (
     fetch_inventory_counts,
     fetch_record_counts_by_type,
     fetch_records_last_24h,
+    fetch_runbook_ops,
     fetch_total_records,
 )
 _TOP_PRIORITY_LIMIT = 5
@@ -136,6 +138,7 @@ async def build_dashboard_overview(settings: Settings) -> DashboardOverview:
         record_type_counts_raw,
         activity_raw,
         triage_items,
+        runbook_ops_raw,
     ) = await asyncio.gather(
         _integrations_status(settings),
         fetch_total_records(settings),
@@ -144,6 +147,7 @@ async def build_dashboard_overview(settings: Settings) -> DashboardOverview:
         fetch_record_counts_by_type(settings),
         fetch_activity_by_day(settings, days=30),
         _collect_triage_items(settings),
+        fetch_runbook_ops(settings),
     )
     users, assets = inventory_counts
     health_score = _compute_health_score(integrations)
@@ -200,6 +204,7 @@ async def build_dashboard_overview(settings: Settings) -> DashboardOverview:
             observability=int(track_split.get("observability", 0)),
         ),
         integrations=integrations,
+        runbook_ops=DashboardRunbookOps.model_validate(runbook_ops_raw),
         health_score=health_score,
         top_priority=top_priority,
     )

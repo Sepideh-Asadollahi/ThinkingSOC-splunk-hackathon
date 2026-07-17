@@ -1,6 +1,71 @@
-# ThinkingSOC Agentic Ops Router
+# ThinkingSOC
 
-Splunk **10+** alert handoff → external FastAPI backend → **Agentic Ops Router** (exclusive Security or Observability) → multi-agent pipelines with inventory-aware reasoning → **Judge** verdict and structured outputs (PostgreSQL). Optional **Next.js** analyst UI for the hackathon demo.
+<a id="soc-value-europe"></a>
+
+## Why a SOC matters — and the economic value of ThinkingSOC
+
+A **Security Operations Center (SOC)** is the operational team that continuously monitors security telemetry, triages alerts, investigates suspicious activity, coordinates incident response, and improves detections. It sits between preventive controls—such as identity, endpoint, network, and cloud security—and the organization's incident-response and risk functions. Preventive tools try to stop attacks; the SOC determines what actually happened, how serious it is, and what people should do next. This makes the SOC the decision and response layer of day-to-day cyber defence, not merely a dashboard-monitoring function.
+
+That capability is expensive and scarce. ISC2 estimated an **EU cybersecurity workforce gap of 274,000 people**, while more than two-thirds of surveyed EU organizations reported insufficient cybersecurity staff. European 2026 salary benchmarks place a permanent SOC analyst at approximately **€35k–€55k for Tier 1, €55k–€85k for Tier 2, and €80k–€120k+ for Tier 3**, before employer costs and shift premiums. Eurostat reports that non-wage costs represented **24.8% of total EU labour cost** in 2025. Sources: [ISC2 EU workforce gap](https://www.isc2.org/Insights/2024/05/Closing-the-EUs-Cybersecurity-Workforce-and-Skills-Gaps), [European SOC salary benchmark](https://www.optimaeurope.com/recruitment-blog/soc-analyst-salary-benchmark-europe), and [Eurostat labour costs](https://ec.europa.eu/eurostat/web/products-eurostat-news/w/ddn-20260331-2).
+
+Using a mid-level salary midpoint of **€70,000**, Eurostat's wage/non-wage split gives an indicative loaded employer cost of about **€93,000 per analyst-year**, or roughly **€54 per productive analyst hour** when planning with 1,720 productive hours per year. On that basis, continuously staffing just **one analyst seat 24×7** represents approximately **€0.37m–€0.58m per year** across the €55k–€85k Tier-2 salary range. This is a staffing-equivalent estimate for one continuously covered seat—not the total cost of a SOC; SIEM/XDR licensing, engineering, management, facilities, training, and incident-response retainers are additional.
+
+ThinkingSOC targets the repeated investigation work inside that cost base. It enriches alerts, generates and validates read-only SPL, preserves evidence, and turns an accepted investigation into a human-approved Runbook. Shadow Replay then tests that Runbook against another alert with the same detection name and a different SID before production reuse. The result is less repeated query authoring and context gathering, while parser checks, evidence visibility, exact-alert matching, immutable revisions, and human approval keep the analyst in control.
+
+### Illustrative European SOC business case
+
+| Input or outcome | Conservative planning value |
+|---|---:|
+| Eligible repeat alerts | 30 per business day × 260 days |
+| Manual investigation time | 25 minutes per alert |
+| Runbook-assisted time | 5 minutes per alert |
+| Annual analyst capacity returned | **2,600 hours** |
+| Loaded analyst-hour planning rate | **€54/hour** |
+| Gross annual capacity value | **≈ €141,000/year** |
+| Illustrative all-in deployment and operating cost | **€25,000/year** |
+| Net annual capacity value | **≈ €116,000/year** |
+| Benefit/cost ratio | **≈ 5.6×** |
+| Illustrative first-year ROI | **≈ 463%** |
+| Break-even repeat-alert volume | **≈ 5.3 eligible alerts/day** |
+
+In this scenario, the eligible repeat-investigation lane is **5× faster**—an 80% handling-time reduction—and the recovered 2,600 hours are capacity value: they become cash savings only if they avoid hiring, overtime, or external-service spend. The €25k product-cost figure is an explicit example, not a fixed product price; replace it with actual infrastructure, model, integration, and support costs. The formulas are `hours returned = alerts/day × working days × minutes saved ÷ 60`, `gross value = hours returned × loaded hourly cost`, and `ROI = (gross value − product cost) ÷ product cost`.
+
+Accuracy should not be inflated into an unsupported product claim. A relevant Microsoft randomized controlled trial found experienced security professionals using an AI security assistant were **22% faster and 7% more accurate across the tested tasks**; this is an external benchmark, not a measured ThinkingSOC result. ThinkingSOC therefore uses **0–7% relative accuracy uplift only as a planning sensitivity—not a guarantee—and requires each deployment to establish its own baseline and analyst-reviewed ground truth**. Its Evaluation Dashboard reports technical quality indicators such as parser-valid rate, evidence coverage, execution errors, and latency; those indicators help diagnose reliability but do not replace a measured correctness comparison against manual handling. Source: [Microsoft Security Copilot economic study](https://www.microsoft.com/en-us/security/blog/2024/03/13/microsoft-copilot-for-security-is-generally-available-on-april-1-2024-with-new-capabilities/).
+
+## Table of Contents
+
+- [Why a SOC matters — and the economic value of ThinkingSOC](#soc-value-europe)
+- [ThinkingSOC Forge — hackathon edition](#forge-hackathon-edition)
+  - [What was developed for this hackathon](#forge-development)
+  - [How Codex contributed](#forge-codex)
+  - [How the configured LLM contributes at runtime](#forge-llm)
+  - [Evidence for the hackathon delta](#forge-evidence)
+  - [What verified means](#forge-verification)
+  - [Runbook creation requires a live Splunk connection](#runbook-splunk-prerequisite)
+  - [Alert-name Runbook Library](#forge-library)
+  - [Shadow Replay and Evaluation Dashboard](#forge-shadow-evaluation)
+  - [Safe Response Preview](#forge-safe-response)
+  - [Runbook Autopilot and Chat](#forge-autopilot-chat)
+  - [Illustrative U.S. SOC capacity case](#forge-impact)
+- [Architecture diagram](#architecture-diagram)
+- [SOC challenges and why AI matters](#soc-challenges-and-why-ai-matters)
+- [Analyst UI](#analyst-ui-screenshots)
+  - [Runbook Library](#runbook-library-ui)
+  - [ThinkingSOC Forge in Analysis](#thinkingsoc-forge-in-analysis)
+- [Installation](#installation)
+  - [Automatic installation](#automatic-installation-recommended)
+  - [Manual installation](#manual-installation)
+- [Service control with systemd](#service-control-with-systemd)
+- [Production services without systemd](#production-services-no-systemd)
+- [Splunk installation guide](#splunk-installation-guide)
+- [Testing with sample data](#testing-with-sample-data)
+- [Quick start for developers](#quick-start-developers)
+- [Minimal required configuration](#minimal-changes-you-must-make)
+- [Optional Splunk app](#optional-splunk-app)
+- [Troubleshooting](#troubleshooting)
+- [Repository layout](#repository-layout)
+- [Development commands](#development-commands)
+- [License](#license)
 
 | Resource | Description |
 |----------|-------------|
@@ -8,13 +73,194 @@ Splunk **10+** alert handoff → external FastAPI backend → **Agentic Ops Rout
 | [Architecture diagram](#architecture-diagram) | System integration (Mermaid, in README) · [full doc](architecture_diagram.md) |
 | [docs/](docs/README.md) | HLD, LLD, agents, integration boundaries · [architecture views](docs/architecture-views.md) |
 | [Developer SDK & CLI](docs/22-developer-sdk.md) | Typed Python SDK, CLI, evaluation runner |
-| [Submission & evidence pack](submission/README.md) | Devpost evidence scripts; judging criteria mapping (local: `project-engineering/github-extras/08-judging-evidence.md`) |
+| [Submission & evidence pack](submission/README.md) | Hackathon evidence scripts and review artifacts |
 | [docs/code-graph/graph.html](docs/code-graph/graph.html) | Interactive codebase graph |
 | [Analyst UI](#analyst-ui-screenshots) | Demo screenshots — dashboard, investigation, correlation graph, inventory relationships |
+| [ThinkingSOC Forge](docs/25-verified-runbook-forge.md) | Compile an acknowledged incident into a source-verified, human-approved reusable runbook |
+| [Hackathon product guide](docs/26-hackathon-forge-product-guide.md) | Product delta, LLM role, trust boundaries, demo path, and acceptance evidence |
+| [U.S. SOC impact and ROI model](docs/27-forge-us-soc-economic-impact.md) | Reproducible capacity, throughput, break-even, and cost model using official U.S. labor data |
+
+---
+
+<a id="forge-hackathon-edition"></a>
+
+## Hackathon edition — ThinkingSOC Forge
+
+> **Development provenance:** The baseline ThinkingSOC alert-routing and investigation platform existed before the hackathon submission period. **ThinkingSOC Forge**—the verified incident-to-runbook workflow described in this section—was developed as the new, meaningful extension for the hackathon in collaboration with Codex. The baseline is not presented as new hackathon work.
+
+SOC investigations create valuable operational knowledge, but that knowledge usually remains trapped in one ticket or one analyst's memory. The next alert from the same detection family forces another analyst to repeat the questions, SPL authoring, evidence collection, and decision structure.
+
+ThinkingSOC Forge closes that loop:
+
+```text
+acknowledged investigation
+        → configured LLM compiles 1–3 reusable investigation intents
+        → ThinkingSOC generates fresh alert-specific read-only SPL
+        → parser validation + source execution + visible evidence
+        → separate human approval
+        → one-click reuse on an exact-match stored alert
+        → observed runtime and estimated analyst time saved
+```
+
+This is the project's hackathon feature, not a relabeling of the existing SOC pipeline. The baseline product already analyzed alerts; Forge creates a new durable work artifact that compounds the value of accepted investigations.
+
+| Baseline ThinkingSOC | New Forge capability |
+|---|---|
+| Analyze one alert and produce questions/SPL | Generalize accepted evidence into an immutable one-to-three-step runbook |
+| Show investigation evidence | Re-run every compiled intent through the existing sanitizer, Splunk parser, execution, and refinement path |
+| Record analyst acknowledge/escalate | Require a second, explicit approval before any reuse |
+| Persist analysis JSON | Persist append-only draft, approval, and target-run artifacts |
+| Handle the current alert | Regenerate target-specific SPL for the next exact-`search_name` alert |
+| Report a result | Record model provenance, execution evidence, runtime, and a visible manual-time baseline |
+
+<a id="forge-development"></a>
+
+### What was developed for this hackathon
+
+The hackathon contribution is the complete Forge vertical slice, not a rename or reskin of the existing application:
+
+- strict runbook draft, approval, compatible-target, and replay API contracts;
+- an incident-to-runbook compiler that accepts structured investigation evidence and produces one to three reusable intents;
+- deterministic parser, source-evidence, approval, exact-detection, and read-only execution gates;
+- append-only PostgreSQL artifacts for drafts, analyst decisions, replay results, model provenance, and measured runtime;
+- a dedicated **Runbooks → Forge & Policies** Sidebar experience with readiness and policy settings;
+- a dedicated **Runbooks → Runbook Library** experience that groups every immutable revision by exact Alert Name and supports complete editing plus safe JSON Import/Export;
+- a dedicated **Runbooks → Shadow & Evaluation** experience for pre-approval, read-only historical replay on exact-name alerts with different SIDs, plus measured quality, evidence, latency, token-cost, and labor-value metrics;
+- a **Safe Response Preview** inside ThinkingSOC Forge that proposes allowlisted, high-level containment options with targets, risk, prerequisites, rollback, and verification while keeping execution technically impossible and human approval append-only;
+- a bounded **Runbook Autopilot** whose Supervisor coordinates Evidence Scout, Runbook Engineer, Policy Guard, and Response Advisor through auditable storage, library, LLM, and Splunk read-only tools without auto-approval or containment execution;
+- native **Runbook-aware Chat** retrieval over revisions, approvals, reuse/shadow results, response previews, and Autopilot traces, with one-click handoff from an Investigation to a prefilled Chat question;
+- an integrated investigation panel with build, verify, approve, target discovery, replay, and measured time-saved states;
+- a responsive source-to-reuse execution graph with selectable rectangular nodes, persistent details, keyboard support, reduced-motion handling, and overflow-safe layouts;
+- typed synchronous/asynchronous SDK support, backend/frontend tests, an evidence-pack generator, and public technical/economic documentation.
+
+The authoritative file-level delta is recorded in [HACKATHON_CHANGELOG.md](HACKATHON_CHANGELOG.md). The implementation contract is documented in [docs/25-verified-runbook-forge.md](docs/25-verified-runbook-forge.md).
+
+<a id="forge-codex"></a>
+
+### How Codex contributed
+
+Codex accelerated the repository-aware implementation work while the project owner retained product and security authority. In this development session, Codex:
+
+- inspected the existing FastAPI, Next.js, storage, Splunk, and test boundaries before extending them;
+- implemented the Forge backend models, services, API routes, persistence access, typed SDK methods, and failure handling;
+- implemented the Sidebar settings page, investigation workflow panel, responsive execution graph, accessibility states, and UI tests;
+- expanded backend and frontend test coverage, ran focused and full test suites, produced a production build, and performed live health/login/route checks;
+- wrote the technical, product, demo, and U.S. SOC economic-impact documentation and kept assumptions separate from measured evidence.
+
+The human project owner made the key product and engineering decisions: selecting the incident-to-runbook problem, defining the hackathon scope, requiring acknowledgment plus a separate approval, defining the honest meaning of `SOURCE_VERIFIED`, restricting reuse to exact detection-name matches, retaining read-only SPL execution, and choosing which economic assumptions must remain explicit rather than be presented as customer results.
+
+<a id="forge-llm"></a>
+
+### How the configured LLM contributes at runtime
+
+The configured LLM has one bounded, core runtime responsibility: compile accepted investigation evidence and questions into a strict one-to-three-step reusable-intent schema. It does **not** provide approval, choose status, or emit trusted executable SPL. Deterministic application code regenerates alert-specific SPL, sanitizes it, validates it with the Splunk parser, executes it read-only, and derives status from returned evidence.
+
+The configured and provider-reported model identifiers, token counts, and generation duration are persisted in the draft and exported in the evidence pack. The hackathon environment must expose the configured model, and evidence must show the actual provider-reported identifier rather than relying on a documentation claim.
+
+<a id="forge-evidence"></a>
+
+### Evidence for the hackathon delta
+
+Judges can distinguish prior work from the new contribution through:
+
+- the dated Git commit history for the Forge files;
+- implementation-session evidence required by the hackathon;
+- [HACKATHON_CHANGELOG.md](HACKATHON_CHANGELOG.md), which identifies the new code and documentation;
+- the Forge-focused backend/frontend tests and successful production build;
+- generated `07_forge_source_record.json` through `11_forge_metrics.json` artifacts, which preserve real model, parser, Splunk, approval, replay, timing, and failure evidence.
+
+The submission must use genuine generated artifacts. Missing dependencies, an unavailable or misconfigured LLM runtime, parser failures, zero evidence, or replay failures must remain visible and must not be edited into a passing result.
+
+<a id="forge-verification"></a>
+
+### What “verified” means
+
+`SOURCE_VERIFIED` means every step parsed, executed without error, and returned evidence on the source investigation. It does **not** mean universally correct or historically proven. Only a human can approve the latest source-verified draft, and reuse is read-only and restricted to a different stored alert with exactly the same detection name.
+
+<a id="runbook-splunk-prerequisite"></a>
+
+### Runbook creation requires a live Splunk connection
+
+> **Splunk must be installed, running, configured, and reachable before ThinkingSOC can create or rebuild a Runbook.** Runbook compilation does not rely on the LLM alone: ThinkingSOC regenerates read-only SPL, validates it through Splunk, and executes it against source evidence before assigning a verification state.
+
+The Splunk MCP Server is optional. ThinkingSOC prefers MCP when it is available and falls back to authenticated Splunk REST on the management endpoint (port `8089` by default). However, both transports depend on the underlying Splunk instance. REST fallback cannot work when Splunk itself is stopped or unreachable.
+
+Before selecting **Acknowledge**, **Build**, or **Rebuild**, verify:
+
+1. Splunk is running: `$SPLUNK_HOME/bin/splunk status`.
+2. Start it when necessary: `$SPLUNK_HOME/bin/splunk start`.
+3. `SPLUNK_MGMT_URL`, `SPLUNK_USERNAME`, and `SPLUNK_PASSWORD` in `backend/.env` point to that instance.
+4. The backend host can reach the configured management port (normally `https://<splunk-host>:8089`).
+5. If MCP is enabled, its endpoint and token are valid; otherwise authenticated REST must be available.
+
+Previously stored demo Runbooks can still be viewed while Splunk is offline, but creating, rebuilding, source-verifying, or executing a Runbook requires the live Splunk connection. A **Runbook unavailable — All connection attempts failed** message normally means the configured Splunk host or management port is not reachable; start Splunk and retry after the connection check passes.
+
+### Why it is more than a demo-only AI panel
+
+- The configured LLM produces structured reusable intent, not trusted SPL or a decorative summary.
+- Deterministic code—not the model—sets `DRAFT`, `PARSER_VALID`, `SOURCE_VERIFIED`, `REUSED`, `NO_EVIDENCE`, and `FAILED`.
+- Generated queries still pass the product's existing sanitizer, Splunk parser, execution, and refinement path.
+- The analyst can see SPL, parser outcome, row count, errors, evidence analysis, limitations, model metadata, and time saved.
+- A responsive execution graph presents the source investigation, verified steps, human gate, and safe-reuse target as selectable rectangular nodes with visible descriptions and evidence details.
+- Compatible-target discovery returns minimal metadata only; the backend rechecks approval and exact detection compatibility before execution.
+- Splunk execution prefers MCP and automatically falls back to authenticated Splunk REST `oneshot_search` when MCP is unavailable or fails; each result exposes the transport used.
+- The evidence generator preserves failures and live timings instead of hand-editing a passing result.
+
+<a id="forge-library"></a>
+
+### Alert-name Runbook Library
+
+The Sidebar now separates operational policy from reusable knowledge:
+
+- **Runbooks → Runbook Library** shows every stored runbook revision grouped under its exact Splunk Alert Name;
+- analysts can search Alert Names, inspect all steps and trust states, and export one revision, one alert family, or the bounded library;
+- the versioned `thinking-soc.runbook-library/v1` JSON format contains intent-only procedure content and excludes source evidence, generated SPL, approvals, credentials, and execution results;
+- imported procedures are inert drafts until an analyst attaches one to an acknowledged source with the same Alert Name and requests fresh source verification;
+- editing creates a child revision with a new ID. The parent remains unchanged and its approval never authorizes the edited content.
+
+The library reuses the existing append-only `tsoc_records` persistence model, so this extension requires no SQL migration or destructive data rewrite. Full API and trust semantics are documented in [docs/25-verified-runbook-forge.md](docs/25-verified-runbook-forge.md#alert-name-library-revision-editing-and-exchange-format).
+
+<a id="forge-shadow-evaluation"></a>
+
+### Shadow Replay and Evaluation Dashboard
+
+**Runbooks → Shadow & Evaluation** runs any attached revision read-only against a historical `soc_analysis` record with the exact same Alert Name and a different Splunk SID. Shadow execution does not require or create approval, cannot invoke state-changing SPL, and persists a separate `verified_runbook_shadow_run` artifact so a failed or zero-evidence replay remains auditable.
+
+The dashboard derives its numbers from stored artifacts: parser-valid step rate, historical evidence coverage, execution errors, compile/replay latency, measured compiler tokens and configured token price, projected analyst minutes, and projected loaded-labor value. Token pricing defaults to zero for free models; labor and token rates are explicit Forge settings rather than model-generated claims.
+
+<a id="forge-safe-response"></a>
+
+### Safe Response Preview
+
+After a Runbook reaches `PARSER_VALID` or `SOURCE_VERIFIED`, Forge can generate one to five structured response options for analyst review. Every option contains an allowlisted action type, evidence-grounded target, operational risk, rationale, prerequisites, expected effect, rollback plan, and manual verification steps. The schema has no command, script, SPL, SQL, API-call, or executable field, and deterministic policy rejects command-like text or action types outside the evidence-specific allowlist.
+
+When source evidence is incomplete, disruptive containment is blocked and the model may suggest only monitoring, evidence collection, or escalation. `SOURCE_VERIFIED` evidence unlocks additional options such as endpoint isolation or session revocation, but they remain `PREVIEW_ONLY`. A separate analyst decision can approve the preview **for manual action** or reject it; both the preview and decision are append-only, and the decision permanently records `automatic_execution_performed: false`. The product intentionally exposes no response-execution endpoint.
+
+<a id="forge-autopilot-chat"></a>
+
+### Runbook Autopilot and Chat
+
+Runbook Autopilot is a bounded backend orchestrator, not an unrestricted shell agent. A Supervisor hands work between Evidence Scout, Runbook Engineer, Policy Guard, and Response Advisor. Their actual tool calls—stored-record lookup, analyst-action check, exact-name library search, Runbook state inspection, compile/read-only verification, and Safe Response Preview—are recorded as an append-only trace with status, duration, tool name, handoff, and safe metadata. Splunk verification remains MCP-preferred with REST fallback; the observed transport is attached to the trace when compilation occurs.
+
+In `ADVANCE` mode Autopilot may compile a missing Runbook, run its existing read-only source-verification pipeline, or create/reuse a non-executable response preview. It cannot acknowledge an alert, approve or reject a Runbook, run approved reuse against a production target, approve a response decision, or execute containment. Every session therefore records `human_approval_required: true` and `automatic_execution_performed: false`.
+
+Every Forge artifact is compacted without raw result rows, credentials, or generated SPL and scheduled for PostgreSQL/Qdrant indexing. Existing artifacts are covered by `POST /api/v1/soc/rag/backfill`. SOC Chat can consequently answer questions about a Runbook's steps, evidence state, revisions, approvals, replay value, response options, and Autopilot trace while citing the retrieved Runbook document. The Investigation panel includes **Ask about this Runbook in Chat**, which opens Chat with the source record and Runbook context prefilled.
+
+<a id="forge-impact"></a>
+
+### Illustrative U.S. SOC capacity case
+
+The [U.S. Bureau of Labor Statistics](https://www.bls.gov/ooh/computer-and-information-technology/information-security-analysts.htm) reports a median information-security-analyst wage of **$124,910/year ($60.05/hour)**. [BLS March 2026 employer-cost data](https://www.bls.gov/news.release/ecec.t01.htm) reports wages as **69.9%** of private-industry compensation, which gives a planning proxy of about **$85.91 loaded cost per analyst hour**. If a six-analyst SOC has 30 approved, compatible repeat investigations per business day and measured handling time falls from 25 to 5 minutes, the model returns **2,600 analyst hours/year**, or **1.25 FTE of capacity**, worth about **$223,000/year in gross capacity value**. The eligible repeat lane becomes theoretically **5×** faster.
+
+That is an auditable scenario, not a customer-savings claim. The 30-alert volume and 25/5-minute timings are explicit assumptions until replaced by live ticket baselines and Forge evidence artifacts. See the full [U.S. SOC economic-impact model](docs/27-forge-us-soc-economic-impact.md) for formulas, sensitivity, break-even, cash-vs-capacity treatment, and source links.
+
+**Public documentation:** [technical implementation](docs/25-verified-runbook-forge.md) · [hackathon product/demo guide](docs/26-hackathon-forge-product-guide.md) · [U.S. SOC impact and ROI model](docs/27-forge-us-soc-economic-impact.md)
 
 ---
 
 ## Architecture Diagram
+
+Splunk **10+** alert handoff → external FastAPI backend → **Agentic Ops Router** (exclusive Security or Observability) → multi-agent pipelines with inventory-aware reasoning → **Judge** verdict and structured outputs (PostgreSQL). **ThinkingSOC Forge**, created as the project's hackathon feature, converts accepted investigations into source-verified, human-approved runbooks that can safely accelerate the next matching alert. A **Next.js** analyst UI exposes the complete workflow.
 
 High-level integration and data flow for the **ThinkingSOC Agentic Ops Router** (Splunk **10+** → FastAPI → agent pipelines → PostgreSQL / Qdrant / Neo4j → analyst UI).
 
@@ -64,6 +310,7 @@ flowchart LR
     SOCChat["SOC Chat\nRAG + Text-to-SQL"]
     Dashboard["Dashboard\nKPIs + health + timeline"]
     Timeline["Investigation Workflow\ntimeline + analyst actions"]
+    Forge["ThinkingSOC Forge\ncompile · verify · approve · reuse"]
     Integrations["Integration Settings\n+ post-install wizard"]
     LLM["LLM Service\nLiteLLM wrapper"]
   end
@@ -75,7 +322,7 @@ flowchart LR
   end
 
   subgraph frontend ["Next.js UI :3000"]
-    AnalystUI["Analyst UI\nDashboard · Triage · Analysis\nCorrelation · Chat\nInventory · Relationships\nSplunk Connection"]
+    AnalystUI["Analyst UI\nDashboard · Triage · Analysis\nForge · Correlation · Chat\nInventory · Relationships\nSplunk Connection"]
   end
 
   subgraph external ["External"]
@@ -117,6 +364,11 @@ flowchart LR
   PG --> Dashboard
   PG --> SOCChat
   PG --> Timeline
+  Timeline --> Forge
+  PG --> Forge
+  Forge --> InvSPL
+  Forge -.-> LLM
+  Forge --> PG
   Qdrant --> SOCChat
 
   LLM --> LLMProvider
@@ -133,6 +385,7 @@ flowchart LR
   Qdrant --> AnalystUI
   Neo4j --> AnalystUI
   Integrations --> AnalystUI
+  Forge --> AnalystUI
 ```
 
 | Flow | Mechanism |
@@ -144,6 +397,7 @@ flowchart LR
 | **Observability analysis** | After routing: enrich_from_inventory → Entity → Impact → Diagnoser → Responder → Ops Judge |
 | **Splunk AI tools** | MCP (`splunk_run_query`, `saia_*`) + SAIA `/predict` for investigation SPL |
 | **Persistence** | PostgreSQL `tsoc_records` + Qdrant (RAG) + Neo4j (correlation graph) |
+| **Verified runbook loop** | Acknowledge → configured-LLM intent compilation → source SPL verification → human approval → exact-detection guided reuse |
 
 **Deeper views:** [architecture_diagram.md](architecture_diagram.md) (data-flow table) · [docs/architecture-views.md](docs/architecture-views.md) (8 multi-perspective diagrams) · [docs/03-architecture.md](docs/03-architecture.md) (runtime layers).
 
@@ -155,6 +409,8 @@ flowchart LR
 - **Autonomous Splunk reasoning:** MCP + SAIA `/predict` are used for evidence gathering and investigation SPL.
 - **Actionable outputs:** final verdict, triage priority, investigation SPL, and analyst-ready evidence.
 - **Operational resilience:** fallback paths (including REST execution fallback) prevent single-point AI/tool failures.
+- **Compounding investigations:** ThinkingSOC Forge turns accepted investigation evidence into reusable intents, regenerates safe SPL for a matching alert, and measures time saved after explicit approval.
+- **Governed Runbooks:** The dedicated **Runbooks → Forge & Policies** Sidebar page exposes dependency readiness and bounded operational settings while keeping acknowledgment, evidence, exact matching, and human approval mandatory.
 
 ---
 
@@ -199,7 +455,7 @@ ThinkingSOC uses AI **inside structured pipelines** (LangGraph + LiteLLM), with 
 
 **Design principle:** AI proposes and structures; **humans remain in the loop** for `manual_review`, low-confidence escalation, and investigation acknowledge/escalate workflows ([investigation workflow](docs/20-investigation-workflow.md)).
 
-### Hackathon narrative (Security track)
+### Baseline Splunk integration narrative
 
 - **Splunk** remains the system of record for detection and alerting.
 - **ThinkingSOC** is the external **reasoning layer**: ingest → enrich → classify → multi-agent analysis → triage → persist → analyst UI.
@@ -213,9 +469,23 @@ Deeper problem/solution framing: [docs/01-system-overview.md](docs/01-system-ove
 
 After [installation](#installation) and demo data seed, open the UI at `http://<server-ip>:3000/` (login: `admin` / `123456@a`).
 
+For a no-setup Forge walkthrough, open **Runbooks → Runbook Library** and select **Judge Demo: Suspicious OAuth Token Replay**. The bundled synthetic tour already links two same-name/different-SID alerts, source verification, human approval, Shadow Run, safe-response preview, Autopilot agent trace, reuse metrics, and Chat/RAG context. No response action is automatically executed.
+
+### Runbook Library UI
+
+The Runbook Library groups every immutable revision by exact Alert Name and exposes verification state, human approval, source record, investigation steps, View/Edit, and Import/Export from one operational surface.
+
+![Runbook Library — source-verified OAuth replay procedure grouped by exact Alert Name](docs/images/runbook-library.png)
+
+### ThinkingSOC Forge in Analysis
+
+The dedicated **ThinkingSOC Forge** tab keeps the Runbook lifecycle beside the source investigation. Analysts can inspect the bounded Autopilot agent/tool trace, ask about the Runbook in Chat, review approval state, and continue the safe workflow without leaving Analysis.
+
+![ThinkingSOC Forge inside Analysis — approved Runbook with bounded Autopilot agent collaboration](docs/images/runbook-analysis-forge.png)
+
 ### Overview dashboard
 
-Live platform status — ingest volume, triage queue, pipeline activity, integration health (PostgreSQL, Neo4j, LiteLLM, Splunk MCP).
+Live platform status — ingest volume, triage queue, pipeline activity, integration health, and a PostgreSQL-backed **Runbook operations** panel covering the Forge lifecycle, human approval, guarded reuse outcomes, Evidence, estimated analyst time saved, Autopilot completion, and SOC Chat usage.
 
 ![ThinkingSOC overview dashboard — metrics, pipeline activity, and platform health](docs/images/overview-dashboard.png)
 
@@ -1030,7 +1300,7 @@ backend/.venv/bin/python setup.py --skip-docker -v
 # Skip demo seed only: add --no-seed
 ```
 
-**Default:** restores the bundled **full database backup** `backend/data/demo/postgres_dump/tsoc_demo.sql` (`pg_dump`) — a byte-for-byte replica of the source server: inventory, all `tsoc_records`, all `graph_findings` (Correlation), and all `tsoc_rag_documents` (SOC Chat RAG). If the backup is missing it falls back to the JSON moment snapshot under `backend/data/demo/postgres_snapshot/`, then CSV packs. Refresh with `bash scripts/backup-demo-db.sh`; restore manually with `bash scripts/restore-demo-db.sh`.
+**Default:** restores the bundled **full database backup** `backend/data/demo/postgres_dump/tsoc_demo.sql` (`pg_dump`) — a byte-for-byte replica of the source server: inventory, all `tsoc_records`, all `graph_findings` (Correlation), all `tsoc_rag_documents` (SOC Chat RAG), and Chat history. If the backup is missing it falls back to the full JSON snapshot under `backend/data/demo/postgres_snapshot/`, then CSV packs. Both full paths include the additive **Judge Demo: Suspicious OAuth Token Replay** Runbook tour and preserve the earlier demo scenarios. Refresh with `bash scripts/backup-demo-db.sh --json-full`; restore manually with `bash scripts/restore-demo-db.sh`.
 
 Details: [docs/24-demo-postgresql-data.md](docs/24-demo-postgresql-data.md).
 
@@ -1133,7 +1403,7 @@ curl -sS -X POST http://127.0.0.1:9876/api/v1/alerts/splunk-ingest \
 
 | Where | What to verify |
 |-------|----------------|
-| Script output | `RESULT SUMMARY` track (security/observability), Judge verdict, ingest status |
+| Script output | `RESULT SUMMARY` pipeline (security/observability), Judge verdict, ingest status |
 | UI → **Triage** | New item with priority and verdict |
 | UI → **Analysis** | Defender / Hunter / Judge phases (when LLM enabled) |
 | UI → **Dashboard** / **SOC Chat** | Stored events (after ingest + optional background triage) |
@@ -1296,6 +1566,7 @@ See [ThinkingSOC_Hackathon_Splunk_App/README.md](ThinkingSOC_Hackathon_Splunk_Ap
 | Frontend: `EADDRINUSE` on port 3000 | `fuser -k 3000/tcp` then `npm run start` (or `scripts/start-tsoc-services.sh`) |
 | UI not loading on server IP | Use production `npm run start` (binds `0.0.0.0` in `package.json`); set `TSOC_DEV_ORIGIN` + `NEXT_PUBLIC_TSOC_APP_URL` in `.env.local` |
 | WebSocket `webpack-hmr` errors in browser | You are on `npm run dev`; for demo/LAN use `npm run build && npm run start` instead |
+| Runbook unavailable: `All connection attempts failed` | Splunk is stopped or unreachable. Run `$SPLUNK_HOME/bin/splunk status`, start it if needed, and verify `SPLUNK_MGMT_URL` plus port `8089`; MCP fallback to REST still requires Splunk itself to be online. |
 | Skip auto Docker ensure in `run.py` | `TSOC_RUN_SKIP_POSTGRES=1` and/or `TSOC_RUN_SKIP_NEO4J=1 python3 run.py` |
 
 ---
@@ -1313,7 +1584,7 @@ See [ThinkingSOC_Hackathon_Splunk_App/README.md](ThinkingSOC_Hackathon_Splunk_Ap
 | `setup_tool/` | `setup.py` implementation |
 | `scripts/` | Integration wizard, Splunk MCP setup, smoke, webhooks, code graph |
 | `install/modules/post_configure/` | Post-install wizard modules (Splunk, LiteLLM, MCP, smoke) |
-| `submission/` | Devpost submission & evidence pack |
+| `submission/` | Hackathon submission and evidence pack |
 
 ### Directory structure
 
@@ -1388,7 +1659,7 @@ thinking-soc-splunk-hackathon/
 │   └── code-graph/                   #   Interactive code graph (graph.html)
 ├── setup_tool/                       # setup.py implementation modules
 ├── scripts/                          # Shell & Python maintenance scripts
-├── submission/                       # Devpost submission materials
+├── submission/                       # Hackathon submission materials
 ├── architecture_diagram.md           # Top-level Mermaid diagram
 ├── setup.py                          # One-command project setup
 └── README.md                         # ← you are here
