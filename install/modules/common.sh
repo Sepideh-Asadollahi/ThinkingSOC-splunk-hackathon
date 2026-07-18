@@ -66,7 +66,7 @@ print_install_banner() {
     )
 
     echo ""
-    center_line "${CYAN}Hackathon Edition${NC}" "$cols"
+    center_line "${CYAN}Lite Edition${NC}" "$cols"
     echo ""
     echo -e "${CYAN}${BOLD}"
     local line

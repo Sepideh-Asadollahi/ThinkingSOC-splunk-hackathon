@@ -35,7 +35,7 @@ Accuracy should not be inflated into an unsupported product claim. A relevant Mi
 ## Table of Contents
 
 - [Why a SOC matters and the economic value of ThinkingSOC](#soc-value-europe)
-- [ThinkingSOC Forge — hackathon edition](#forge-hackathon-edition)
+- [ThinkingSOC Forge Lite Edition](#forge-lite-edition)
   - [What was developed for this hackathon](#forge-development)
   - [How Codex contributed](#forge-codex)
   - [How the configured LLM contributes at runtime](#forge-llm)
@@ -82,9 +82,9 @@ Accuracy should not be inflated into an unsupported product claim. A relevant Mi
 
 ---
 
-<a id="forge-hackathon-edition"></a>
+<a id="forge-lite-edition"></a>
 
-## Hackathon edition — ThinkingSOC Forge
+## ThinkingSOC Forge Lite Edition
 
 > **Development provenance:** The baseline ThinkingSOC alert-routing and investigation platform existed before the hackathon submission period. **ThinkingSOC Forge**—the verified incident-to-runbook workflow described in this section—was developed as the new, meaningful extension for the hackathon in collaboration with Codex. The baseline is not presented as new hackathon work.
 
