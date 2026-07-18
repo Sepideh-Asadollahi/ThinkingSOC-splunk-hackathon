@@ -2,7 +2,7 @@
 
 <a id="soc-value-europe"></a>
 
-## Why a SOC matters — and the economic value of ThinkingSOC
+## Why a SOC matters and the economic value of ThinkingSOC
 
 A **Security Operations Center (SOC)** is the operational team that continuously monitors security telemetry, triages alerts, investigates suspicious activity, coordinates incident response, and improves detections. It sits between preventive controls—such as identity, endpoint, network, and cloud security—and the organization's incident-response and risk functions. Preventive tools try to stop attacks; the SOC determines what actually happened, how serious it is, and what people should do next. This makes the SOC the decision and response layer of day-to-day cyber defence, not merely a dashboard-monitoring function.
 
@@ -34,7 +34,7 @@ Accuracy should not be inflated into an unsupported product claim. A relevant Mi
 
 ## Table of Contents
 
-- [Why a SOC matters — and the economic value of ThinkingSOC](#soc-value-europe)
+- [Why a SOC matters and the economic value of ThinkingSOC](#soc-value-europe)
 - [ThinkingSOC Forge — hackathon edition](#forge-hackathon-edition)
   - [What was developed for this hackathon](#forge-development)
   - [How Codex contributed](#forge-codex)
