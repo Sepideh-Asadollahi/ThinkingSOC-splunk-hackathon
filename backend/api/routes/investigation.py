@@ -81,7 +81,7 @@ class AnalystActionBody(BaseModel):
 async def get_verified_runbook_settings(
     settings: Settings = Depends(get_settings),
 ) -> Dict[str, Any]:
-    """Expose non-secret Forge policy and runtime readiness to the UI."""
+    """Expose non-secret ThinkingSOC Lite policy and runtime readiness to the UI."""
     return get_runbook_runtime_status(settings).model_dump(mode="json")
 
 

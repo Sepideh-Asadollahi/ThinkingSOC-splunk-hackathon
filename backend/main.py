@@ -154,7 +154,7 @@ async def _app_lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title="ThinkingSOC Splunk Hackathon Backend",
+    title="ThinkingSOC Lite Splunk Hackathon Backend",
     description="Ingest from Splunk Alert Action and Splunk REST enrichment",
     version="0.4.1",
     lifespan=_app_lifespan,

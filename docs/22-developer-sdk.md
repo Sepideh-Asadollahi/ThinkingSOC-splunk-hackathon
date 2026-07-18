@@ -1,6 +1,6 @@
 # Developer SDK & CLI
 
-Typed Python SDK, CLI, and evaluation runner for programmatic access to the ThinkingSOC backend. Designed for integrators, CI pipelines, and demo evidence generation.
+Typed Python SDK, CLI, and evaluation runner for programmatic access to the ThinkingSOC Lite backend. Designed for integrators, CI pipelines, and demo evidence generation.
 
 **Location:** [`backend/devtools/`](../backend/devtools/)
 
@@ -1507,7 +1507,7 @@ The SDK provides **direct programmatic access** to Splunk capabilities:
 | **Demo readiness** | `doctor()`, `run_full_investigation()` | One-call CI/demo checks |
 | **Separate pipeline endpoints** | `run_analysis()` **or** `run_observability()` | Router selects **one** track per alert; SDK exposes each pipeline separately |
 
-This makes the SDK a **complete programmatic interface** to the ThinkingSOC platform — suitable for **Splunk Developer Tools** bonus evidence: REST API v2, MCP Server, SAIA, webhook ingest, RAG chat, inventory, and graph correlation.
+This makes the SDK a **complete programmatic interface** to the ThinkingSOC Lite platform — suitable for **Splunk Developer Tools** bonus evidence: REST API v2, MCP Server, SAIA, webhook ingest, RAG chat, inventory, and graph correlation.
 
 ---
 

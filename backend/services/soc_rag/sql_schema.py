@@ -43,7 +43,7 @@ The analyst does NOT know table names. They say "alerts in SOC" meaning what the
 """.format(user_vocab=SOC_USER_VOCABULARY).strip()
 
 SOC_SQL_SCHEMA_PROMPT = """
-PostgreSQL schema for ThinkingSOC (read-only SELECT only).
+PostgreSQL schema for ThinkingSOC Lite (read-only SELECT only).
 
 {table_guide}
 

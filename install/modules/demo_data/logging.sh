@@ -6,7 +6,7 @@ _demo_restore_log_init() {
     mkdir -p "${INSTALL_DIR}/logs"
     {
         echo "================================================================"
-        echo "ThinkingSOC demo data restore log"
+        echo "ThinkingSOC Lite demo data restore log"
         echo "started: $(date -Iseconds 2>/dev/null || date)"
         echo "INSTALL_DIR=${INSTALL_DIR}"
         echo "INSTALL_SCRIPT_DIR=${INSTALL_SCRIPT_DIR:-}"

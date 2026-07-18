@@ -2,7 +2,7 @@
 """
 Standalone SAIA path debugger — compares UI chat vs MCP/generatespl vs direct cloud API.
 
-Does not import ThinkingSOC backend. Only httpx + stdlib.
+Does not import ThinkingSOC Lite backend. Only httpx + stdlib.
 """
 
 from __future__ import annotations
@@ -445,7 +445,7 @@ tenant/stack was not provisioned for SAIA API v2 yet.
             print("• UI path (/predict): OK — chat can enqueue v1 jobs.")
         if v2_gen and v2_gen.status == "FAIL" and "404" in v2_gen.detail:
             print("• MCP path (/generatespl): FAIL with 404 on saia-api-v2 …/spl/write")
-            print("  → This is NOT a ThinkingSOC bug; Splunk MCP → v2 cloud route missing.")
+            print("  → This is NOT a ThinkingSOC Lite bug; Splunk MCP → v2 cloud route missing.")
         if v1 and v1.status == "PASS" and v2_cloud and v2_cloud.status == "FAIL":
             print("• Direct cloud test: v1 metadata OK, v2 spl/write FAIL")
             print("  → Fix on Splunk side: enable SAIA v2 / Agent Mode for tenant, or")

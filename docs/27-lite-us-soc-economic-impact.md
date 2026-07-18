@@ -1,16 +1,16 @@
-# ThinkingSOC Forge — U.S. SOC capacity and economic impact
+# ThinkingSOC Lite — U.S. SOC capacity and economic impact
 
-This document provides a reproducible way to estimate how ThinkingSOC Forge could affect analyst workload, investigation throughput, and SOC operating capacity in the United States. It is a planning model—not a fabricated customer case, guaranteed saving, or claim that one demo proves production ROI.
+This document provides a reproducible way to estimate how ThinkingSOC Lite could affect analyst workload, investigation throughput, and SOC operating capacity in the United States. It is a planning model—not a fabricated customer case, guaranteed saving, or claim that one demo proves production ROI.
 
 The model deliberately separates:
 
 1. **external facts** from named sources;
 2. **organization-specific planning assumptions** that must be edited;
-3. **observed Forge metrics** captured from live evidence artifacts.
+3. **observed ThinkingSOC Lite metrics** captured from live evidence artifacts.
 
 ## 1. Executive example
 
-Consider a six-analyst U.S. private-sector SOC. Assume it sees 30 repeat investigations per business day that are covered by an approved exact-detection Forge runbook. If the measured manual baseline is 25 minutes and the complete Forge-assisted handling time—including analyst review—is 5 minutes, then:
+Consider a six-analyst U.S. private-sector SOC. Assume it sees 30 repeat investigations per business day that are covered by an approved exact-detection ThinkingSOC Lite runbook. If the measured manual baseline is 25 minutes and the complete ThinkingSOC Lite-assisted handling time—including analyst review—is 5 minutes, then:
 
 - 7,800 eligible repeat investigations occur per year;
 - 2,600 analyst hours are returned per year;
@@ -19,7 +19,7 @@ Consider a six-analyst U.S. private-sector SOC. Assume it sees 30 repeat investi
 - the eligible repeat lane uses one-fifth of its former time, a theoretical **5× throughput** for that lane;
 - the returned time can support about **6,240 additional 25-minute manual-equivalent investigations** per year.
 
-If the organization enters a hypothetical $60,000 annual incremental platform/model/operations cost, the planning model produces about $163,000 net capacity value, 272% ROI, and 3.2-month payback. The $60,000 input is not a known ThinkingSOC production price; it exists to demonstrate the calculation and must be replaced with the buyer's actual fully loaded cost.
+If the organization enters a hypothetical $60,000 annual incremental platform/model/operations cost, the planning model produces about $163,000 net capacity value, 272% ROI, and 3.2-month payback. The $60,000 input is not a known ThinkingSOC Lite production price; it exists to demonstrate the calculation and must be replaced with the buyer's actual fully loaded cost.
 
 ## 2. External U.S. data inputs
 
@@ -71,7 +71,7 @@ This vendor survey explains why repeated investigation work matters, but its per
 
 ## 3. Product metrics used by the model
 
-Forge persists the following operational evidence:
+ThinkingSOC Lite persists the following operational evidence:
 
 | Metric | Source | Use |
 |---|---|---|
@@ -84,7 +84,7 @@ Forge persists the following operational evidence:
 | `total_evidence_rows` | Target execution | Evidence-yield monitoring |
 | model/token metadata | Draft artifact | Model governance and variable-cost analysis |
 
-The evidence pack captures these values in `10_forge_target_run.json` and `11_forge_metrics.json`. The model should prefer observed medians or percentiles over a single fastest demo run.
+The evidence pack captures these values in `10_lite_target_run.json` and `11_lite_metrics.json`. The model should prefer observed medians or percentiles over a single fastest demo run.
 
 ## 4. Core formulas
 
@@ -94,9 +94,9 @@ Define:
 D = eligible compatible repeat investigations per business day
 W = business days per year
 M = measured median manual minutes per eligible investigation
-A = measured median Forge-assisted minutes, including analyst review
+A = measured median ThinkingSOC Lite-assisted minutes, including analyst review
 H = loaded analyst cost per hour
-C = annual incremental Forge cost
+C = annual incremental ThinkingSOC Lite cost
 N = number of SOC analysts
 ```
 
@@ -126,7 +126,7 @@ If `C` is zero or unknown, do not report ROI or payback; report hours and gross 
 | Eligible repeats/day (`D`) | 30 | Example assumption; must come from local alert history |
 | Business days/year (`W`) | 260 | Planning convention |
 | Manual minutes (`M`) | 25 | Example assumption; product default, must be validated from tickets/time study |
-| Forge-assisted minutes (`A`) | 5 | Example assumption; must be replaced by evidence-pack median including review |
+| ThinkingSOC Lite-assisted minutes (`A`) | 5 | Example assumption; must be replaced by evidence-pack median including review |
 | Loaded analyst cost/hour (`H`) | $85.91 | Derived from BLS inputs above |
 | Annual incremental cost (`C`) | $60,000 | Example assumption; replace with actual platform/model/operations cost |
 
@@ -135,7 +135,7 @@ If `C` is zero or unknown, do not report ROI or payback; report hours and gross 
 ```text
 eligible runs/year = 30 × 260 = 7,800
 manual hours/year = 7,800 × 25 / 60 = 3,250
-Forge-assisted hours/year = 7,800 × 5 / 60 = 650
+ThinkingSOC Lite-assisted hours/year = 7,800 × 5 / 60 = 650
 hours returned/year = 3,250 - 650 = 2,600
 FTE capacity returned = 2,600 / 2,080 = 1.25
 gross capacity value = 2,600 × $85.91 = $223,373
@@ -148,7 +148,7 @@ eligible lane speedup = 25 / 5 = 5×
 
 ### Operational interpretation
 
-Before Forge, the 30 repeat cases consume 12.5 analyst-hours per day. Under the 5-minute assisted assumption, they consume 2.5 analyst-hours, returning 10 hours each business day across the team.
+Before ThinkingSOC Lite, the 30 repeat cases consume 12.5 analyst-hours per day. Under the 5-minute assisted assumption, they consume 2.5 analyst-hours, returning 10 hours each business day across the team.
 
 That does not automatically remove 1.25 people from payroll. It creates capacity that may be used to:
 
@@ -178,7 +178,7 @@ break-even D = C / (W × (M - A) / 60 × H)
              = 8.1 repeats/day
 ```
 
-This sensitivity is more credible than applying a savings percentage to all SOC alerts. Forge only creates value on alerts with an approved, compatible runbook.
+This sensitivity is more credible than applying a savings percentage to all SOC alerts. ThinkingSOC Lite only creates value on alerts with an approved, compatible runbook.
 
 ## 7. Throughput without double counting
 
@@ -186,7 +186,7 @@ For the eligible lane:
 
 ```text
 manual throughput per analyst-hour = 60 / 25 = 2.4 investigations
-Forge-assisted throughput per analyst-hour = 60 / 5 = 12 investigations
+ThinkingSOC Lite-assisted throughput per analyst-hour = 60 / 5 = 12 investigations
 lane multiplier = 12 / 2.4 = 5×
 ```
 
@@ -211,7 +211,7 @@ Use at least a 30-day pilot and report both median and p90 where possible.
 - record escalations, rework, and senior-review minutes;
 - capture overtime or outsourced-case unit cost if cash savings are claimed.
 
-### Forge pilot
+### ThinkingSOC Lite pilot
 
 - compile only acknowledged, non-benign source investigations;
 - require human approval;
@@ -232,7 +232,7 @@ Use at least a 30-day pilot and report both median and p90 where possible.
 | Median minutes returned | median(`manual_minutes - assisted_minutes`) |
 | Analyst acceptance | approved suggestions used without material rewrite / reviewed runs |
 | Rework rate | runs requiring new SPL or manual restart / attempted runs |
-| Cost per successful reuse | total Forge operating cost / `REUSED` runs |
+| Cost per successful reuse | total ThinkingSOC Lite operating cost / `REUSED` runs |
 | Evidence yield | total evidence rows / successful steps, reported with truncation context |
 
 ## 9. Conservative business-case policy
@@ -250,7 +250,7 @@ Count financial value only when all of the following are true:
 
 ## 10. What this example proves—and does not prove
 
-It proves that a buyer can reproduce the economics from official wage data, local alert volume, and live Forge timing artifacts. It shows the size of the opportunity when repeated alert families consume meaningful analyst time.
+It proves that a buyer can reproduce the economics from official wage data, local alert volume, and live ThinkingSOC Lite timing artifacts. It shows the size of the opportunity when repeated alert families consume meaningful analyst time.
 
 It does not prove that every SOC will save $223,000, that every alert will be five times faster, that false positives will fall by a fixed percentage, or that the feature prevents a breach. Those require a production pilot with labeled outcomes.
 
@@ -266,7 +266,7 @@ Refresh BLS wage and compensation inputs before presenting the business case in 
 
 ## 12. Related documents
 
-- [Technical implementation](./25-verified-runbook-forge.md)
-- [Hackathon product and demo guide](./26-hackathon-forge-product-guide.md)
+- [Technical implementation](./25-verified-runbook-lite.md)
+- [Hackathon product and demo guide](./26-hackathon-lite-product-guide.md)
 - [Submission evidence generator](../submission/README.md)
 - [Hackathon change log](../HACKATHON_CHANGELOG.md)

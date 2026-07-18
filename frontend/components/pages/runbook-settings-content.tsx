@@ -195,7 +195,7 @@ export function RunbookSettingsContent() {
           body: JSON.stringify({ value }),
         })
       ))
-      setNotice("Forge settings saved and applied to new operations.")
+      setNotice("ThinkingSOC Lite settings saved and applied to new operations.")
       await load()
     } catch (saveError) {
       setError(errorMessage(saveError))
@@ -213,7 +213,7 @@ export function RunbookSettingsContent() {
           </div>
           <div className="min-w-0">
             <h1 id="runbook-page-title" className="bg-gradient-to-r from-white via-slate-200 to-teal-400/90 bg-clip-text text-2xl font-semibold text-transparent">
-              ThinkingSOC Forge
+              ThinkingSOC Lite
             </h1>
             <p className="mt-1 text-sm text-slate-400">
               Verified runbook policy, runtime readiness, and measurable productivity defaults
@@ -225,7 +225,7 @@ export function RunbookSettingsContent() {
         </NeonBadge>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3" aria-label="Forge readiness">
+      <section className="grid gap-4 md:grid-cols-3" aria-label="ThinkingSOC Lite readiness">
         <ReadinessCard
           icon={<DatabaseIcon className="size-4" />}
           label="Persistence"
@@ -269,7 +269,7 @@ export function RunbookSettingsContent() {
         <NeonCardHeader
           accent="teal"
           icon={<BookOpenCheckIcon className="size-5 text-teal-300" />}
-          title="Forge settings"
+          title="ThinkingSOC Lite settings"
           description="Operational controls are configurable; verification and human-gate safety invariants remain fixed."
           actions={
             <>
@@ -286,12 +286,12 @@ export function RunbookSettingsContent() {
         />
 
         <div className="space-y-6 px-6 pb-6">
-          {loading ? <p className="pt-2 text-sm text-slate-500" aria-busy="true">Loading Forge settings…</p> : null}
+          {loading ? <p className="pt-2 text-sm text-slate-500" aria-busy="true">Loading ThinkingSOC Lite settings…</p> : null}
           {!loading ? (
             <>
               <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-teal-500/15 bg-teal-500/[0.04] p-4">
                 <div>
-                  <p className="text-sm font-medium text-slate-100">Enable ThinkingSOC Forge</p>
+                  <p className="text-sm font-medium text-slate-100">Enable ThinkingSOC Lite</p>
                   <p className="mt-1 text-xs text-slate-400">Disabling blocks compile, approval, and reuse while preserving read-only access to existing artifacts.</p>
                 </div>
                 <label className="inline-flex cursor-pointer items-center gap-3 text-sm text-slate-300">

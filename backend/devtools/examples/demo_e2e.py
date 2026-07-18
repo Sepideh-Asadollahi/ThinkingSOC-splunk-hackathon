@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """End-to-end SDK demo: alert → classify → triage → investigate → chat.
 
-Demonstrates the full ThinkingSOC pipeline using the Developer SDK,
+Demonstrates the full ThinkingSOC Lite pipeline using the Developer SDK,
 including Splunk MCP integration, exclusive single-track analysis, investigation
 timeline, and RAG-powered SOC chat.
 
@@ -32,7 +32,7 @@ def _pp(label: str, obj: object) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="ThinkingSOC end-to-end SDK demo")
+    parser = argparse.ArgumentParser(description="ThinkingSOC Lite end-to-end SDK demo")
     parser.add_argument("--base-url", default="http://127.0.0.1:9876")
     parser.add_argument("--token", default=None)
     args = parser.parse_args()

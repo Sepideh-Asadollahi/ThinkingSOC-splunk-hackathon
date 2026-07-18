@@ -43,7 +43,7 @@ flowchart LR
     D11["11 Environment Config"]
     D22["22 Developer SDK"]
     D23["23 Post-Install Wizard"]
-    D25["25 Verified Runbook Forge"]
+    D25["25 ThinkingSOC Lite Runbooks"]
     D26["26 Hackathon Product Guide"]
     D27["27 U.S. SOC Impact & ROI"]
   end
@@ -100,9 +100,9 @@ flowchart LR
 | 22 | [22-developer-sdk.md](./22-developer-sdk.md) | **Developer SDK** — full API wrapper (ingest, MCP, inventory, graph), CLI, `doctor`, evaluate runner |
 | 23 | [23-post-install-integration-wizard.md](./23-post-install-integration-wizard.md) | **Post-install wizard** — Splunk / LiteLLM / MCP setup, smoke test, `.env` summary, Splunk restart |
 | 24 | [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) | **Demo data** — full PostgreSQL dump + JSON fallback, Runbook judge tour, `install.sh` auto-load |
-| 25 | [25-verified-runbook-forge.md](./25-verified-runbook-forge.md) | **ThinkingSOC Forge** — bounded Autopilot Agent/Tool trace, Runbook-aware Chat, source verification, approval, and reuse |
-| 26 | [26-hackathon-forge-product-guide.md](./26-hackathon-forge-product-guide.md) | **Lite Edition:** product delta, LLM role, trust model, demo, and acceptance evidence |
-| 27 | [27-forge-us-soc-economic-impact.md](./27-forge-us-soc-economic-impact.md) | **SOC impact** — U.S. labor inputs, capacity, throughput, ROI, break-even, and measurement policy |
+| 25 | [25-verified-runbook-lite.md](./25-verified-runbook-lite.md) | **ThinkingSOC Lite** — bounded Autopilot Agent/Tool trace, Runbook-aware Chat, source verification, approval, and reuse |
+| 26 | [26-hackathon-lite-product-guide.md](./26-hackathon-lite-product-guide.md) | **Lite Edition:** product delta, LLM role, trust model, demo, and acceptance evidence |
+| 27 | [27-lite-us-soc-economic-impact.md](./27-lite-us-soc-economic-impact.md) | **SOC impact** — U.S. labor inputs, capacity, throughput, ROI, break-even, and measurement policy |
 
 Subfolders (`code-graph/`, etc.) include their own **`README.md`** index. The repository also has per-folder READMEs under `backend/`, `ThinkingSOC_Hackathon_Splunk_App/`, `setup_tool/`, and elsewhere.
 

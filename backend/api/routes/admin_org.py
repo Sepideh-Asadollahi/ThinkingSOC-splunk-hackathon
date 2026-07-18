@@ -31,7 +31,7 @@ async def admin_org_gap_suggest(
 ) -> AdminOrgGapSuggestResponse:
     """
     Given alert fields (and optional SOC analysis excerpts), propose whether an **organizational**
-    knowledge gap exists and **one question** to ask an admin — similar in spirit to ThinkingSOC
+    knowledge gap exists and **one question** to ask an admin — similar in spirit to ThinkingSOC Lite
     ``admin_org_gap`` but **without** DB, queue, or RAG.
 
     Uses LiteLLM when configured; otherwise a small rule-based fallback.

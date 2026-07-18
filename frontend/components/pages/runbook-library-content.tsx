@@ -462,7 +462,7 @@ export function RunbookLibraryContent() {
     try {
       const parsed = JSON.parse(await file.text()) as RunbookExportBundle
       if (parsed.schema_version !== "thinking-soc.runbook-library/v1" || !Array.isArray(parsed.runbooks) || parsed.runbooks.length === 0) {
-        throw new Error("Select a valid ThinkingSOC runbook-library/v1 JSON file.")
+        throw new Error("Select a valid ThinkingSOC Lite runbook-library/v1 JSON file.")
       }
       setImportDoc(parsed)
       setImportSourceId("")

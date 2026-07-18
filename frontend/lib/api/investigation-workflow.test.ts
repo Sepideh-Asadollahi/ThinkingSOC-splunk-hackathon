@@ -280,7 +280,7 @@ describe("investigation-workflow API", () => {
     )
   })
 
-  it("exports timeline, analyst actions, and Forge state", async () => {
+  it("exports timeline, analyst actions, and ThinkingSOC Lite state", async () => {
     backendFetch
       .mockResolvedValueOnce({ record_id: 9, found: true, steps: [] })
       .mockResolvedValueOnce({ record_id: 9, count: 0, results: [] })

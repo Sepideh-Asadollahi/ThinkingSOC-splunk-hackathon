@@ -1,6 +1,6 @@
 # Database schema
 
-ThinkingSOC uses **three data stores** — PostgreSQL (relational + JSONB), Qdrant (vector embeddings), and Neo4j (graph). This document covers every table, collection, node type, index, and initialization flow.
+ThinkingSOC Lite uses **three data stores** — PostgreSQL (relational + JSONB), Qdrant (vector embeddings), and Neo4j (graph). This document covers every table, collection, node type, index, and initialization flow.
 
 **Related:** [19-storage-persistence.md](./19-storage-persistence.md) (write/read paths) · [10-soc-vector-rag.md](./10-soc-vector-rag.md) (RAG) · [12-correlation-graph-service.md](./12-correlation-graph-service.md) (correlation) · [14-inventory-service.md](./14-inventory-service.md) (inventory)
 

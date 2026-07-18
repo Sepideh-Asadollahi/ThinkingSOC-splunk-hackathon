@@ -27,7 +27,7 @@ vi.mock("./investigation-analyst-actions", () => ({
 vi.mock("./verified-runbook-panel", () => ({
   VerifiedRunbookPanel: ({ autoBuildRequestKey }: { autoBuildRequestKey?: number }) => (
     <div data-testid="verified-runbook-mock" data-auto-build-request-key={autoBuildRequestKey}>
-      Forge runbook
+      ThinkingSOC Lite runbook
     </div>
   ),
 }))
@@ -52,7 +52,7 @@ describe("InvestigationTabbedLayout", () => {
 
     expect(screen.getByTestId("investigation-timeline-mock")).toBeInTheDocument()
     expect(screen.getByTestId("investigation-analyst-mock")).toBeInTheDocument()
-    expect(screen.getByRole("tab", { name: INVESTIGATION_TAB.forge })).toBeInTheDocument()
+    expect(screen.getByRole("tab", { name: INVESTIGATION_TAB.lite })).toBeInTheDocument()
     expect(screen.queryByTestId("verified-runbook-mock")).not.toBeInTheDocument()
     expect(screen.getByTestId("investigation-tabs-bar")).toBeInTheDocument()
 
@@ -63,7 +63,7 @@ describe("InvestigationTabbedLayout", () => {
     ).toBeTruthy()
   })
 
-  it("moves to ThinkingSOC Forge and starts its build after Acknowledge", async () => {
+  it("moves to ThinkingSOC Lite and starts its build after Acknowledge", async () => {
     const user = userEvent.setup()
     render(
       <InvestigationTabbedLayout
@@ -81,13 +81,13 @@ describe("InvestigationTabbedLayout", () => {
       />
     )
 
-    const forgeTab = screen.getByRole("tab", { name: INVESTIGATION_TAB.forge })
-    expect(forgeTab).toHaveAttribute("data-state", "inactive")
+    const liteTab = screen.getByRole("tab", { name: INVESTIGATION_TAB.lite })
+    expect(liteTab).toHaveAttribute("data-state", "inactive")
 
     await user.click(screen.getByRole("button", { name: "Acknowledge mock" }))
 
-    expect(forgeTab).toHaveAttribute("data-state", "active")
-    expect(screen.getByTestId("thinking-soc-forge-tab")).toBeInTheDocument()
+    expect(liteTab).toHaveAttribute("data-state", "active")
+    expect(screen.getByTestId("thinking-soc-lite-tab")).toBeInTheDocument()
     expect(screen.getByTestId("verified-runbook-mock")).toHaveAttribute(
       "data-auto-build-request-key",
       "1"

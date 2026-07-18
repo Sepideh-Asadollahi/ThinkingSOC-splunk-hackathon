@@ -27,7 +27,7 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(
     title="Correlation",
-    description="ThinkingSOC Graph Correlation demo API",
+    description="ThinkingSOC Lite Graph Correlation demo API",
     version="0.1.0",
     lifespan=lifespan,
 )

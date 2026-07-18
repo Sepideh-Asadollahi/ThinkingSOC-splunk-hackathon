@@ -1,6 +1,6 @@
 # backend/data
 
-Demo data and configuration used by the ThinkingSOC backend.
+Demo data and configuration used by the ThinkingSOC Lite backend.
 
 ## Key files
 

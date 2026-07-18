@@ -191,7 +191,7 @@ async def fetch_inventory_counts(settings: Settings) -> Tuple[int, int]:
 
 
 async def fetch_runbook_ops(settings: Settings) -> Dict[str, Any]:
-    """One-roundtrip rollup for Forge, reuse, Autopilot, and SOC Chat."""
+    """One-roundtrip rollup for ThinkingSOC Lite, reuse, Autopilot, and SOC Chat."""
     if not await _ensure_pool(settings):
         return {}
     query = """
@@ -286,7 +286,7 @@ async def fetch_runbook_ops(settings: Settings) -> Dict[str, Any]:
         async with pg._PG_POOL.acquire() as conn:
             row = await conn.fetchrow(query)
     except Exception as exc:
-        # Dashboard availability must not depend on optional Chat/Forge tables
+        # Dashboard availability must not depend on optional Chat/ThinkingSOC Lite tables
         # while an older installation is still being migrated.
         logger.warning("dashboard Runbook operations rollup unavailable: %s", exc)
         return {}

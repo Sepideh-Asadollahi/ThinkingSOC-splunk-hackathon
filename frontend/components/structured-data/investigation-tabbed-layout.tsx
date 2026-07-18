@@ -46,7 +46,7 @@ export const INVESTIGATION_TAB = {
   framework: "Framework",
   evidenceChain: "Evidence chain",
   adminQuestion: "Admin question",
-  forge: "ThinkingSOC Forge",
+  lite: "ThinkingSOC Lite",
   technical: "Technical",
 } as const
 
@@ -202,7 +202,7 @@ export function InvestigationTabbedLayout({
   const [runbookBuildRequestKey, setRunbookBuildRequestKey] = useState(0)
   const handleAnalystActionRecorded = (action: "acknowledge" | "escalate") => {
     if (action === "acknowledge") {
-      setActiveTab("forge")
+      setActiveTab("lite")
       setRunbookBuildRequestKey((current) => current + 1)
     }
     onAnalystActionRecorded?.()
@@ -223,7 +223,7 @@ export function InvestigationTabbedLayout({
     { value: "overview", label: INVESTIGATION_TAB.overview },
   ]
   if (showWorkflowPanels) {
-    tabDefs.push({ value: "forge", label: INVESTIGATION_TAB.forge })
+    tabDefs.push({ value: "lite", label: INVESTIGATION_TAB.lite })
   }
   if (sections?.hasRecommendedActions) {
     tabDefs.push({ value: "recommended-action", label: INVESTIGATION_TAB.recommendedAction })
@@ -293,7 +293,7 @@ export function InvestigationTabbedLayout({
           </NeonTabsContent>
 
           {showWorkflowPanels ? (
-            <NeonTabsContent value="forge" className="space-y-4" data-testid="thinking-soc-forge-tab">
+            <NeonTabsContent value="lite" className="space-y-4" data-testid="thinking-soc-lite-tab">
               <VerifiedRunbookPanel
                 recordId={recordId!}
                 refreshKey={timelineRefreshKey}

@@ -1,6 +1,6 @@
 # LLM service layer
 
-The **LLM service layer** is the single integration point between all ThinkingSOC LLM consumers (pipelines, chat, SQL, SPL review) and any upstream LLM provider. It wraps **LiteLLM** with error classification, token budget management, thinking-content extraction, and trace logging.
+The **LLM service layer** is the single integration point between all ThinkingSOC Lite LLM consumers (pipelines, chat, SQL, SPL review) and any upstream LLM provider. It wraps **LiteLLM** with error classification, token budget management, thinking-content extraction, and trace logging.
 
 **Related:** [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) (pipelines) · [10-soc-vector-rag.md](./10-soc-vector-rag.md) (chat) · [11-environment-configuration.md](./11-environment-configuration.md) (env vars)
 

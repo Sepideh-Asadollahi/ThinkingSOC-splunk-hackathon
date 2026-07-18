@@ -1,4 +1,4 @@
-"""Typed async SDK client for ThinkingSOC backend APIs."""
+"""Typed async SDK client for ThinkingSOC Lite backend APIs."""
 
 from __future__ import annotations
 
@@ -626,7 +626,7 @@ class AsyncTsocSdkClient:
         return await self._post_raw("/api/v1/investigation/records/{0}/analyst-actions".format(record_id), body)
 
     async def runbook_runtime_status(self) -> RunbookRuntimeStatus:
-        """GET non-secret Forge policy and dependency readiness."""
+        """GET non-secret ThinkingSOC Lite policy and dependency readiness."""
         return await self._get_model(
             "/api/v1/investigation/runbook-settings",
             RunbookRuntimeStatus,

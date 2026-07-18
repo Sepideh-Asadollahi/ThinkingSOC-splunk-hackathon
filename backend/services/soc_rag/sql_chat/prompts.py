@@ -18,7 +18,7 @@ CLASSIFY_SYSTEM = (
     "'Correlation findings' with highest risk / how many / list → is_statistical=true on graph_findings."
 )
 
-SQL_GEN_SYSTEM = """You are a PostgreSQL analyst for ThinkingSOC.
+SQL_GEN_SYSTEM = """You are a PostgreSQL analyst for ThinkingSOC Lite.
 
 Read the schema and table selection guide. You receive conversation + latest question.
 For every question you must:

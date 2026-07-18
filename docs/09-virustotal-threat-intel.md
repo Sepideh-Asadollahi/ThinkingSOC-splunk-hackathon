@@ -1,6 +1,6 @@
 # VirusTotal threat intelligence (SOC analysis)
 
-How ThinkingSOC enriches security alerts with **VirusTotal API v3**, maps responses to the **official object model**, and feeds **compact findings** into the Defender / Hunter / Judge pipeline and the analyst UI.
+How ThinkingSOC Lite enriches security alerts with **VirusTotal API v3**, maps responses to the **official object model**, and feeds **compact findings** into the Defender / Hunter / Judge pipeline and the analyst UI.
 
 **Related:** [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) (graph) · [07-lld-low-level-design.md](./07-lld-low-level-design.md) (contracts) · [08-triage-priority-layer.md](./08-triage-priority-layer.md)
 

@@ -19,7 +19,7 @@ LLM prompt templates for analysis stages.
 - `prompt_root_cause_spl_system.md`
 - `prompt_spl_mcp_review_system.md`
 - `prompt_spl_results_analysis_system.md`
-- `prompt_verified_runbook_system.md` — strict intent-only compiler for ThinkingSOC Forge
+- `prompt_verified_runbook_system.md` — strict intent-only compiler for ThinkingSOC Lite
 - `prompt_safe_response_preview_system.md` — strict preview-only manual response options; commands and execution payloads are forbidden
 
 ## See also

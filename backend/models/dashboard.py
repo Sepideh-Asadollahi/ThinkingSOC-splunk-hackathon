@@ -52,7 +52,7 @@ class DashboardIntegrations(BaseModel):
 
 
 class DashboardRunbookOps(BaseModel):
-    """Forge, guarded reuse, Autopilot, and Chat operational rollup."""
+    """ThinkingSOC Lite, guarded reuse, Autopilot, and Chat operational rollup."""
 
     latest_runbooks: int = 0
     source_verified: int = 0

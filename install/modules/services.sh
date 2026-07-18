@@ -4,7 +4,7 @@
 print_install_runtime_modes_help() {
     cat <<'EOF'
 
-ThinkingSOC — two ways to run backend + frontend after install
+ThinkingSOC Lite — two ways to run backend + frontend after install
 ──────────────────────────────────────────────────────────────
 Both use production UI: npm run build  →  npm run start  (not npm run dev)
 
@@ -40,10 +40,10 @@ Unattended install / smoke-test controls:
   TSOC_LOAD_DEMO_DATA=true|false    load the committed full demo bundle
   TSOC_SETUP_SYSTEMD=true|false     select systemd or background services
   TSOC_RESET_EXISTING_STACK=true    explicitly permit deletion of only the
-                                    ThinkingSOC containers/data volumes
+                                    ThinkingSOC Lite containers/data volumes
 
 TSOC_RESET_EXISTING_STACK is intentionally unset by default. Never enable it
-on an existing deployment unless replacing its ThinkingSOC database is intended.
+on an existing deployment unless replacing its ThinkingSOC Lite database is intended.
 
 EOF
 }
@@ -142,7 +142,7 @@ start_application_services() {
         if _tsoc_curl_ok "http://127.0.0.1:9876/health"; then
             ok "Backend already listening on port 9876 and healthy"
         else
-            err "Port 9876 is occupied but GET /health failed; refusing to treat it as ThinkingSOC"
+            err "Port 9876 is occupied but GET /health failed; refusing to treat it as ThinkingSOC Lite"
             return 1
         fi
     else
@@ -159,7 +159,7 @@ start_application_services() {
         if _tsoc_curl_ok "http://127.0.0.1:3000/login"; then
             ok "Frontend already listening on port 3000 and reachable"
         else
-            err "Port 3000 is occupied but GET /login failed; refusing to treat it as ThinkingSOC"
+            err "Port 3000 is occupied but GET /login failed; refusing to treat it as ThinkingSOC Lite"
             return 1
         fi
     else
@@ -243,7 +243,7 @@ create_systemd_services() {
 
     cat > /etc/systemd/system/tsoc-backend.service <<EOF
 [Unit]
-Description=ThinkingSOC Backend (FastAPI)
+Description=ThinkingSOC Lite Backend (FastAPI)
 After=network.target docker.service
 Requires=docker.service
 
@@ -266,7 +266,7 @@ EOF
 
     cat > /etc/systemd/system/tsoc-frontend.service <<EOF
 [Unit]
-Description=ThinkingSOC Frontend (Next.js)
+Description=ThinkingSOC Lite Frontend (Next.js)
 After=network.target tsoc-backend.service
 
 [Service]

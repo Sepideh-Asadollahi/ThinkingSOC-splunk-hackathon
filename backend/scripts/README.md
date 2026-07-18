@@ -1,6 +1,6 @@
 # backend/scripts
 
-Utility scripts for the ThinkingSOC backend. Requires `backend/.venv` and a running PostgreSQL instance.
+Utility scripts for the ThinkingSOC Lite backend. Requires `backend/.venv` and a running PostgreSQL instance.
 
 ## Contents
 

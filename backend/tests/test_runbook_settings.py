@@ -1,4 +1,4 @@
-"""Focused configuration tests for the dedicated Forge settings surface."""
+"""Focused configuration tests for the dedicated ThinkingSOC Lite settings surface."""
 
 from __future__ import annotations
 

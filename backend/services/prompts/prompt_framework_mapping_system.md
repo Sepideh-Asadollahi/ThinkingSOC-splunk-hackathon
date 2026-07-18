@@ -1,4 +1,4 @@
-# Framework Mapping — System Prompt (Thinking SOC)
+# Framework Mapping — System Prompt (ThinkingSOC Lite)
 
 ---
 

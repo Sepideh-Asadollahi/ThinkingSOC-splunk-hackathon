@@ -1,4 +1,4 @@
-"""Bounded multi-agent orchestration for ThinkingSOC Forge runbooks.
+"""Bounded multi-agent orchestration for ThinkingSOC Lite runbooks.
 
 The Autopilot advances only reversible/read-only workflow stages. Approval,
 production reuse, and response execution remain explicit analyst actions.
@@ -162,7 +162,7 @@ async def run_runbook_autopilot(
     source_record_id: int,
     body: RunbookAutopilotBody,
 ) -> RunbookAutopilotSession:
-    """Run the bounded Forge orchestration and persist its complete audit trace."""
+    """Run the bounded ThinkingSOC Lite orchestration and persist its complete audit trace."""
     if not getattr(settings, "tsoc_runbook_autopilot_enabled", True):
         raise VerifiedRunbookError("Runbook Autopilot is disabled.", status_code=503)
     if not splunk_store_configured(settings):

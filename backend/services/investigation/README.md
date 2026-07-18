@@ -29,7 +29,7 @@ Investigation workflow for SOC analysis. Generates investigation SPL queries, ex
 
 Full design: [docs/13-cim-investigation-spl-mcp.md](../../../docs/13-cim-investigation-spl-mcp.md) — section **SPL syntax sanitize + parser-driven refine**.
 
-Runbook logs can be followed with `journalctl -u tsoc-backend -f | rg 'runbook_event='`. See [Verified Runbook Forge — Backend lifecycle logs](../../../docs/25-verified-runbook-forge.md#backend-lifecycle-logs) for the event families and redaction contract.
+Runbook logs can be followed with `journalctl -u tsoc-backend -f | rg 'runbook_event='`. See [ThinkingSOC Lite backend lifecycle logs](../../../docs/25-verified-runbook-lite.md#backend-lifecycle-logs) for the event families and redaction contract.
 
 ## Related docs
 

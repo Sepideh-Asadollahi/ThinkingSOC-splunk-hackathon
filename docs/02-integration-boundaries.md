@@ -159,7 +159,7 @@ INFO ingest_row_shape stage=pre_triage_batch planned_storage_sids=['scheduler__�
 INFO agent_triage_all_rows start base_sid=scheduler__… row=1/2 storage_sid=scheduler__…-1
 ```
 
-Splunk alert action stderr (one-line summary): `INFO Outgoing ThinkingSOC webhook rows=2 url=… bytes=…`.
+Splunk alert action stderr (one-line summary): `INFO Outgoing ThinkingSOC Lite webhook rows=2 url=… bytes=…`.
 
 Manual batch APIs (`POST /analysis/run-by-sid`, `POST /observability/run-by-sid`) apply the same storage-sid suffix when persisting per-row results.
 

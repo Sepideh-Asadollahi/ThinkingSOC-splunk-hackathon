@@ -76740,7 +76740,7 @@
           "why_verdict": "Three independent evidence pivots corroborate replay.",
           "signal_notes": [],
           "why_priority": "A high-value application was accessed.",
-          "recommended_action": "Acknowledge, review the evidence, then use Forge safely."
+          "recommended_action": "Acknowledge, review the evidence, then use ThinkingSOC Lite safely."
         },
         "signals": [],
         "mapped_from": {
@@ -77043,7 +77043,7 @@
           "why_verdict": "Three independent evidence pivots corroborate replay.",
           "signal_notes": [],
           "why_priority": "A high-value application was accessed.",
-          "recommended_action": "Acknowledge, review the evidence, then use Forge safely."
+          "recommended_action": "Acknowledge, review the evidence, then use ThinkingSOC Lite safely."
         },
         "signals": [],
         "mapped_from": {
@@ -77348,7 +77348,7 @@
       "demo_scenario_id": "judge-tour-runbook-v1",
       "tsoc_record_type": "investigation_analyst_action",
       "investigation_record_id": 395,
-      "recommended_step_at_action": "Open ThinkingSOC Forge and review the Autopilot trace."
+      "recommended_step_at_action": "Open ThinkingSOC Lite and review the Autopilot trace."
     },
     "row_index": 0
   },

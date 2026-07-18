@@ -1,6 +1,6 @@
 # Investigation SPL (SAIA `/predict` + MCP execute)
 
-**ThinkingSOC** pairs each SOC **investigation question** with runnable Splunk SPL. The **production path** matches the Splunk UI chat: **REST `/predict`** (`write_spl`), then **MCP `splunk_run_query`** to run the SPL and fill **`spl_results`** for the UI. LiteLLM and rule-based `search` are fallbacks.
+**ThinkingSOC Lite** pairs each SOC **investigation question** with runnable Splunk SPL. The **production path** matches the Splunk UI chat: **REST `/predict`** (`write_spl`), then **MCP `splunk_run_query`** to run the SPL and fill **`spl_results`** for the UI. LiteLLM and rule-based `search` are fallbacks.
 
 **Related:** [02-integration-boundaries.md](./02-integration-boundaries.md), [04-agents-and-pipelines.md](./04-agents-and-pipelines.md), [07-lld-low-level-design.md](./07-lld-low-level-design.md).
 
@@ -254,7 +254,7 @@ On **Splunk Enterprise (cloud-connected)**, Splunk AI Assistant stores tenant/SC
 {"error":"local variable 'configs' referenced before assignment"}
 ```
 
-ThinkingSOC **auto-repairs** this when `TSOC_SAIA_AUTO_REPAIR=true` (default):
+ThinkingSOC Lite **auto-repairs** this when `TSOC_SAIA_AUTO_REPAIR=true` (default):
 
 | When | What happens |
 |------|----------------|

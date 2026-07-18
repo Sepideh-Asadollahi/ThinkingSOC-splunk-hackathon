@@ -2,7 +2,7 @@
 """
 Ask Splunk AI Assistant via REST /predict (UI path), then run SPL via MCP ``splunk_run_query``.
 
-Uses the same ``services.spl_predict_pipeline`` module as the ThinkingSOC backend.
+Uses the same ``services.spl_predict_pipeline`` module as the ThinkingSOC Lite backend.
 
 Time range for execute is always All Time (SPL earliest=1 latest=now; REST earliest_time=0).
 

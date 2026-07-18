@@ -152,7 +152,7 @@ def _score_row(expected_track: str, agent: Dict[str, Any], spl: Dict[str, Any]) 
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Evaluate ThinkingSOC agent/assistant outputs on fixed scenarios.")
+    parser = argparse.ArgumentParser(description="Evaluate ThinkingSOC Lite agent/assistant outputs on fixed scenarios.")
     parser.add_argument("--matrix", required=True, help="Path to scenario matrix JSON.")
     parser.add_argument("--base-url", default="http://127.0.0.1:9876")
     parser.add_argument("--token", default=None)

@@ -1,6 +1,6 @@
 # TsocDataTable — shared frontend data table
 
-Data-driven table component for list pages in the ThinkingSOC hackathon. Any page with a table (Analysis, Inventory, Identity Rules, etc.) should use this component so **search, column filters, sorting, pagination**, and styling stay consistent.
+Data-driven table component for list pages in the ThinkingSOC Lite hackathon. Any page with a table (Analysis, Inventory, Identity Rules, etc.) should use this component so **search, column filters, sorting, pagination**, and styling stay consistent.
 
 Visual reference: [`project-engineering/04-ui/ui-standard/ui-standards/10-datatable.md`](../../../project-engineering/04-ui/ui-standard/ui-standards/10-datatable.md) and [`19-patterns-experiences.md`](../../../project-engineering/04-ui/ui-standard/ui-standards/19-patterns-experiences.md).
 

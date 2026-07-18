@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start ThinkingSOC backend + frontend (production UI: npm run build + npm run start).
+# Start ThinkingSOC Lite backend + frontend (production UI: npm run build + npm run start).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

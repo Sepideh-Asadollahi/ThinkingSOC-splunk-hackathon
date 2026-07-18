@@ -1,4 +1,4 @@
-# ThinkingSOC Developer SDK
+# ThinkingSOC Lite Developer SDK
 
 Typed Python SDK, CLI, and evaluation runner for **all** hackathon backend APIs. Product logic lives in `backend/services/`; this folder is a thin HTTP wrapper only — safe to use without changing runtime behavior.
 

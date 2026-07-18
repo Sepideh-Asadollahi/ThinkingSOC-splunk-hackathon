@@ -1,4 +1,4 @@
-"""Modular project setup for ThinkingSOC Splunk hackathon."""
+"""Modular project setup for ThinkingSOC Lite Splunk hackathon."""
 
 from setup_tool.runner import main
 

@@ -29,7 +29,7 @@ def main() -> int:
     configure_logging(resolve_log_path(args), args.verbose)
     _setup_stream_output(args.verbose)
 
-    LOG.info("=== ThinkingSOC full setup (venv + deps + DB) — API not started ===")
+    LOG.info("=== ThinkingSOC Lite full setup (venv + deps + DB) — API not started ===")
     LOG.info("Repository: %s", REPO_ROOT)
 
     results: List[Tuple[str, bool]] = []

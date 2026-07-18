@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ThinkingSOC — one-liner bootstrap (safe for: curl … | sudo bash)
+# ThinkingSOC Lite — one-liner bootstrap (safe for: curl … | sudo bash)
 # Does not use BASH_SOURCE or install/modules; clones repo then runs install.sh.
 #
 # Usage:
@@ -46,7 +46,7 @@ elif [[ -d "${INSTALL_DIR}/.git" ]]; then
     _ensure_git
     _sync_checkout
 elif [[ -e "${INSTALL_DIR}" ]]; then
-    echo "[ERROR] ${INSTALL_DIR} exists but is not a ThinkingSOC checkout." >&2
+    echo "[ERROR] ${INSTALL_DIR} exists but is not a ThinkingSOC Lite checkout." >&2
     echo "[ERROR] Remove it, set TSOC_INSTALL_DIR, or clone manually." >&2
     exit 1
 else

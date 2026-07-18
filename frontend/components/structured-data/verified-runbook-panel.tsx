@@ -611,7 +611,7 @@ export function VerifiedRunbookPanel({
       <NeonCardHeader
         accent="teal"
         icon={<FileSearchIcon className="size-5 text-teal-400" />}
-        title="ThinkingSOC Forge"
+        title="ThinkingSOC Lite"
         description="Compile accepted evidence into a reusable, read-only investigation runbook"
         actions={displayStatus ? <StatusBadge status={displayStatus} draft={draft} /> : null}
       />
@@ -627,15 +627,15 @@ export function VerifiedRunbookPanel({
           <NeonAlert variant={!runtime.enabled ? "destructive" : "default"}>
             <ShieldAlertIcon className="size-4" />
             <NeonAlertTitle>
-              {!runtime.enabled ? "ThinkingSOC Forge is disabled" : "Forge dependencies are incomplete"}
+              {!runtime.enabled ? "ThinkingSOC Lite is disabled" : "ThinkingSOC Lite dependencies are incomplete"}
             </NeonAlertTitle>
             <NeonAlertDescription>
               {!runtime.enabled
-                ? "Enable Runbooks from the Forge Settings page. Existing artifacts remain readable."
+                ? "Enable Runbooks from the ThinkingSOC Lite page. Existing artifacts remain readable."
                 : "Configure PostgreSQL, the LLM, Splunk credentials, and read-only investigation execution before building or reusing a runbook."}
               {" "}
               <Link href="/runbooks" className="font-medium text-teal-300 underline-offset-4 hover:underline">
-                Open Forge Settings
+                Open ThinkingSOC Lite
               </Link>
             </NeonAlertDescription>
           </NeonAlert>

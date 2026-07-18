@@ -135,7 +135,7 @@ if __name__ == "__main__":
             )
         payload_compact = json.dumps(body, default=str)
         sys.stderr.write(
-            "INFO Outgoing ThinkingSOC webhook rows=%d url=%s bytes=%d "
+            "INFO Outgoing ThinkingSOC Lite webhook rows=%d url=%s bytes=%d "
             "result_fingerprint=%s sid=%s search_name=%s\n"
             % (
                 len(results),

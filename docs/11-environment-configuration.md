@@ -170,7 +170,7 @@ See [02-integration-boundaries.md](./02-integration-boundaries.md) for webhook a
 
 ### TSOC_INGEST_TOKEN (optional ingest auth)
 
-`TSOC_INGEST_TOKEN` is a **shared secret string** — not a JWT, OAuth token, or API-issued credential. The backend compares the incoming `Authorization: Bearer …` header to this value exactly. There is no separate “token mint” endpoint in ThinkingSOC.
+`TSOC_INGEST_TOKEN` is a **shared secret string** — not a JWT, OAuth token, or API-issued credential. The backend compares the incoming `Authorization: Bearer …` header to this value exactly. There is no separate “token mint” endpoint in ThinkingSOC Lite.
 
 **Default:** empty / unset → ingest routes accept requests **without** a Bearer header (convenient for local demos).
 

@@ -33,7 +33,7 @@ const ROUTE_NAV: Record<string, RouteNavMeta> = {
   runbooks: {
     section: "Runbooks",
     sectionHref: "/runbooks",
-    page: "Forge & Policies",
+    page: "ThinkingSOC Lite",
   },
   inventory: {
     section: "Asset and Identity Management",

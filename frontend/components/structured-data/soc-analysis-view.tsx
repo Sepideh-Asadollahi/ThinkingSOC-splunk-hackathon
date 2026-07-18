@@ -644,7 +644,7 @@ export function AdminOrgGapPanel({ gap }: { gap: AdminOrgGap | null }) {
         </div>
         {gap.notes ? <TextBlock text={gap.notes} className="text-xs text-slate-500" /> : null}
         <p className="text-xs text-slate-500">
-          Hackathon demo: answers are not collected or stored. Full ThinkingSOC supports admin Q&amp;A workflows.
+          Hackathon demo: answers are not collected or stored. Full ThinkingSOC Lite supports admin Q&amp;A workflows.
         </p>
       </div>
     </NeonGlassCard>

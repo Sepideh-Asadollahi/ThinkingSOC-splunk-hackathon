@@ -56,7 +56,7 @@ backend/data/demo/postgres_snapshot/
 
 ## Runbook judge-tour scenario
 
-Both installation paths contain the synthetic Alert Name **`Judge Demo: Suspicious OAuth Token Replay`**. It is designed to make the complete Forge workflow visible immediately after installation while preserving every pre-existing demo scenario.
+Both installation paths contain the synthetic Alert Name **`Judge Demo: Suspicious OAuth Token Replay`**. It is designed to make the complete ThinkingSOC Lite workflow visible immediately after installation while preserving every pre-existing demo scenario.
 
 | Demonstrated contract | Bundled evidence |
 |-----------------------|------------------|

@@ -10,7 +10,7 @@ from setup_tool.paths import DEFAULT_LOG_FILE, REPO_ROOT
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Full ThinkingSOC setup: venv, pip, Postgres, schema (does not start API)",
+        description="Full ThinkingSOC Lite setup: venv, pip, Postgres, schema (does not start API)",
     )
     p.add_argument(
         "--start-postgres",

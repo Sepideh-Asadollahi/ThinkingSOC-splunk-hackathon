@@ -2286,9 +2286,9 @@
       "source_record_id": 395
     },
     "summary_line": "Runbook Approval for Runbook demo-rb-oauth-token-replay-v1",
-    "chunk_text": "Forge artifact type: runbook_approval\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"decision\": \"approve\", \"analyst\": \"demo.soc.lead\", \"note\": \"Approved after parser validation, source evidence review, and shadow replay.\", \"created_at\": \"2026-07-16T08:45:00+00:00\"}",
+    "chunk_text": "ThinkingSOC Lite artifact type: runbook_approval\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"decision\": \"approve\", \"analyst\": \"demo.soc.lead\", \"note\": \"Approved after parser validation, source evidence review, and shadow replay.\", \"created_at\": \"2026-07-16T08:45:00+00:00\"}",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_approval",
       "automatic_execution": false
     },
@@ -2310,7 +2310,7 @@
     "summary_line": "Runbook Autopilot — COMPLETED; Review the approved runbook reuse on the second exact-match alert.",
     "chunk_text": "Runbook Autopilot session: demo-autopilot-oauth-token-replay-v1\nObjective: Advance a source-verified runbook through policy, shadow evidence, and safe response review.\nMode: ADVANCE; status: COMPLETED\nAgents: SUPERVISOR, EVIDENCE_SCOUT, RUNBOOK_ENGINEER, POLICY_GUARD, RESPONSE_ADVISOR\nTools used: splunk.mcp.search, splunk.rest.oneshot_fallback, runbook.compiler, runbook.policy.evaluate, runbook.safe_response.preview\nRunbook ID: demo-rb-oauth-token-replay-v1; Runbook status: SOURCE_VERIFIED\nResponse preview ID: demo-preview-oauth-token-replay-v1\nNext recommended action: Review the approved runbook reuse on the second exact-match alert.\nHuman approval required: true; automatic execution performed: false.\nTrace 1: agent=SUPERVISOR, kind=AGENT_STARTED, status=RUNNING, tool=-, summary=Started the bounded Runbook Autopilot tour., duration_ms=115.\nTrace 2: agent=SUPERVISOR, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Assigned evidence collection to Evidence Scout., duration_ms=150.\nTrace 3: agent=EVIDENCE_SCOUT, kind=TOOL_CALL, status=RUNNING, tool=splunk.mcp.search, summary=Requested read-only identity evidence through Splunk MCP., duration_ms=185.\nTrace 4: agent=EVIDENCE_SCOUT, kind=TOOL_RESULT, status=SUCCEEDED, tool=splunk.rest.oneshot_fallback, summary=MCP and REST-fallback coverage returned parser-valid source evidence., duration_ms=220.\nTrace 5: agent=EVIDENCE_SCOUT, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Passed bounded evidence to Runbook Engineer., duration_ms=255.\nTrace 6: agent=RUNBOOK_ENGINEER, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.compiler, summary=Compiled three reusable investigation intents., duration_ms=290.\nTrace 7: agent=RUNBOOK_ENGINEER, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Requested policy and exact-match evaluation., duration_ms=325.\nTrace 8: agent=POLICY_GUARD, kind=POLICY_DECISION, status=SUCCEEDED, tool=runbook.policy.evaluate, summary=Confirmed exact Alert Name, different SID, source evidence, and human gate., duration_ms=360.\nTrace 9: agent=POLICY_GUARD, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Requested a non-executable response preview., duration_ms=395.\nTrace 10: agent=RESPONSE_ADVISOR, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.safe_response.preview, summary=Prepared human-reviewed response options in PREVIEW_ONLY mode., duration_ms=430.\nTrace 11: agent=RESPONSE_ADVISOR, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Returned the preview and audit trail to Supervisor., duration_ms=465.\nTrace 12: agent=SUPERVISOR, kind=AGENT_COMPLETED, status=SUCCEEDED, tool=-, summary=Completed the tour after recorded human approval; no response was auto-executed., duration_ms=500.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_autopilot_session",
       "automatic_execution": false
     },
@@ -2332,7 +2332,7 @@
     "summary_line": "Runbook Autopilot — AWAITING_HUMAN_APPROVAL; Review evidence gaps and rebuild before Runbook approval.",
     "chunk_text": "Runbook Autopilot session: 49e5647c-b344-4a73-814f-5f5dff5dacac\nObjective: Assess the existing Runbook, verify its evidence gate, inspect available tools, and prepare the next safe analyst action.\nMode: ADVANCE; status: AWAITING_HUMAN_APPROVAL\nAgents: SUPERVISOR, EVIDENCE_SCOUT, RUNBOOK_ENGINEER, POLICY_GUARD, RESPONSE_ADVISOR\nTools used: storage.get_record, analyst_actions.list, runbook.state, runbook.library.search, runbook.safe_response_preview.cache\nRunbook ID: f06410a1-a19b-43bd-b892-ef3ab172b970; Runbook status: PARSER_VALID\nResponse preview ID: 53d3adb6-de16-4823-8c8d-d393526c5572\nNext recommended action: Review evidence gaps and rebuild before Runbook approval.\nHuman approval required: true; automatic execution performed: false.\nTrace 1: agent=SUPERVISOR, kind=AGENT_STARTED, status=RUNNING, tool=-, summary=Autopilot accepted the objective and opened a bounded workflow., duration_ms=0.\nTrace 2: agent=SUPERVISOR, kind=HANDOFF, status=RUNNING, tool=-, summary=Delegated source readiness and acknowledgment checks to Evidence Scout., duration_ms=0.\nTrace 3: agent=EVIDENCE_SCOUT, kind=TOOL_CALL, status=RUNNING, tool=storage.get_record, summary=Loading the stored SOC analysis without exposing credentials., duration_ms=0.\nTrace 4: agent=EVIDENCE_SCOUT, kind=TOOL_RESULT, status=SUCCEEDED, tool=storage.get_record, summary=Stored SOC analysis loaded., duration_ms=8.\nTrace 5: agent=EVIDENCE_SCOUT, kind=TOOL_CALL, status=RUNNING, tool=analyst_actions.list, summary=Checking the latest human analyst action., duration_ms=0.\nTrace 6: agent=EVIDENCE_SCOUT, kind=TOOL_RESULT, status=SUCCEEDED, tool=analyst_actions.list, summary=Source acknowledgment is present., duration_ms=7.\nTrace 7: agent=EVIDENCE_SCOUT, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Passed the bounded source metadata to Runbook Engineer., duration_ms=0.\nTrace 8: agent=RUNBOOK_ENGINEER, kind=TOOL_CALL, status=RUNNING, tool=runbook.state, summary=Loading the latest immutable Runbook state., duration_ms=0.\nTrace 9: agent=RUNBOOK_ENGINEER, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.state, summary=Latest Runbook state loaded., duration_ms=19.\nTrace 10: agent=RUNBOOK_ENGINEER, kind=TOOL_CALL, status=RUNNING, tool=runbook.library.search, summary=Searching the library by exact Alert Name., duration_ms=0.\nTrace 11: agent=RUNBOOK_ENGINEER, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.library.search, summary=Exact-name Runbook candidates evaluated., duration_ms=187.\nTrace 12: agent=RUNBOOK_ENGINEER, kind=HANDOFF, status=SUCCEEDED, tool=-, summary=Requested an explicit gate decision from Policy Guard., duration_ms=0.\nTrace 13: agent=POLICY_GUARD, kind=POLICY_DECISION, status=SUCCEEDED, tool=-, summary=Read-only compile and evidence verification are allowed; approval and execution remain human-only., duration_ms=0.\nTrace 14: agent=RESPONSE_ADVISOR, kind=TOOL_RESULT, status=SUCCEEDED, tool=runbook.safe_response_preview.cache, summary=Reused the latest non-executable Response Preview; no duplicate LLM call was made., duration_ms=0.\nTrace 15: agent=POLICY_GUARD, kind=POLICY_DECISION, status=SUCCEEDED, tool=-, summary=Automatic production execution and containment remain disabled., duration_ms=0.\nTrace 16: agent=SUPERVISOR, kind=AGENT_COMPLETED, status=SUCCEEDED, tool=-, summary=Autopilot completed its bounded work and returned control to the analyst., duration_ms=0.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_autopilot_session",
       "automatic_execution": false
     },
@@ -2354,7 +2354,7 @@
     "summary_line": "Runbook Investigate Outbound Connection to Known C2 from Endpoint — FAILED",
     "chunk_text": "Runbook title: Investigate Outbound Connection to Known C2 from Endpoint\nSummary: Use this procedure when a Palo Alto firewall alert indicates an outbound connection from an endpoint to a known C2 domain or IP, and the process image is a suspicious executable (e.g., updater.exe). The procedure focuses on identifying the parent process, checking for persistence, and correlating network and user activity.\nRunbook ID: 364b5273-9026-4e17-996c-887ef1132ba6\nSource record: 330\nAlert Name: PaloAlto: Outbound Connection to Known C2 (t8372)\nStatus: FAILED\nRevision: 1\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: Escalate if the parent process is a known malicious or unusual process (e.g., not a legitimate updater), or if persistence mechanisms are found, or if multiple connections to known bad destinations are observed. Close if the parent process is a legitimate software updater and no other indicators. Abstain if process creation logs are unavailable or incomplete.\nStep 1: Identify Parent Process of Suspicious Executable. Intent: What is the parent process image (ParentImage) for the process with Image containing a suspicious executable name (e.g., updater.exe) on the affected host?. Expected evidence: ParentImage field value from Windows Event Log (Event ID 4688) or Sysmon Event ID 1 for the process creation event.. Stop condition: If no process creation events are found for the given Image, abstain from further analysis..\nStep 2: Check for Persistence Mechanisms. Intent: Are there any scheduled tasks, services, or startup entries associated with the parent process or the suspicious executable created around the time of the alert?. Expected evidence: List of persistence mechanisms (e.g., scheduled tasks, services, registry run keys) with creation timestamps near the alert time.. Stop condition: If no persistence artifacts are found, continue to step 3..\nStep 3: Correlate Network Connections and User Activity. Intent: What other outbound connections were made from the affected host around the time of the alert, and what user logon events are associated with the affected user?. Expected evidence: Network connection logs (e.g., from firewall or EDR) showing other destinations, and user logon events (Event ID 4624) for the affected user.. Stop condition: If no additional connections or anomalous user activity, consider closing as false positive..\nLimitations: Threat intelligence feed may not cover all C2 domains; only one alert row was analyzed in the original incident.; No EDR data was available in the original incident; this procedure assumes Windows Event Logs or Sysmon are available.; User and asset risk scores are based on inventory data which may be outdated or incomplete.; The procedure does not cover all possible C2 techniques (e.g., DNS tunneling, HTTPS).\nEvidence metrics: parser-valid steps=1, successful steps=0, evidence rows=0.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_draft",
       "automatic_execution": false
     },
@@ -2376,7 +2376,7 @@
     "summary_line": "Runbook Verify Executable Integrity and Legitimacy — FAILED",
     "chunk_text": "Runbook title: Verify Executable Integrity and Legitimacy\nSummary: Establish whether an executable instance on an endpoint is legitimate by collecting its hash and digital signature and comparing them to known Microsoft-signed values. Use when an alert reports execution of a file from an atypical location with a suspicious outbound connection and no inventory linkage.\nRunbook ID: 57b2254e-663a-4e88-b81f-d9a7ed158e33\nSource record: 257\nAlert Name: New TesT\nStatus: FAILED\nRevision: 2\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If the hash matches the known Microsoft hash and the signature is valid, close as benign. If the hash does not match or the signature is invalid, flag for further investigation. If hash or signature data is missing or inconclusive, abstain from decision and request additional evidence.\nStep 1: Collect Executable Hash and Signature. Intent: Collect the SHA256 hash and digital signature of the executable instance on the endpoint.. Expected evidence: Hash value and signature metadata (issuer, validity period, thumbprint).. Stop condition: Hash and signature are successfully retrieved from the endpoint..\nStep 2: Compare to Known Microsoft Signature. Intent: Compare the collected hash and signature to the known legitimate Microsoft-signed osk.exe hash and signature database.. Expected evidence: Comparison result indicating match or mismatch and signature validity status.. Stop condition: Comparison outcome is determined..\nStep 3: Determine Legitimacy. Intent: Determine if the executable is legitimate or requires further investigation based on hash/signature comparison.. Expected evidence: Verdict: benign, suspicious, or malicious.. Stop condition: Verdict is reached or evidence is insufficient to decide..\nLimitations: Missing inventory linkage limits contextual risk assessment; Unknown asset/user risk may affect threat prioritization; Potential false positives if legitimate hash database is incomplete; Outbound IP context not evaluated in this procedure\nEvidence metrics: parser-valid steps=3, successful steps=0, evidence rows=0.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_draft",
       "automatic_execution": false
     },
@@ -2398,7 +2398,7 @@
     "summary_line": "Runbook Investigate Parent Process of Suspicious Updater — PARSER_VALID",
     "chunk_text": "Runbook title: Investigate Parent Process of Suspicious Updater\nSummary: Determine the parent process of the updater executable that initiated an outbound C2 connection, to assess whether the process chain is legitimate or malicious.\nRunbook ID: f06410a1-a19b-43bd-b892-ef3ab172b970\nSource record: 330\nAlert Name: PaloAlto: Outbound Connection to Known C2 (t8372)\nStatus: PARSER_VALID\nRevision: 3\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If the ParentImage is identified as a known malicious or suspicious process, escalated to higher priority investigation; if benign or no evidence, close the alert; if evidence is inconclusive or missing, abstain and request additional data\nStep 1: Query Process Creation Events. Intent: Identify the ParentImage of the process creation event for the image matching \"updater.exe\" on the host referenced in the alert. Expected evidence: A ParentImage field value associated with the matching process creation event. Stop condition: Evidence found or no matching events in the data source.\nStep 2: Assess Parent Process Reputation. Intent: Evaluate whether the retrieved ParentImage is known to be benign or associated with malicious activity. Expected evidence: Reputation or known malicious indicator for the ParentImage. Stop condition: Reputation determined or no reputation data available.\nStep 3: Document Findings and Next Steps. Intent: Record the ParentImage and its reputation assessment, and recommend further action if suspicious. Expected evidence: Summary of ParentImage and reputation status. Stop condition: All evidence reviewed and documented.\nLimitations: Only one process creation event available; no threat intelligence for the ParentImage; host and image names are specific to this incident and may not generalize\nEvidence metrics: parser-valid steps=3, successful steps=0, evidence rows=0.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_draft",
       "automatic_execution": false
     },
@@ -2420,7 +2420,7 @@
     "summary_line": "Runbook Determine Parent Process Image for Specific Process Creation — PARSER_VALID",
     "chunk_text": "Runbook title: Determine Parent Process Image for Specific Process Creation\nSummary: Establish the parent process image for a process creation event on a host matching a given image pattern, to assess potential malicious activity.\nRunbook ID: 7f966317-2cd1-4ef9-92af-90a07917b930\nSource record: 330\nAlert Name: PaloAlto: Outbound Connection to Known C2 (t8372)\nStatus: PARSER_VALID\nRevision: 2\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If ParentImage evidence is found, close investigation; if no evidence or contradictory evidence, abstain.\nStep 1: Identify Parent Image. Intent: Identify the parent process image for a process creation event matching a specified host and image pattern. Expected evidence: A process creation event record containing the ParentImage field for the matching host and image. Stop condition: Evidence found or no matching events.\nLimitations: Process creation logs may be missing or incomplete; ParentImage may not be recorded; host or image pattern may not match any events; potential false positives if benign parent processes exist.\nEvidence metrics: parser-valid steps=1, successful steps=0, evidence rows=0.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_draft",
       "automatic_execution": false
     },
@@ -2442,7 +2442,7 @@
     "summary_line": "Runbook Investigate OAuth Token Replay with Identity Correlation — SOURCE_VERIFIED",
     "chunk_text": "Runbook title: Investigate OAuth Token Replay with Identity Correlation\nSummary: Evidence-grounded procedure for validating an OAuth session seen from a new location and client fingerprint.\nRunbook ID: demo-rb-oauth-token-replay-v1\nSource record: 395\nAlert Name: Judge Demo: Suspicious OAuth Token Replay\nStatus: SOURCE_VERIFIED\nRevision: 1\nSource verdict: TRUE_POSITIVE\nDecision rule: Escalate when location, fingerprint, and sensitive-resource evidence corroborate replay; otherwise abstain.\nStep 1: Correlate identity locations. Intent: Compare successful authentication sources for the affected identity.. Expected evidence: Distinct sources, countries, and event timestamps.. Stop condition: Stop and abstain when authentication telemetry is unavailable..\nStep 2: Validate session fingerprint reuse. Intent: Determine whether one OAuth session appears under multiple client fingerprints.. Expected evidence: A session identifier with more than one fingerprint and source.. Stop condition: Stop and abstain when session identifiers cannot be correlated..\nStep 3: Measure sensitive resource access. Intent: Correlate the suspect session with high-value application resources.. Expected evidence: Successful access to a risk-labelled resource.. Stop condition: Escalate for human review; never execute containment automatically..\nLimitations: Exact Alert Name matching is mandatory.; The workflow is read-only and all response actions remain human-gated.; Addresses, identities, and applications in this tour are synthetic.\nEvidence metrics: parser-valid steps=3, successful steps=3, evidence rows=3.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_draft",
       "automatic_execution": false
     },
@@ -2464,7 +2464,7 @@
     "summary_line": "Runbook Verify Integrity of Suspicious Executable — FAILED",
     "chunk_text": "Runbook title: Verify Integrity of Suspicious Executable\nSummary: Establish whether an executable running from an atypical location is legitimate by collecting its hash and digital signature and comparing them to known Microsoft signatures. Use this procedure when an alert indicates execution of a file from a non‑standard path and outbound traffic to a suspicious IP, but inventory linkage is weak.\nRunbook ID: 1602a2f4-48c0-4e0e-a853-17c45f7a50b9\nSource record: 257\nAlert Name: New TesT\nStatus: FAILED\nRevision: 1\nSource verdict: NEEDS_HUMAN_REVIEW\nDecision rule: If the hash matches the known Microsoft‑signed osk.exe and no other malicious indicators are present, close the alert as benign. If the hash does not match and the destination IP is flagged as suspicious, escalated for deeper analysis. If hash or signature evidence is missing or contradictory, abstain and request additional data.\nStep 1: Collect Executable Hash and Signature. Intent: Retrieve the SHA256 hash and digital signature of the executable instance identified in the alert. Expected evidence: Hash value and signature metadata for the suspect file. Stop condition: Hash and signature successfully retrieved or retrieval fails.\nStep 2: Compare to Known Legitimate Hash. Intent: Compare the collected hash to the known SHA256 hash of the legitimate Microsoft‑signed osk.exe. Expected evidence: Result of hash comparison (match or mismatch) and any signature verification outcome. Stop condition: Comparison result available or comparison cannot be performed.\nStep 3: Assess Outcome and Escalate if Needed. Intent: Determine next action based on hash match status and presence of suspicious outbound traffic. Expected evidence: Decision to close as benign, escalated for further investigation, or abstain due to insufficient evidence. Stop condition: Decision reached or evidence insufficient.\nLimitations: Weak or missing inventory linkage between asset and user; Potential absence of a valid digital signature on the suspect file; Reliance on a single known hash for comparison; newer legitimate versions may differ; Outbound IP may be spoofed or benign but flagged by threat intel\nEvidence metrics: parser-valid steps=1, successful steps=0, evidence rows=0.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_draft",
       "automatic_execution": false
     },
@@ -2484,9 +2484,9 @@
       "source_record_id": 395
     },
     "summary_line": "Runbook Response Decision for Runbook demo-rb-oauth-token-replay-v1",
-    "chunk_text": "Forge artifact type: runbook_response_decision\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"preview_id\": \"demo-preview-oauth-token-replay-v1\", \"decision\": \"approve_for_manual_action\", \"analyst\": \"demo.soc.lead\", \"note\": \"Approved for a separate manual response process; this product performed no execution.\", \"automatic_execution_performed\": false, \"created_at\": \"2026-07-16T08:47:00+00:00\"}",
+    "chunk_text": "ThinkingSOC Lite artifact type: runbook_response_decision\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"preview_id\": \"demo-preview-oauth-token-replay-v1\", \"decision\": \"approve_for_manual_action\", \"analyst\": \"demo.soc.lead\", \"note\": \"Approved for a separate manual response process; this product performed no execution.\", \"automatic_execution_performed\": false, \"created_at\": \"2026-07-16T08:47:00+00:00\"}",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_response_decision",
       "automatic_execution": false
     },
@@ -2506,9 +2506,9 @@
       "source_record_id": 330
     },
     "summary_line": "Runbook Response Decision for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970",
-    "chunk_text": "Forge artifact type: runbook_response_decision\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"preview_id\": \"53d3adb6-de16-4823-8c8d-d393526c5572\", \"decision\": \"approve_for_manual_action\", \"analyst\": \"analyst\", \"note\": \"Live validation: evidence basis, target, operational impact, rollback, and verification were reviewed for manual handling only.\", \"automatic_execution_performed\": false, \"created_at\": \"2026-07-15T18:36:03.193185+00:00\"}",
+    "chunk_text": "ThinkingSOC Lite artifact type: runbook_response_decision\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"preview_id\": \"53d3adb6-de16-4823-8c8d-d393526c5572\", \"decision\": \"approve_for_manual_action\", \"analyst\": \"analyst\", \"note\": \"Live validation: evidence basis, target, operational impact, rollback, and verification were reviewed for manual handling only.\", \"automatic_execution_performed\": false, \"created_at\": \"2026-07-15T18:36:03.193185+00:00\"}",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_response_decision",
       "automatic_execution": false
     },
@@ -2530,7 +2530,7 @@
     "summary_line": "Safe Response Preview — 3 action(s), execution disabled",
     "chunk_text": "Safe Response Preview for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970.\nEvidence basis: ANALYSIS_ONLY.\nDecision summary: Given the high triage score, critical severity, and evidence of outbound C2 activity, the analyst should first collect forensic artifacts from the host to establish the process chain. Simultaneously, escalation to a higher priority ensures that senior responders are aware. Continuous monitoring of the destination IP will provide ongoing visibility. If forensic evidence confirms malicious activity, further containment actions may be warranted; if evidence is inconclusive, the analyst should request additional data before proceeding..\nExecution supported: false. Every action requires human approval.\nPreview action COLLECT_FORENSICS: Collect forensic artifacts from DESKTOP-BRUCE; target DESKTOP-BRUCE; risk high; rationale The alert indicates an outbound connection from a critical asset to a known C2 domain, with the user being an executive. Forensic collection will provide evidence of the process chain and potential compromise.; expected effect Capture process, registry, and network artifacts that can confirm or refute malicious activity; rollback If collection is incomplete, re‑initiate after system is stable; no destructive changes are made; mode PREVIEW_ONLY.\nPreview action ESCALATE_INCIDENT: Escalate incident to higher priority; target 330; risk high; rationale The triage score of 77 and critical severity warrant higher visibility. Escalation ensures that senior analysts and incident response teams are notified promptly.; expected effect Incident is moved to the high‑priority queue and notifications are sent to stakeholders; rollback If escalation is deemed unnecessary, revert the incident priority and remove notifications; mode PREVIEW_ONLY.\nPreview action MONITOR_ONLY: Monitor outbound traffic to 198.51.100.10; target 198.51.100.10; risk high; rationale Continuous monitoring will detect any further C2 activity from the asset or other hosts, providing early warning of persistence or lateral movement.; expected effect Real‑time visibility into any additional connections to the C2 IP; rollback Disable or adjust monitoring filters if they generate excessive noise; mode PREVIEW_ONLY.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_response_preview",
       "automatic_execution": false
     },
@@ -2552,7 +2552,7 @@
     "summary_line": "Safe Response Preview — 2 action(s), execution disabled",
     "chunk_text": "Safe Response Preview for Runbook demo-rb-oauth-token-replay-v1.\nEvidence basis: SOURCE_EVIDENCE.\nDecision summary: Present two evidence-backed options to the analyst. No command, API call, or automatic response is executed..\nExecution supported: false. Every action requires human approval.\nPreview action REVOKE_SESSIONS: Review session revocation; target alex.morgan; risk high; rationale Corroborated replay evidence justifies a human-reviewed containment option.; expected effect Invalidate active sessions associated with the synthetic identity.; rollback Restore access through the documented identity recovery process.; mode PREVIEW_ONLY.\nPreview action COLLECT_FORENSICS: Preserve identity audit evidence; target judge-demo-oauth-replay; risk low; rationale Evidence preservation supports review without changing external systems.; expected effect Preserve the relevant audit window for investigation.; rollback Remove the temporary hold after case closure according to policy.; mode PREVIEW_ONLY.",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_response_preview",
       "automatic_execution": false
     },
@@ -2572,9 +2572,9 @@
       "target_record_id": 396
     },
     "summary_line": "Runbook Run for Runbook demo-rb-oauth-token-replay-v1",
-    "chunk_text": "Forge artifact type: runbook_run\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"target_record_id\": 396, \"status\": \"REUSED\", \"duration_ms\": 2460, \"estimated_minutes_saved\": 24.0, \"total_evidence_rows\": 3, \"created_at\": \"2026-07-16T09:20:00+00:00\"}",
+    "chunk_text": "ThinkingSOC Lite artifact type: runbook_run\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"target_record_id\": 396, \"status\": \"REUSED\", \"duration_ms\": 2460, \"estimated_minutes_saved\": 24.0, \"total_evidence_rows\": 3, \"created_at\": \"2026-07-16T09:20:00+00:00\"}",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_run",
       "automatic_execution": false
     },
@@ -2594,9 +2594,9 @@
       "target_record_id": 375
     },
     "summary_line": "Runbook Shadow Run for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970",
-    "chunk_text": "Forge artifact type: runbook_shadow_run\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"target_record_id\": 375, \"status\": \"FAILED\", \"duration_ms\": 282264, \"projected_minutes_saved\": 20.296, \"total_evidence_rows\": 0, \"created_at\": \"2026-07-15T18:01:34.699555+00:00\"}",
+    "chunk_text": "ThinkingSOC Lite artifact type: runbook_shadow_run\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"target_record_id\": 375, \"status\": \"FAILED\", \"duration_ms\": 282264, \"projected_minutes_saved\": 20.296, \"total_evidence_rows\": 0, \"created_at\": \"2026-07-15T18:01:34.699555+00:00\"}",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_shadow_run",
       "automatic_execution": false
     },
@@ -2616,9 +2616,9 @@
       "target_record_id": 375
     },
     "summary_line": "Runbook Shadow Run for Runbook f06410a1-a19b-43bd-b892-ef3ab172b970",
-    "chunk_text": "Forge artifact type: runbook_shadow_run\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"target_record_id\": 375, \"status\": \"FAILED\", \"duration_ms\": 86699, \"projected_minutes_saved\": 23.555, \"total_evidence_rows\": 0, \"created_at\": \"2026-07-15T17:53:14.138290+00:00\"}",
+    "chunk_text": "ThinkingSOC Lite artifact type: runbook_shadow_run\n{\"runbook_id\": \"f06410a1-a19b-43bd-b892-ef3ab172b970\", \"source_record_id\": 330, \"target_record_id\": 375, \"status\": \"FAILED\", \"duration_ms\": 86699, \"projected_minutes_saved\": 23.555, \"total_evidence_rows\": 0, \"created_at\": \"2026-07-15T17:53:14.138290+00:00\"}",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_shadow_run",
       "automatic_execution": false
     },
@@ -2638,9 +2638,9 @@
       "target_record_id": 396
     },
     "summary_line": "Runbook Shadow Run for Runbook demo-rb-oauth-token-replay-v1",
-    "chunk_text": "Forge artifact type: runbook_shadow_run\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"target_record_id\": 396, \"status\": \"EVIDENCE_FOUND\", \"duration_ms\": 2310, \"projected_minutes_saved\": 24.0, \"total_evidence_rows\": 3, \"created_at\": \"2026-07-16T08:42:00+00:00\"}",
+    "chunk_text": "ThinkingSOC Lite artifact type: runbook_shadow_run\n{\"runbook_id\": \"demo-rb-oauth-token-replay-v1\", \"source_record_id\": 395, \"target_record_id\": 396, \"status\": \"EVIDENCE_FOUND\", \"duration_ms\": 2310, \"projected_minutes_saved\": 24.0, \"total_evidence_rows\": 3, \"created_at\": \"2026-07-16T08:42:00+00:00\"}",
     "metadata": {
-      "source": "thinking_soc_forge",
+      "source": "thinking_soc_lite",
       "record_type": "verified_runbook_shadow_run",
       "automatic_execution": false
     },

@@ -118,7 +118,7 @@ async def upsert_runbook_artifact_document(
     record_type: str,
     event: Dict[str, Any],
 ) -> None:
-    """Best-effort Forge indexing kept outside the authoritative write path."""
+    """Best-effort ThinkingSOC Lite indexing kept outside the authoritative write path."""
     try:
         from .compact_runbook import compact_runbook_artifact
 

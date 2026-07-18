@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ThinkingSOC | Splunk Hackathon",
+  title: "ThinkingSOC Lite | Splunk Hackathon",
   description: "Agentic SOC analysis — external analyst UI",
 };
 

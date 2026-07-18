@@ -279,7 +279,7 @@ def _analysis_event(*, sid: str, observed_at: str, target: bool) -> Dict[str, An
             "source_track": "security",
             "report": {
                 "headline": "CRITICAL — TRUE POSITIVE — score 92.",
-                "recommended_action": "Acknowledge, review the evidence, then use Forge safely.",
+                "recommended_action": "Acknowledge, review the evidence, then use ThinkingSOC Lite safely.",
                 "factors": [],
                 "why_verdict": "Three independent evidence pivots corroborate replay.",
                 "why_priority": "A high-value application was accessed.",
@@ -292,7 +292,7 @@ def _analysis_event(*, sid: str, observed_at: str, target: bool) -> Dict[str, An
 
 
 def build_artifact_events(source_record_id: int, target_record_id: int) -> list[Dict[str, Any]]:
-    """Build and validate every linked Forge artifact for the judge tour."""
+    """Build and validate every linked ThinkingSOC Lite artifact for the judge tour."""
     results = evidence_results()
     steps = [
         RunbookStep(
@@ -541,7 +541,7 @@ def _analyst_action(source_record_id: int) -> Dict[str, Any]:
         "action": "acknowledge",
         "note": "Judge tour: acknowledged after reviewing the synthetic evidence chain.",
         "analyst": "demo.soc.lead",
-        "recommended_step_at_action": "Open ThinkingSOC Forge and review the Autopilot trace.",
+        "recommended_step_at_action": "Open ThinkingSOC Lite and review the Autopilot trace.",
         "recorded_at": "2026-07-16T08:35:00+00:00",
     }
 
@@ -636,7 +636,7 @@ async def _seed_chat(settings: Settings) -> int:
                         "three parser-valid evidence steps, a different-SID shadow replay, human approval, "
                         "safe response preview, and a five-agent Autopilot audit trace.\n\n"
                         "Safety invariant: **human approval is required and automatic execution is false**. "
-                        "You can ask follow-up questions in Chat because every Forge artifact is indexed in RAG."
+                        "You can ask follow-up questions in Chat because every ThinkingSOC Lite artifact is indexed in RAG."
                     ),
                     2,
                     {

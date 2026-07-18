@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Run the Splunk hackathon FastAPI backend (same convenience as ThinkingSOC `runner_all.py`).
+Run the Splunk hackathon FastAPI backend (same convenience as ThinkingSOC Lite `runner_all.py`).
 
 Usage (from anywhere):
   python /opt/thinking-soc-splunk-hackathon/backend/run.py
 
-If `backend/.venv` (or `/opt/ThinkingSOC/backend/.venv`) exists, this script re-executes
+If `backend/.venv` (or `/opt/ThinkingSOC Lite/backend/.venv`) exists, this script re-executes
 with that interpreter so you do not need to `source` the venv first.
 
 Environment (optional):
@@ -120,7 +120,7 @@ def _free_port(host: str, port: int) -> None:
 
 
 def _maybe_rerun_inside_thinking_soc_venv() -> None:
-    """Prefer ThinkingSOC backend venv when present (deps match root requirements.txt).
+    """Prefer ThinkingSOC Lite backend venv when present (deps match root requirements.txt).
 
     venv interpreters are typically symlinks to the system Python; resolving symlinks
     would make the venv path indistinguishable from /usr/bin/python3 and also drop
@@ -130,8 +130,8 @@ def _maybe_rerun_inside_thinking_soc_venv() -> None:
     candidates = [
         BACKEND_DIR / ".venv" / "bin" / "python3",
         BACKEND_DIR / ".venv" / "bin" / "python",
-        Path("/opt/ThinkingSOC/backend/.venv/bin/python3"),
-        Path("/opt/ThinkingSOC/backend/.venv/bin/python"),
+        Path("/opt/ThinkingSOC Lite/backend/.venv/bin/python3"),
+        Path("/opt/ThinkingSOC Lite/backend/.venv/bin/python"),
         BACKEND_DIR.parent / ".venv" / "bin" / "python3",
         BACKEND_DIR.parent / ".venv" / "bin" / "python",
     ]

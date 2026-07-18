@@ -1,6 +1,6 @@
 # HLD — High-Level Design
 
-High-level architecture for the **ThinkingSOC Agentic Ops Router** hackathon demo (Splunk **10+**).
+High-level architecture for the **ThinkingSOC Lite Agentic Ops Router** hackathon demo (Splunk **10+**).
 
 **Diagram:** [`architecture_diagram.md`](../architecture_diagram.md)
 
@@ -117,7 +117,7 @@ Judge is always the **final decision layer** for Security track output. Admin or
 
 ## 8. Scope and demo priorities
 
-This repository is a **credible end-to-end demo**, not the full commercial ThinkingSOC product. Splunk holds alerts and raw data; analysis and inventory live in the external app.
+This repository is a **credible end-to-end demo**, not the full commercial ThinkingSOC Lite product. Splunk holds alerts and raw data; analysis and inventory live in the external app.
 
 For judging, the demo should show:
 

@@ -75,7 +75,7 @@ export const APP_SIDEBAR_DATA = {
       icon: <FlaskConicalIcon className="size-4" />,
     },
     {
-      title: "Forge & Policies",
+      title: "ThinkingSOC Lite",
       url: "/runbooks",
       exact: true,
       icon: <BookOpenCheckIcon className="size-4" />,
@@ -118,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <ShieldIcon className="size-4 shrink-0" />
                   </div>
                   <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">ThinkingSOC</span>
+                    <span className="truncate font-medium">ThinkingSOC Lite</span>
                     <span className="truncate text-xs text-muted-foreground">
                       Hackathon Demo
                     </span>

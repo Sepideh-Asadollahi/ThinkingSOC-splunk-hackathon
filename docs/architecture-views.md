@@ -1,6 +1,6 @@
-# ThinkingSOC Architecture Diagrams — Multi-View
+# ThinkingSOC Lite Architecture Diagrams — Multi-View
 
-Eight architectural perspectives of the **ThinkingSOC Agentic Ops Router** hackathon demo.
+Eight architectural perspectives of the **ThinkingSOC Lite Agentic Ops Router** hackathon demo.
 
 ---
 
@@ -18,7 +18,7 @@ flowchart TB
     SAIA["SAIA /predict"]
   end
 
-  subgraph appZone ["ThinkingSOC External Application"]
+  subgraph appZone ["ThinkingSOC Lite External Application"]
     subgraph backend ["FastAPI Backend :9876"]
       IngestAPI["Ingest API"]
       Classifier["Agentic Ops Router"]

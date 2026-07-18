@@ -1,4 +1,4 @@
-# ThinkingSOC Frontend (Hackathon)
+# ThinkingSOC Lite Frontend (Hackathon)
 
 External analyst UI for the hackathon demo, built around Splunk: NeonGlass theme, [Animate UI](https://animate-ui.com/) components, and FastAPI backend proxy.
 
@@ -35,14 +35,14 @@ Unauthenticated visits redirect to `/login`; signed-in users go to `/dashboard`.
 The Playwright recorder signs in outside the recorded browser context, then captures only the
 product UI at exactly `1920×1080`. It adds restrained English lower-thirds, a visible cursor,
 natural scrolling, and explicit Autopilot agent/handoff context without changing product pages or
-executing response actions. First produce the short Forge/agent-trace quality check:
+executing response actions. First produce the short ThinkingSOC Lite agent-trace quality check:
 
 ```bash
 npx playwright install chromium
 npm run record:devpost:sample
 ```
 
-If the preview is readable, record the complete Analysis → Forge agents/graph → Library details →
+If the preview is readable, record the complete Analysis → ThinkingSOC Lite agents/graph → Library details →
 Shadow Evaluation → Chat → Dashboard tour:
 
 ```bash
@@ -73,13 +73,13 @@ to the recording artifacts.
 | `/dashboard` | SOC overview — KPIs, pipeline activity, platform health |
 | `/soc-chat` | SOC analyst chat (vector RAG + Text-to-SQL) |
 | `/analysis` | Triage queue + stored SOC/Ops events (`/triage` redirects here) |
-| `/analysis/investigation/[id]` | Security investigation, Forge Runbook execution graph, recommended action, hunter & defender, enrichment, and **Admin question** tab when an org gap is suggested |
+| `/analysis/investigation/[id]` | Security investigation, ThinkingSOC Lite Runbook execution graph, recommended action, hunter & defender, enrichment, and **Admin question** tab when an org gap is suggested |
 | `/analysis/ops-investigation/[id]` | Observability investigation detail |
 | `/correlation` | Graph correlation findings list |
 | `/correlation/explorer` | Neo4j graph explorer (topology / attack tree) |
 | `/inventory` | Users & assets CRUD |
 | `/relationships` | User–asset relationship map for enrichment |
-| `/runbooks` | ThinkingSOC Forge settings, dependency readiness, and fixed trust policies |
+| `/runbooks` | ThinkingSOC Lite settings, dependency readiness, and fixed trust policies |
 | `/runbooks/library` | Every immutable Runbook revision grouped by exact Alert Name, with search, complete editing, and portable JSON Import/Export |
 | `/runbooks/evaluation` | Same-alert/different-SID Shadow Replay, evidence coverage, latency, and measured reuse outcomes |
 | `/splunk-connection` | LiteLLM, Splunk REST, MCP, integration settings |
@@ -88,9 +88,9 @@ to the recording artifacts.
 
 - **Auth:** HttpOnly `tsoc_session` cookie; credentials validated server-side only.
 - **API:** Browser calls `/api/backend/*`; Next.js forwards to FastAPI with `Authorization: Bearer $TSOC_INGEST_TOKEN` (never sent to the client).
-- **Forge graph:** Rectangular source/step/gate/reuse nodes stack vertically below `xl`, switch to a horizontal path on wide screens, preserve long-text wrapping, and expose persistent keyboard/touch-selectable details.
+- **ThinkingSOC Lite graph:** Rectangular source/step/gate/reuse nodes stack vertically below `xl`, switch to a horizontal path on wide screens, preserve long-text wrapping, and expose persistent keyboard/touch-selectable details.
 - **Runbook library:** Restrained teal/slate Alert Name panels show every revision, trust state, source, human gate, and step intent. Edits create new revisions; portable JSON excludes evidence and approval, and imports remain inert until locally attached and verified.
-- **Splunk execution policy:** Forge displays `MCP preferred · REST API fallback`; when MCP is absent or fails, sanitized read-only SPL is executed through authenticated Splunk REST oneshot search.
+- **Splunk execution policy:** ThinkingSOC Lite displays `MCP preferred · REST API fallback`; when MCP is absent or fails, sanitized read-only SPL is executed through authenticated Splunk REST oneshot search.
 
 ## Build
 

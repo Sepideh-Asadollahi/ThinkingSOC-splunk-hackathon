@@ -2,7 +2,7 @@
 
 This document is the **canonical public reference** for the hackathon **Correlation** feature: how alerts are linked in a graph, how findings are stored, how the Graph Explorer UI works, and how the API is mounted on the unified backend.
 
-**Scope:** hackathon demo — credible alert correlation and incident timeline visualization, not the full commercial ThinkingSOC graph product.
+**Scope:** hackathon demo — credible alert correlation and incident timeline visualization, not the full commercial ThinkingSOC Lite graph product.
 
 **Related docs:**
 

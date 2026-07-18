@@ -299,7 +299,7 @@ async function showTailoredFull(page) {
   await runSegment("welcome", 17_000, async () => {
     await caption(
       page,
-      "Welcome to ThinkingSOC",
+      "Welcome to ThinkingSOC Lite",
       "AI Agents turn completed Splunk investigations into checked, analyst-approved Runbooks for matching alerts.",
       6_500,
     )
@@ -347,7 +347,7 @@ async function showTailoredFull(page) {
   })
 
   await runSegment("agents", 23_000, async () => {
-    const thinkingSocTab = page.getByRole("tab", { name: "ThinkingSOC Forge" })
+    const thinkingSocTab = page.getByRole("tab", { name: "ThinkingSOC Lite" })
     await humanClick(page, thinkingSocTab)
     const agentHeading = page.getByRole("heading", { name: "Runbook Autopilot Agents" })
     await reveal(agentHeading, "start")
@@ -438,7 +438,7 @@ async function showTailoredFull(page) {
   await runSegment("closing", 6_000, async () => {
     await caption(
       page,
-      "ThinkingSOC",
+      "ThinkingSOC Lite",
       "Every accepted investigation makes the response to the next matching alert safer, faster, and more useful.",
       2_400,
     )
@@ -446,7 +446,7 @@ async function showTailoredFull(page) {
   })
 }
 
-async function showForge(page, sample = false) {
+async function showLite(page, sample = false) {
   await open(page, `/analysis/investigation/${sourceRecordId}`)
   const heading = page.getByText(alertName, { exact: true }).first()
   await heading.waitFor({ state: "visible", timeout: 20_000 })
@@ -462,8 +462,8 @@ async function showForge(page, sample = false) {
     await gentleWheel(page, 360, 6)
   }
 
-  const forgeTab = page.getByRole("tab", { name: "ThinkingSOC Forge" })
-  await humanClick(page, forgeTab)
+  const liteTab = page.getByRole("tab", { name: "ThinkingSOC Lite" })
+  await humanClick(page, liteTab)
   const agentHeading = page.getByRole("heading", { name: "Runbook Autopilot Agents" })
   await reveal(agentHeading, "start")
   await caption(
@@ -609,7 +609,7 @@ async function main() {
 
   try {
     if (mode === "sample") {
-      await showForge(page, true)
+      await showLite(page, true)
       await page.screenshot({ path: join(outputDir, "sample-preview.png"), fullPage: false })
     } else {
       const initialPath = recordingPart === "2"

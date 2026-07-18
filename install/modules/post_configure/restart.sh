@@ -10,7 +10,7 @@ _pc_tsoc_uses_systemd() {
 _pc_print_manual_tsoc_restart_instructions() {
     local ui_host="${SERVER_IP:-127.0.0.1}"
     echo ""
-    err "Restart ThinkingSOC manually so backend/.env and frontend/.env.local take effect."
+    err "Restart ThinkingSOC Lite manually so backend/.env and frontend/.env.local take effect."
     echo ""
     if _pc_tsoc_uses_systemd; then
         echo -e "  ${BOLD}With systemd:${NC}"

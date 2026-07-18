@@ -1,6 +1,6 @@
 # Splunk MCP integration
 
-How ThinkingSOC uses the **Splunk MCP Server** (Model Context Protocol, Splunkbase app 7931) for live Splunk tool calls: metadata lookups, SPL execution, SAIA question answering, and Hunter/Judge evidence gathering.
+How ThinkingSOC Lite uses the **Splunk MCP Server** (Model Context Protocol, Splunkbase app 7931) for live Splunk tool calls: metadata lookups, SPL execution, SAIA question answering, and Hunter/Judge evidence gathering.
 
 **Related:** [02-integration-boundaries.md](./02-integration-boundaries.md) (MCP boundary) · [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) (Hunter/Judge MCP) · [13-cim-investigation-spl-mcp.md](./13-cim-investigation-spl-mcp.md) (investigation SPL)
 
@@ -60,11 +60,11 @@ flowchart TB
 
 ## 1. MCP tools
 
-The Splunk MCP Server exposes tools via JSON-RPC `tools/list`. ThinkingSOC maps **logical tool names** to whatever the server reports (with aliases for different MCP Server versions).
+The Splunk MCP Server exposes tools via JSON-RPC `tools/list`. ThinkingSOC Lite maps **logical tool names** to whatever the server reports (with aliases for different MCP Server versions).
 
 ```mermaid
 flowchart LR
-  subgraph logical ["Logical Tools (ThinkingSOC)"]
+  subgraph logical ["Logical Tools (ThinkingSOC Lite)"]
     GetMeta["SPLUNK_GET_METADATA"]
     RunQuery["SPLUNK_RUN_QUERY"]
     AskSplunk["SAIA_ASK_SPLUNK_QUESTION"]

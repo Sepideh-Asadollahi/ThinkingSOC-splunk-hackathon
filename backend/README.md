@@ -38,7 +38,7 @@ cp .env.example .env
 python run.py
 ```
 
-`run.py` prefers `backend/.venv` when present (falls back to `/opt/ThinkingSOC/backend/.venv` if installed).
+`run.py` prefers `backend/.venv` when present (falls back to `/opt/ThinkingSOC Lite/backend/.venv` if installed).
 
 Optional: `TSOC_HTTP_HOST` (default `127.0.0.1`), `TSOC_HTTP_PORT` (default `9876`), `TSOC_RELOAD=1` for development.
 
@@ -62,7 +62,7 @@ Set `VIRUSTOTAL_API_KEY` in `.env` to enrich IOCs during SOC analysis (`virustot
 
 ```bash
 cd /opt/thinking-soc-splunk-hackathon/backend
-source /opt/ThinkingSOC/backend/.venv/bin/activate
+source /opt/ThinkingSOC Lite/backend/.venv/bin/activate
 export PYTHONPATH=.
 uvicorn main:app --host 127.0.0.1 --port 9876
 ```
@@ -75,11 +75,11 @@ Clean up old RAGFlow images: `bash scripts/docker-cleanup-unused.sh`
 
 ## Unit tests
 
-From `backend/` (uses ThinkingSOC venv which includes `pytest`). Unit/API tests are **fast by default** and do **not** run external startup (Splunk login, embeddings/RAG warmup, correlation startup).
+From `backend/` (uses ThinkingSOC Lite venv which includes `pytest`). Unit/API tests are **fast by default** and do **not** run external startup (Splunk login, embeddings/RAG warmup, correlation startup).
 
 ```bash
 cd /opt/thinking-soc-splunk-hackathon/backend
-source /opt/ThinkingSOC/backend/.venv/bin/activate
+source /opt/ThinkingSOC Lite/backend/.venv/bin/activate
 pytest
 ```
 
@@ -120,18 +120,18 @@ Live Splunk tests are separately marked `splunk_live` and require `TSOC_RUN_SPLU
 - `POST /api/v1/observability/run` — run Observability pipeline directly (enrichment + Diagnoser + Responder + Ops Judge)
 - `POST /api/v1/observability/run-by-sid` — fetch rows for a Splunk `sid`, run Observability per row
 - `GET /api/v1/storage/events` — search JSON records stored in PostgreSQL (optional `sid`, `record_type`)
-- `GET /api/v1/investigation/runbook-settings` — non-secret ThinkingSOC Forge policy and dependency readiness
+- `GET /api/v1/investigation/runbook-settings` — non-secret ThinkingSOC Lite policy and dependency readiness
 - `GET /api/v1/investigation/runbooks`, `/export`, `POST /import`, and `PATCH /runbooks/{runbook_id}` — Alert Name library, portable JSON exchange, and immutable revision editing
 - `POST/GET /api/v1/investigation/records/{record_id}/runbook` — compile/source-verify or load the latest verified-runbook state
 - `POST/GET /api/v1/investigation/records/{record_id}/runbook/autopilot` — run or inspect bounded Supervisor/Evidence/Engineer/Guard/Advisor collaboration with durable Tool traces; never auto-approves or executes containment
 - `GET /api/v1/investigation/records/{record_id}/runbook/compatible-targets` — bounded, payload-free exact-detection candidates for guided reuse
 - `POST /api/v1/investigation/records/{record_id}/runbook/approval` and `POST /api/v1/investigation/records/{target_record_id}/runbook-runs` — human decision and read-only reuse
 - Runbook SPL execution uses `TSOC_SPL_EXECUTE_VIA_MCP=true` as **MCP preferred, Splunk REST oneshot fallback**. `spl_results.execution_transport` reports `mcp` or `rest`; both error causes are retained if fallback also fails.
-- `POST /api/v1/admin-org/gap-suggest` — given alert + optional analysis excerpts, suggest **one organizational GAP question** for an admin (LiteLLM with rule fallback when unavailable). Simplified vs ThinkingSOC `admin_org_gap` (no DB/RAG/queue).
+- `POST /api/v1/admin-org/gap-suggest` — given alert + optional analysis excerpts, suggest **one organizational GAP question** for an admin (LiteLLM with rule fallback when unavailable). Simplified vs ThinkingSOC Lite `admin_org_gap` (no DB/RAG/queue).
 - After every successful **SOC analysis** (`run_analysis`, including ingest auto-triage), the backend also runs admin-org GAP and returns it on `SocAnalysisResult.admin_org_gap` (and stores `admin_org_gap_suggest` when PostgreSQL is configured). The investigation UI shows the suggested admin question when `should_suggest_question` is true.
 - `GET /api/v1/soc/chat/status` — RAG index stats (PostgreSQL + Qdrant)
 - `POST /api/v1/soc/chat` — SOC analyst chat, including explicit English commands to run the latest approved exact-Alert-Name Runbook for a supplied SID; investigation remains read-only ([docs/10-soc-vector-rag.md](../docs/10-soc-vector-rag.md))
-- `POST /api/v1/soc/rag/backfill` — rebuild RAG index from alerts, analyses, inventory/correlation, and all Forge Runbook/Autopilot artifacts
+- `POST /api/v1/soc/rag/backfill` — rebuild RAG index from alerts, analyses, inventory/correlation, and all ThinkingSOC Lite Runbook/Autopilot artifacts
 
 ### SOC Chat / vector RAG (default)
 

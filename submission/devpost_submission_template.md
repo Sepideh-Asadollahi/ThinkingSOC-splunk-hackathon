@@ -2,7 +2,7 @@
 
 ## Project Name
 
-ThinkingSOC Forge — Verified Incident-to-Runbook Compiler
+ThinkingSOC Lite — Verified Incident-to-Runbook Compiler
 
 ## Track
 
@@ -10,7 +10,7 @@ ThinkingSOC Forge — Verified Incident-to-Runbook Compiler
 
 ## What it does
 
-ThinkingSOC Forge turns one acknowledged SOC investigation into a reusable, executable investigation procedure. GPT-5.6 compiles accepted evidence and questions into one to three generalized intents. ThinkingSOC then generates fresh read-only SPL, validates and executes every step on Splunk, shows the evidence, requires human approval, and can rerun the approved runbook on a different stored alert with the same detection name.
+ThinkingSOC Lite turns one acknowledged SOC investigation into a reusable, executable investigation procedure. GPT-5.6 compiles accepted evidence and questions into one to three generalized intents. ThinkingSOC Lite then generates fresh read-only SPL, validates and executes every step on Splunk, shows the evidence, requires human approval, and can rerun the approved runbook on a different stored alert with the same detection name.
 
 Core capabilities:
 
@@ -20,7 +20,7 @@ Core capabilities:
 - Separate analyst acknowledgment and runbook approval gates
 - Exact-`search_name` reuse with target-specific SPL and evidence
 - Append-only PostgreSQL audit artifacts and observed time-saved metrics
-- One integrated Forge panel in the existing Security Investigation workflow
+- One integrated ThinkingSOC Lite panel in the existing Security Investigation workflow
 
 ## How we built it
 
@@ -47,11 +47,11 @@ Core capabilities:
 
 ## Potential impact and measurable economics
 
-Forge measures runtime and keeps the analyst-entered manual baseline visible, so a buyer can calculate value from local alert volume rather than an unsupported industry-wide savings percentage.
+ThinkingSOC Lite measures runtime and keeps the analyst-entered manual baseline visible, so a buyer can calculate value from local alert volume rather than an unsupported industry-wide savings percentage.
 
 An illustrative six-analyst U.S. private-sector SOC case uses official BLS wage and benefit inputs plus explicit operational assumptions. At 30 approved compatible repeats per business day, a measured reduction from 25 to 5 minutes would return 2,600 analyst hours/year (1.25 FTE of capacity) and about $223,000/year in gross capacity value. The eligible repeat lane would be five times faster. These are scenario outputs, not claimed customer results; live evidence-pack timings, local ticket baselines, failure/rework rates, and actual operating cost must replace the assumptions.
 
-Full sources, formulas, sensitivity, break-even, and cash-vs-capacity treatment: `docs/27-forge-us-soc-economic-impact.md`.
+Full sources, formulas, sensitivity, break-even, and cash-vs-capacity treatment: `docs/27-lite-us-soc-economic-impact.md`.
 
 ## What we learned
 
@@ -85,16 +85,16 @@ Attach outputs from:
 - `submission/evidence/<run_id>/05_eval_report.json`
 - `submission/evidence/<run_id>/manifest.json`
 - `submission/evidence/<run_id>/06_mcp_status.json`
-- `submission/evidence/<run_id>/07_forge_source_record.json`
-- `submission/evidence/<run_id>/08_forge_compile.json`
-- `submission/evidence/<run_id>/09_forge_approval.json`
-- `submission/evidence/<run_id>/10_forge_target_run.json`
-- `submission/evidence/<run_id>/11_forge_metrics.json`
+- `submission/evidence/<run_id>/07_lite_source_record.json`
+- `submission/evidence/<run_id>/08_lite_compile.json`
+- `submission/evidence/<run_id>/09_lite_approval.json`
+- `submission/evidence/<run_id>/10_lite_target_run.json`
+- `submission/evidence/<run_id>/11_lite_metrics.json`
 
 ## Runtime integrations
 
 - Install Splunkbase app **7931**, configure MCP bearer token (`audience=mcp`)
-- Demo: acknowledge a stored source record → build and approve Forge runbook → execute on an exact-match target
-- Docs: `docs/25-verified-runbook-forge.md` and `docs/15-splunk-mcp-integration.md`
-- Product/demo narrative: `docs/26-hackathon-forge-product-guide.md`
-- U.S. SOC impact model: `docs/27-forge-us-soc-economic-impact.md`
+- Demo: acknowledge a stored source record → build and approve ThinkingSOC Lite runbook → execute on an exact-match target
+- Docs: `docs/25-verified-runbook-lite.md` and `docs/15-splunk-mcp-integration.md`
+- Product/demo narrative: `docs/26-hackathon-lite-product-guide.md`
+- U.S. SOC impact model: `docs/27-lite-us-soc-economic-impact.md`

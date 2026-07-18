@@ -122,7 +122,7 @@ export function DashboardContent() {
               Overview
             </h1>
             <p className="text-sm text-slate-400">
-              Live platform status — ingest, triage, Forge, Autopilot, Chat, and inventory
+              Live platform status — ingest, triage, Runbooks, Autopilot, Chat, and inventory
               {overview?.generated_at ? (
                 <span className="text-slate-500">
                   {" "}

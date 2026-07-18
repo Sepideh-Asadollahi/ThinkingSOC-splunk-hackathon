@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest"
 import { DashboardRunbookOperations } from "./dashboard-runbook-operations"
 
 describe("DashboardRunbookOperations", () => {
-  it("renders Forge lifecycle, safe outcomes, Autopilot, and Chat metrics", () => {
+  it("renders the ThinkingSOC Lite lifecycle, safe outcomes, Autopilot, and Chat metrics", () => {
     render(
       <DashboardRunbookOperations
         ops={{

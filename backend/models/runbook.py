@@ -1,4 +1,4 @@
-"""Verified incident-to-runbook contracts used by the Forge MVP."""
+"""Verified incident-to-runbook contracts used by the ThinkingSOC Lite MVP."""
 
 from __future__ import annotations
 

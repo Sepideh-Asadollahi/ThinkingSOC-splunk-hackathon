@@ -1,6 +1,6 @@
-# ThinkingSOC Forge — verified incident-to-runbook compiler
+# ThinkingSOC Lite — verified incident-to-runbook compiler
 
-ThinkingSOC Forge converts one acknowledged `soc_analysis` record into a reusable one-to-three-step investigation procedure. The model writes generalized investigation intents, never trusted SPL. ThinkingSOC regenerates alert-specific SPL through the existing SAIA/LiteLLM pipeline, validates it with the Splunk parser, executes it read-only, and derives status from the returned evidence.
+ThinkingSOC Lite converts one acknowledged `soc_analysis` record into a reusable one-to-three-step investigation procedure. The model writes generalized investigation intents, never trusted SPL. ThinkingSOC Lite regenerates alert-specific SPL through the existing SAIA/LiteLLM pipeline, validates it with the Splunk parser, executes it read-only, and derives status from the returned evidence.
 
 This implementation covers every in-scope capability in the repository-specific hackathon plan. The separate full-product LLD's microservice, queue, dedicated tables, historical cohort scorecard, semantic marketplace, revalidation worker, and IAM permission registry remain intentionally deferred because the plan explicitly forbids porting that architecture into this compact repository. The dedicated `/runbooks` settings page is the requested extension to the original no-new-route MVP boundary.
 
@@ -66,7 +66,7 @@ Every replay stores target/source identifiers and SIDs, deterministic status, pa
 
 ## Safe Response Preview
 
-Safe Response Preview is an advisory lane embedded in the Investigation page's ThinkingSOC Forge tab. It accepts only the latest attached `PARSER_VALID` or `SOURCE_VERIFIED` Runbook revision. The LLM receives the minimized, credential-scrubbed investigation snapshot, portable intent-only Runbook content, evidence basis, and a deterministic allowlist. It must return one to five strict `SafeResponseAction` objects containing target, risk, rationale, prerequisites, expected effect, rollback, and manual verification.
+Safe Response Preview is an advisory lane embedded in the Investigation page's ThinkingSOC Lite tab. It accepts only the latest attached `PARSER_VALID` or `SOURCE_VERIFIED` Runbook revision. The LLM receives the minimized, credential-scrubbed investigation snapshot, portable intent-only Runbook content, evidence basis, and a deterministic allowlist. It must return one to five strict `SafeResponseAction` objects containing target, risk, rationale, prerequisites, expected effect, rollback, and manual verification.
 
 The durable schema deliberately contains no command, script, SPL, SQL, API request, connector invocation, or executable payload. Extra fields are rejected. A second deterministic validator blocks command-like text and any action type outside the supplied evidence policy. For `ANALYSIS_ONLY` (`PARSER_VALID`) sources, only `COLLECT_FORENSICS`, `ESCALATE_INCIDENT`, and `MONITOR_ONLY` are allowed. Disruptive options are considered only for `SOURCE_EVIDENCE` and still remain `PREVIEW_ONLY` with `requires_human_approval: true` and `execution_supported: false`.
 
@@ -74,7 +74,7 @@ The analyst can approve the latest preview only **for manual action**, with a re
 
 ## Runbook Autopilot orchestration
 
-Runbook Autopilot turns the Forge backend into a bounded, observable agent workflow. It uses five explicit roles:
+Runbook Autopilot turns the ThinkingSOC Lite backend into a bounded, observable agent workflow. It uses five explicit roles:
 
 | Agent | Responsibility | Tools it may use |
 |---|---|---|
@@ -92,7 +92,7 @@ The Investigation UI renders the persisted trace as scrollable rectangular event
 
 ## Runbook-aware SOC Chat
 
-Every Forge artifact is converted into a compact RAG document after its authoritative append-only write. This indexing is scheduled asynchronously so an unavailable vector backend cannot block Runbook persistence. `POST /api/v1/soc/rag/backfill` indexes older artifacts.
+Every ThinkingSOC Lite artifact is converted into a compact RAG document after its authoritative append-only write. This indexing is scheduled asynchronously so an unavailable vector backend cannot block Runbook persistence. `POST /api/v1/soc/rag/backfill` indexes older artifacts.
 
 Chat supports `runbook_draft`, `runbook_approval`, `runbook_run`, `runbook_shadow_run`, `runbook_response_preview`, `runbook_response_decision`, and `runbook_autopilot` documents by default. The compact form includes intents, evidence/status metrics, decisions, safe response descriptions, and Autopilot provenance. It deliberately excludes raw Splunk rows, generated SPL, credentials, and secret-shaped alert values.
 
@@ -126,7 +126,7 @@ Stored drafts include configured/provider-reported model ids, token counts, runt
 
 ## Sidebar and settings
 
-The application Sidebar has **Runbooks → Runbook Library** at `/runbooks/library`, **Runbooks → Shadow & Evaluation** at `/runbooks/evaluation`, and **Runbooks → Forge & Policies** at `/runbooks`. All follow the existing NeonGlass Prism system and restrained teal/slate palette, with black surfaces, shared cards and controls, responsive layouts, explicit states, and accessible labels.
+The application Sidebar has **Runbooks → Runbook Library** at `/runbooks/library`, **Runbooks → Shadow & Evaluation** at `/runbooks/evaluation`, and **Runbooks → ThinkingSOC Lite** at `/runbooks`. All follow the existing NeonGlass Prism system and restrained teal/slate palette, with black surfaces, shared cards and controls, responsive layouts, explicit states, and accessible labels.
 
 Runbook operational settings are persisted through the existing integration-settings store and immediately applied to new operations:
 
@@ -147,7 +147,7 @@ The internal storage query accepts the documented 1,000-record maximum. The publ
 
 ## Execution graph visualization
 
-The investigation panel renders the complete Forge path as a modern rectangular-node graph:
+The investigation panel renders the complete ThinkingSOC Lite path as a modern rectangular-node graph:
 
 ```text
 source investigation → verified steps → human decision gate → exact-match reuse target
@@ -173,7 +173,7 @@ Use the existing `TSOC_POSTGRES_DSN`, Splunk credentials, `TSOC_EXECUTE_INVESTIG
 
 Runtime readiness is shown without exposing credentials. Compilation records generation and source-verification duration separately, parser-valid/successful step counts, and total evidence rows. Reuse records runtime, successful steps, evidence rows, minutes saved, and savings percentage.
 
-The Forge settings page labels the active connectivity policy as **MCP preferred · REST API fallback** when both are configured, or **REST API fallback ready** when MCP is unavailable but Splunk REST credentials are ready.
+The ThinkingSOC Lite settings page labels the active connectivity policy as **MCP preferred · REST API fallback** when both are configured, or **REST API fallback ready** when MCP is unavailable but Splunk REST credentials are ready.
 
 Runtime cloud-model use is also subject to the repository's no-cloud-exfiltration policy. Synthetic data does not silently waive that policy. The project owner must explicitly authorize the provider and data flow before enabling runtime GPT-5.6.
 
@@ -219,16 +219,16 @@ With two acknowledged/synthetic stored alerts sharing a `search_name`:
 
 ```bash
 python submission/generate_evidence_pack.py \
-  --forge-source-record-id 582 \
-  --forge-target-record-id 583 \
-  --forge-manual-minutes 25
+  --lite-source-record-id 582 \
+  --lite-target-record-id 583 \
+  --lite-manual-minutes 25
 ```
 
-The generator captures live outputs as `07_forge_source_record.json` through `11_forge_metrics.json`. Failures remain in the artifacts; the generator never hand-edits a passing result.
+The generator captures live outputs as `07_lite_source_record.json` through `11_lite_metrics.json`. Failures remain in the artifacts; the generator never hand-edits a passing result.
 
 ## Related public documents
 
-- [Hackathon product and demo guide](./26-hackathon-forge-product-guide.md)
-- [U.S. SOC capacity and economic impact](./27-forge-us-soc-economic-impact.md)
+- [Hackathon product and demo guide](./26-hackathon-lite-product-guide.md)
+- [U.S. SOC capacity and economic impact](./27-lite-us-soc-economic-impact.md)
 - [Submission evidence guide](../submission/README.md)
 - [Hackathon change log](../HACKATHON_CHANGELOG.md)

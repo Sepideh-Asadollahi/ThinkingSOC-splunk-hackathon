@@ -1,9 +1,9 @@
 # Post-analysis Triage and priority queue
 
-This document describes the **analyst triage layer**: how ThinkingSOC turns pipeline outputs (SOC Judge / Ops Judge) into a **sortable review priority** and a **closed verdict taxonomy** for the operator UI and APIs.
+This document describes the **analyst triage layer**: how ThinkingSOC Lite turns pipeline outputs (SOC Judge / Ops Judge) into a **sortable review priority** and a **closed verdict taxonomy** for the operator UI and APIs.
 
 **Related:** [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) (pipelines), [07-lld-low-level-design.md](./07-lld-low-level-design.md) (HTTP contracts).  
-**Inspiration:** [DeeperSplunk](https://github.com/iliasarmenakis/DeeperSplunk) — adversarial SOC triage with `TRUE_POSITIVE` / `FALSE_POSITIVE` / `NEEDS_HUMAN_REVIEW` and low-confidence escalation. ThinkingSOC implements a **post-processing** layer on the existing Judge (no separate MCP server).
+**Inspiration:** [DeeperSplunk](https://github.com/iliasarmenakis/DeeperSplunk) — adversarial SOC triage with `TRUE_POSITIVE` / `FALSE_POSITIVE` / `NEEDS_HUMAN_REVIEW` and low-confidence escalation. ThinkingSOC Lite implements a **post-processing** layer on the existing Judge (no separate MCP server).
 
 ## Two meanings of “triage” in this repo
 

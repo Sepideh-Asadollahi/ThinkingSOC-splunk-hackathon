@@ -365,14 +365,14 @@ _BUILTIN: List[Dict[str, Any]] = [
         "value_type": "bool",
         "description": "Classify alerts via LLM (full payload); manual_review when LLM unavailable.",
     },
-    # ThinkingSOC Forge
+    # ThinkingSOC Lite
     {
         "id": "tsoc_runbook_enabled",
         "category": "runbook",
         "key": "TSOC_RUNBOOK_ENABLED",
         "field": "tsoc_runbook_enabled",
         "value_type": "bool",
-        "description": "Enable compile, approval, and guided reuse operations for ThinkingSOC Forge.",
+        "description": "Enable compile, approval, and guided reuse operations for ThinkingSOC Lite.",
     },
     {
         "id": "tsoc_runbook_autopilot_enabled",

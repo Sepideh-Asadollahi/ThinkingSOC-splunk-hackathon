@@ -33,11 +33,11 @@ run_integration_configure_smoke() {
     fi
 
     if _tsoc_curl_ok "http://127.0.0.1:9876/health" 2>/dev/null; then
-        _pc_smoke_ok "ThinkingSOC backend healthy (GET /health)"
+        _pc_smoke_ok "ThinkingSOC Lite backend healthy (GET /health)"
     elif _tsoc_tcp_port_in_use 9876 2>/dev/null; then
         info "  Backend on :9876 — waiting for /health …"
         if _wait_for_backend_with_embedding_notice "http://127.0.0.1:9876/health" "Backend API" 90 2; then
-            _pc_smoke_ok "ThinkingSOC backend healthy (GET /health, after wait)"
+            _pc_smoke_ok "ThinkingSOC Lite backend healthy (GET /health, after wait)"
         else
             _pc_smoke_fail "Backend not healthy on http://127.0.0.1:9876/health — restart tsoc-backend"
         fi

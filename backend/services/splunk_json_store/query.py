@@ -63,7 +63,7 @@ async def search_stored_events(
         return []
 
     # Public storage routes remain capped at 500, while bounded internal workflows
-    # such as Forge may use their documented 1,000-record artifact scan limit.
+    # such as ThinkingSOC Lite may use their documented 1,000-record artifact scan limit.
     lim = max(1, min(limit, 1000))
     where: List[str] = []
     args: List[Any] = []

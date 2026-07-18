@@ -104,7 +104,7 @@
     "message_id": 9,
     "conversation_id": "demo-runbook-judge-tour-v1",
     "role": "assistant",
-    "content": "### Judge tour ready\n\nOpen **Runbook Library** and select **Judge Demo: Suspicious OAuth Token Replay**. The stored scenario shows three parser-valid evidence steps, a different-SID shadow replay, human approval, safe response preview, and a five-agent Autopilot audit trace.\n\nSafety invariant: **human approval is required and automatic execution is false**. You can ask follow-up questions in Chat because every Forge artifact is indexed in RAG.",
+    "content": "### Judge tour ready\n\nOpen **Runbook Library** and select **Judge Demo: Suspicious OAuth Token Replay**. The stored scenario shows three parser-valid evidence steps, a different-SID shadow replay, human approval, safe response preview, and a five-agent Autopilot audit trace.\n\nSafety invariant: **human approval is required and automatic execution is false**. You can ask follow-up questions in Chat because every ThinkingSOC Lite artifact is indexed in RAG.",
     "seq": 2,
     "metadata": {
       "runbook_id": "demo-rb-oauth-token-replay-v1",

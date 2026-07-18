@@ -1,6 +1,6 @@
 # tools
 
-Developer and debugging tools that are **not** part of the ThinkingSOC backend.
+Developer and debugging tools that are **not** part of the ThinkingSOC Lite backend.
 
 ## Key files
 

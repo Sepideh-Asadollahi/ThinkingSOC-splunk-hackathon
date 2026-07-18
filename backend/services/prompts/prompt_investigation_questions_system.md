@@ -1,4 +1,4 @@
-# Investigation Questions — System Prompt (Thinking SOC)
+# Investigation Questions — System Prompt (ThinkingSOC Lite)
 
 ---
 

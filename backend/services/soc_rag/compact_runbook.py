@@ -1,4 +1,4 @@
-"""Compact Forge artifacts into safe, immediately queryable SOC Chat documents."""
+"""Compact ThinkingSOC Lite artifacts into safe, immediately queryable SOC Chat documents."""
 
 from __future__ import annotations
 
@@ -193,7 +193,7 @@ def compact_runbook_artifact(
             if payload.get(key) is not None
         }
         lines = [
-            f"Forge artifact type: {doc_type}",
+            f"ThinkingSOC Lite artifact type: {doc_type}",
             json.dumps(safe, ensure_ascii=False, default=str),
         ]
         summary = "{0} for Runbook {1}".format(
@@ -225,7 +225,7 @@ def compact_runbook_artifact(
         summary_line=summary[:1000],
         chunk_text="\n".join(lines)[:20000],
         metadata={
-            "source": "thinking_soc_forge",
+            "source": "thinking_soc_lite",
             "record_type": record_type,
             "automatic_execution": False,
         },

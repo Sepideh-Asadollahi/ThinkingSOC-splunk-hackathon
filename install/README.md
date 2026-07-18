@@ -1,4 +1,4 @@
-# ThinkingSOC installer — how the stack runs
+# ThinkingSOC Lite installer — how the stack runs
 
 Default install directory: **`/opt/thinking-soc-splunk-hackathon`**.
 
@@ -86,7 +86,7 @@ The log lists which restore mode was used (`dump` vs JSON snapshot vs CSV), whet
 
 If **tsoc-postgres**, **tsoc-qdrant**, or **tsoc-neo4j** (or their data volumes) already exist, the installer **asks for confirmation** before:
 
-- Stopping and removing those containers and **all ThinkingSOC data volumes** (PostgreSQL / Qdrant / Neo4j data on the host)
+- Stopping and removing those containers and **all ThinkingSOC Lite data volumes** (PostgreSQL / Qdrant / Neo4j data on the host)
 - **Keeping** Docker images (no re-download from Docker Hub unless an image was missing)
 - Starting a fresh stack with `docker compose up -d`
 
@@ -115,8 +115,8 @@ sudo env \
   bash install.sh
 ```
 
-`TSOC_RESET_EXISTING_STACK=true` removes only the named ThinkingSOC containers
-and volumes listed above. Do not set it when the current ThinkingSOC database
+`TSOC_RESET_EXISTING_STACK=true` removes only the named ThinkingSOC Lite containers
+and volumes listed above. Do not set it when the current ThinkingSOC Lite database
 must be preserved.
 
 ### Vector embedding model download (default `bge-base`, ~220 MB)

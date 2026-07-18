@@ -228,7 +228,7 @@ async def execute_runbook_chat_command(
             status="NO_APPROVED_RUNBOOK",
             answer=(
                 f"No approved SOURCE_VERIFIED Runbook with a different source was found for **{search_name}**. "
-                "Review it in Forge and record Human Approval first."
+                "Review it in ThinkingSOC Lite and record Human Approval first."
             ),
             metadata={"target_record_id": target_id, "target_sid": target_sid, "search_name": search_name},
         )

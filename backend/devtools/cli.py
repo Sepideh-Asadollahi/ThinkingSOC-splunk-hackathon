@@ -25,7 +25,7 @@ def _print_json(obj: Any) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="ThinkingSOC backend developer tools CLI")
+    parser = argparse.ArgumentParser(description="ThinkingSOC Lite backend developer tools CLI")
     parser.add_argument("--base-url", default="http://127.0.0.1:9876")
     parser.add_argument("--token", default=None, help="Bearer token. Defaults to TSOC_INGEST_TOKEN if unset.")
     parser.add_argument("--timeout", type=float, default=120.0, help="HTTP timeout in seconds.")

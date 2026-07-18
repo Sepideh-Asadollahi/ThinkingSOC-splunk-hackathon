@@ -70,7 +70,7 @@ describe("getBreadcrumbsFromPathname", () => {
   it("shows the dedicated Runbooks section", () => {
     expect(getBreadcrumbsFromPathname("/runbooks")).toEqual([
       { label: "Runbooks", href: "/runbooks" },
-      { label: "Forge & Policies" },
+      { label: "ThinkingSOC Lite" },
     ])
     expect(getBreadcrumbsFromPathname("/runbooks/library")).toEqual([
       { label: "Runbooks", href: "/runbooks" },

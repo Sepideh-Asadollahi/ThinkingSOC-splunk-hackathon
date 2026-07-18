@@ -1,6 +1,6 @@
 # Inventory service — users, assets, relationships
 
-How ThinkingSOC maintains an **organizational inventory** in PostgreSQL, resolves alert fields to known entities, and feeds **risk context** into the Security and Observability pipelines.
+How ThinkingSOC Lite maintains an **organizational inventory** in PostgreSQL, resolves alert fields to known entities, and feeds **risk context** into the Security and Observability pipelines.
 
 **Related:** [02-integration-boundaries.md](./02-integration-boundaries.md) (inventory boundary) · [07-lld-low-level-design.md](./07-lld-low-level-design.md) (table schemas) · [04-agents-and-pipelines.md](./04-agents-and-pipelines.md) (enrichment in pipelines) · [24-demo-postgresql-data.md](./24-demo-postgresql-data.md) (install / snapshot seed)
 

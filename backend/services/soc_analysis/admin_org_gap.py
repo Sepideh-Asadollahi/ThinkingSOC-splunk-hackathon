@@ -1,4 +1,4 @@
-"""Suggest a single organizational GAP question for an admin (simplified vs ThinkingSOC)."""
+"""Suggest a single organizational GAP question for an admin (simplified vs ThinkingSOC Lite)."""
 
 from __future__ import annotations
 

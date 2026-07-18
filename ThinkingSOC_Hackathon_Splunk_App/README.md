@@ -48,7 +48,7 @@ After `install.sh`, `backend/.env` includes **`TSOC_INGEST_AUTO_ANALYZE=true`**.
 
 ## Ingest token (`TSOC_INGEST_TOKEN`)
 
-Optional shared secret between Splunk and the ThinkingSOC backend. **Not** a Splunk or OAuth token — you choose a random string (or let the install wizard generate one).
+Optional shared secret between Splunk and the ThinkingSOC Lite backend. **Not** a Splunk or OAuth token — you choose a random string (or let the install wizard generate one).
 
 ### Default (no token)
 
@@ -109,7 +109,7 @@ Full documentation: [docs/11-environment-configuration.md](../docs/11-environmen
 | Log | Meaning |
 |-----|---------|
 | `Loaded N result row(s) from results_file=…results.csv.gz` | Gzip CSV read OK |
-| `Outgoing ThinkingSOC webhook rows=N` | N rows in one POST |
+| `Outgoing ThinkingSOC Lite webhook rows=N` | N rows in one POST |
 | `Webhook receiver responded with HTTP status=202` | Backend accepted (buffered / auto-analyze) |
 | `utf-8 codec can't decode byte 0x8b` | **Fixed:** old script read `.gz` as plain text — redeploy `bin/thinkingsoc_hackathon.py` |
 

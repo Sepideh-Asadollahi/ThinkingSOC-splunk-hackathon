@@ -1,4 +1,4 @@
-"""Typed sync SDK client for ThinkingSOC backend APIs."""
+"""Typed sync SDK client for ThinkingSOC Lite backend APIs."""
 
 from __future__ import annotations
 
@@ -659,14 +659,14 @@ class TsocSdkClient:
         return self._post_raw("/api/v1/investigation/records/{0}/analyst-actions".format(record_id), body)
 
     def verified_runbook_state(self, record_id: int) -> VerifiedRunbookState:
-        """GET the latest Forge draft, approval, and target run for an investigation."""
+        """GET the latest ThinkingSOC Lite draft, approval, and target run for an investigation."""
         return self._get_model(
             "/api/v1/investigation/records/{0}/runbook".format(record_id),
             VerifiedRunbookState,
         )
 
     def runbook_runtime_status(self) -> RunbookRuntimeStatus:
-        """GET non-secret Forge policy and dependency readiness."""
+        """GET non-secret ThinkingSOC Lite policy and dependency readiness."""
         return self._get_model(
             "/api/v1/investigation/runbook-settings",
             RunbookRuntimeStatus,

@@ -223,7 +223,7 @@ except Exception:
 print_summary() {
     echo ""
     echo -e "${GREEN}${BOLD}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}${BOLD}  ThinkingSOC installed successfully!${NC}"
+    echo -e "${GREEN}${BOLD}  ThinkingSOC Lite installed successfully!${NC}"
     echo -e "${GREEN}${BOLD}═══════════════════════════════════════════════════════════${NC}"
     echo ""
     echo -e "  ${BOLD}Install directory:${NC}  $INSTALL_DIR"

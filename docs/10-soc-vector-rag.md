@@ -419,9 +419,9 @@ The **triage queue API** (`GET /api/v1/triage/queue`, `build_triage_queue_items`
 
 If classification is **not** statistical (explain verdict, MITRE, how to investigate), SOC Chat uses **vector/keyword retrieval** + LiteLLM with the last 6 messages and retrieved chunks (all default `doc_type` values).
 
-**SOC Chat retrieval** searches these `doc_type` values by default: `splunk_alert`, `soc_analysis`, `observability_analysis`, `inventory_user`, `inventory_asset`, `inventory_relationship`, **`correlation_finding`**, **`correlation_alert`**, **`correlation_attack_path`**, plus Forge `runbook_draft`, `runbook_approval`, `runbook_run`, `runbook_shadow_run`, `runbook_response_preview`, `runbook_response_decision`, and `runbook_autopilot`. New analyses, observability runs, and Forge artifacts are indexed on completion; inventory, correlation, and historical Runbook artifacts are refreshed through the backfill API.
+**SOC Chat retrieval** searches these `doc_type` values by default: `splunk_alert`, `soc_analysis`, `observability_analysis`, `inventory_user`, `inventory_asset`, `inventory_relationship`, **`correlation_finding`**, **`correlation_alert`**, **`correlation_attack_path`**, plus ThinkingSOC Lite `runbook_draft`, `runbook_approval`, `runbook_run`, `runbook_shadow_run`, `runbook_response_preview`, `runbook_response_decision`, and `runbook_autopilot`. New analyses, observability runs, and ThinkingSOC Lite artifacts are indexed on completion; inventory, correlation, and historical Runbook artifacts are refreshed through the backfill API.
 
-Forge compaction intentionally excludes generated SPL, raw result rows, and credentials. Runbook Autopilot documents retain bounded Agent handoffs, Tool names/results, durations, gate state, and the next recommended action, allowing Chat to explain how a result was reached without exposing executable response payloads.
+ThinkingSOC Lite compaction intentionally excludes generated SPL, raw result rows, and credentials. Runbook Autopilot documents retain bounded Agent handoffs, Tool names/results, durations, gate state, and the next recommended action, allowing Chat to explain how a result was reached without exposing executable response payloads.
 
 ## Modules (`backend/services/soc_rag/`)
 

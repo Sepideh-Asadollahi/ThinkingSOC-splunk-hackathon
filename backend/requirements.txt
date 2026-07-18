@@ -1,4 +1,4 @@
-# ThinkingSOC Splunk Hackathon — backend dependencies (local venv + Docker)
+# ThinkingSOC Lite Splunk Hackathon — backend dependencies (local venv + Docker)
 # Install: pip install -r backend/requirements.txt
 
 # Web API

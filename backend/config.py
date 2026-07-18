@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Optional
 from pydantic import BeforeValidator, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Resolve `backend/.env` regardless of current working directory (same idea as ThinkingSOC services).
+# Resolve `backend/.env` regardless of current working directory (same idea as ThinkingSOC Lite services).
 _BACKEND_ROOT = Path(__file__).resolve().parent
 
 
@@ -164,7 +164,7 @@ class Settings(BaseSettings):
     # Investigation follow-up questions per alert (LLM list + SPL per question).
     tsoc_investigation_questions_max: int = Field(default=3, ge=1, le=12)
 
-    # ThinkingSOC Forge — verified incident-to-runbook compiler.
+    # ThinkingSOC Lite — verified incident-to-runbook compiler.
     tsoc_runbook_enabled: bool = True
     tsoc_runbook_max_steps: int = Field(default=3, ge=1, le=3)
     tsoc_runbook_default_manual_minutes: int = Field(default=25, ge=5, le=120)

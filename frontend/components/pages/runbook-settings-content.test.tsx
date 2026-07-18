@@ -57,7 +57,7 @@ describe("RunbookSettingsContent", () => {
   it("shows runtime readiness, editable settings, and fixed trust policy", async () => {
     render(<RunbookSettingsContent />)
 
-    expect(await screen.findByRole("heading", { name: "ThinkingSOC Forge" })).toBeInTheDocument()
+    expect(await screen.findByRole("heading", { name: "ThinkingSOC Lite" })).toBeInTheDocument()
     expect(await screen.findByText("PostgreSQL configured")).toBeInTheDocument()
     expect(screen.getByText("REST API fallback ready")).toBeInTheDocument()
     expect(screen.getByLabelText("Maximum steps")).toHaveValue(3)

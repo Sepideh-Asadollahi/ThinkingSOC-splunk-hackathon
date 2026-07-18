@@ -1,6 +1,6 @@
 # System overview
 
-**ThinkingSOC Agentic Ops Router** is an external application that receives Splunk alerts, enriches them with full search results, resolves entities against inventory, routes each alert to **either** the **Security** **or** **Observability** agent pipeline (never both), and returns a structured verdict with optional SPL for follow-up investigation.
+**ThinkingSOC Lite Agentic Ops Router** is an external application that receives Splunk alerts, enriches them with full search results, resolves entities against inventory, routes each alert to **either** the **Security** **or** **Observability** agent pipeline (never both), and returns a structured verdict with optional SPL for follow-up investigation.
 
 **Platform:** Splunk Enterprise or Cloud **10+** (webhook alert actions, REST v2 job results, optional Splunk MCP Server).
 
@@ -15,7 +15,7 @@
 | Org context is missing from data | **Admin org GAP** suggests one question for an administrator after SOC analysis |
 | Splunk-native AI is separate | **REST `/predict`** (UI path) for investigation SPL; optional **MCP** for execute, metadata, and **Hunter/Judge live evidence** |
 
-This repository is a **hackathon demonstration** — credible end-to-end flow, open-source friendly — not the full commercial ThinkingSOC product.
+This repository is a **hackathon demonstration** — credible end-to-end flow, open-source friendly — not the full commercial ThinkingSOC Lite product.
 
 ## Logical components
 

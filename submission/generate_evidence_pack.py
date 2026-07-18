@@ -248,19 +248,19 @@ def main() -> None:
     )
     parser.add_argument("--out-dir", default="submission/evidence")
     parser.add_argument(
-        "--forge-source-record-id",
+        "--lite-source-record-id",
         type=int,
         default=None,
-        help="Acknowledged soc_analysis record used to compile and approve a Forge runbook.",
+        help="Acknowledged soc_analysis record used to compile and approve a ThinkingSOC Lite runbook.",
     )
     parser.add_argument(
-        "--forge-target-record-id",
+        "--lite-target-record-id",
         type=int,
         default=None,
-        help="Different soc_analysis record with the same search_name used for Forge reuse.",
+        help="Different soc_analysis record with the same search_name used for ThinkingSOC Lite reuse.",
     )
     parser.add_argument(
-        "--forge-manual-minutes",
+        "--lite-manual-minutes",
         type=int,
         default=25,
         help="Visible manual-investigation baseline for the measured savings artifact (5..120).",
@@ -290,7 +290,7 @@ def main() -> None:
     out_dir = out_root / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    _vlog(verbose, "=== ThinkingSOC evidence pack ===")
+    _vlog(verbose, "=== ThinkingSOC Lite evidence pack ===")
     _vlog(verbose, "base_url={0} timeout={1}s heavy_timeout={2}s retries={3} heavy_retries={4}".format(
         args.base_url, args.timeout, heavy_timeout, args.retries, args.heavy_retries,
     ))
@@ -330,35 +330,35 @@ def main() -> None:
     eval_report = _run_eval_matrix(heavy_client, eval_matrix, verbose=verbose)
     mcp_status = _safe_call("mcp_status", client.mcp_status, verbose=verbose)
 
-    forge_not_requested = {
+    lite_not_requested = {
         "error": "not_requested",
-        "message": "Pass --forge-source-record-id and --forge-target-record-id to capture live Forge evidence.",
+        "message": "Pass --lite-source-record-id and --lite-target-record-id to capture live ThinkingSOC Lite evidence.",
     }
-    forge_source: Dict[str, Any] = dict(forge_not_requested)
-    forge_compile: Dict[str, Any] = dict(forge_not_requested)
-    forge_approval: Dict[str, Any] = dict(forge_not_requested)
-    forge_run: Dict[str, Any] = dict(forge_not_requested)
-    if args.forge_source_record_id is not None and args.forge_target_record_id is not None:
-        if not 5 <= args.forge_manual_minutes <= 120:
-            parser.error("--forge-manual-minutes must be between 5 and 120")
-        forge_source = _safe_call(
-            "forge_source_record",
-            lambda: client.get_event(args.forge_source_record_id),
+    lite_source: Dict[str, Any] = dict(lite_not_requested)
+    lite_compile: Dict[str, Any] = dict(lite_not_requested)
+    lite_approval: Dict[str, Any] = dict(lite_not_requested)
+    lite_run: Dict[str, Any] = dict(lite_not_requested)
+    if args.lite_source_record_id is not None and args.lite_target_record_id is not None:
+        if not 5 <= args.lite_manual_minutes <= 120:
+            parser.error("--lite-manual-minutes must be between 5 and 120")
+        lite_source = _safe_call(
+            "lite_source_record",
+            lambda: client.get_event(args.lite_source_record_id),
             verbose=verbose,
         )
-        forge_compile = _safe_call(
-            "forge_compile",
+        lite_compile = _safe_call(
+            "lite_compile",
             lambda: heavy_client.build_verified_runbook(
-                args.forge_source_record_id
+                args.lite_source_record_id
             ).model_dump(mode="json"),
             verbose=verbose,
         )
-        runbook_id = forge_compile.get("runbook_id")
+        runbook_id = lite_compile.get("runbook_id")
         if runbook_id:
-            forge_approval = _safe_call(
-                "forge_approval",
+            lite_approval = _safe_call(
+                "lite_approval",
                 lambda: client.decide_verified_runbook(
-                    args.forge_source_record_id,
+                    args.lite_source_record_id,
                     {
                         "runbook_id": runbook_id,
                         "decision": "approve",
@@ -367,61 +367,61 @@ def main() -> None:
                 ).model_dump(mode="json"),
                 verbose=verbose,
             )
-            if forge_approval.get("decision") == "approve":
-                forge_run = _safe_call(
-                    "forge_target_run",
+            if lite_approval.get("decision") == "approve":
+                lite_run = _safe_call(
+                    "lite_target_run",
                     lambda: heavy_client.run_verified_runbook(
-                        args.forge_target_record_id,
+                        args.lite_target_record_id,
                         {
-                            "source_record_id": args.forge_source_record_id,
+                            "source_record_id": args.lite_source_record_id,
                             "runbook_id": runbook_id,
-                            "estimated_manual_minutes": args.forge_manual_minutes,
+                            "estimated_manual_minutes": args.lite_manual_minutes,
                         },
                     ).model_dump(mode="json"),
                     verbose=verbose,
                 )
         else:
-            forge_approval = {
+            lite_approval = {
                 "error": "dependency_failed",
-                "message": "Forge compilation did not return a runbook_id.",
+                "message": "ThinkingSOC Lite compilation did not return a runbook_id.",
             }
-            forge_run = {
+            lite_run = {
                 "error": "dependency_failed",
-                "message": "Forge approval was not available.",
+                "message": "ThinkingSOC Lite approval was not available.",
             }
 
-    forge_results = forge_run.get("results") if isinstance(forge_run.get("results"), list) else []
-    forge_metrics = {
-        "configured_model": forge_compile.get("configured_model"),
-        "provider_reported_model": forge_compile.get("model"),
-        "source_status": forge_compile.get("status"),
-        "approval": forge_approval.get("decision"),
-        "target_status": forge_run.get("status"),
-        "step_count": len(forge_compile.get("steps") or []),
-        "generation_duration_ms": forge_compile.get("generation_duration_ms"),
-        "source_verification_duration_ms": forge_compile.get(
+    lite_results = lite_run.get("results") if isinstance(lite_run.get("results"), list) else []
+    lite_metrics = {
+        "configured_model": lite_compile.get("configured_model"),
+        "provider_reported_model": lite_compile.get("model"),
+        "source_status": lite_compile.get("status"),
+        "approval": lite_approval.get("decision"),
+        "target_status": lite_run.get("status"),
+        "step_count": len(lite_compile.get("steps") or []),
+        "generation_duration_ms": lite_compile.get("generation_duration_ms"),
+        "source_verification_duration_ms": lite_compile.get(
             "verification_duration_ms"
         ),
-        "parser_valid_step_count": forge_compile.get("parser_valid_step_count"),
-        "source_evidence_rows": forge_compile.get("total_evidence_rows"),
+        "parser_valid_step_count": lite_compile.get("parser_valid_step_count"),
+        "source_evidence_rows": lite_compile.get("total_evidence_rows"),
         "successful_step_count": sum(
             1
-            for item in forge_results
+            for item in lite_results
             if isinstance(item, dict)
             and isinstance(item.get("spl_results"), dict)
             and not item["spl_results"].get("error")
             and int(item["spl_results"].get("row_count") or 0) > 0
         ),
-        "manual_baseline_minutes": forge_run.get(
-            "estimated_manual_minutes", args.forge_manual_minutes
+        "manual_baseline_minutes": lite_run.get(
+            "estimated_manual_minutes", args.lite_manual_minutes
         ),
-        "automated_minutes": round(float(forge_run.get("duration_ms") or 0) / 60_000, 3),
-        "estimated_minutes_saved": forge_run.get("estimated_minutes_saved"),
-        "savings_percent": forge_run.get("savings_percent"),
-        "target_evidence_rows": forge_run.get("total_evidence_rows"),
+        "automated_minutes": round(float(lite_run.get("duration_ms") or 0) / 60_000, 3),
+        "estimated_minutes_saved": lite_run.get("estimated_minutes_saved"),
+        "savings_percent": lite_run.get("savings_percent"),
+        "target_evidence_rows": lite_run.get("total_evidence_rows"),
     }
-    if forge_compile.get("error"):
-        forge_metrics["error"] = forge_compile.get("error")
+    if lite_compile.get("error"):
+        lite_metrics["error"] = lite_compile.get("error")
 
     output_files = [
         ("00_evidence_summary.md", None),
@@ -431,11 +431,11 @@ def main() -> None:
         ("04_assistant_spl_response.json", spl_res),
         ("05_eval_report.json", eval_report),
         ("06_mcp_status.json", mcp_status),
-        ("07_forge_source_record.json", forge_source),
-        ("08_forge_compile.json", forge_compile),
-        ("09_forge_approval.json", forge_approval),
-        ("10_forge_target_run.json", forge_run),
-        ("11_forge_metrics.json", forge_metrics),
+        ("07_lite_source_record.json", lite_source),
+        ("08_lite_compile.json", lite_compile),
+        ("09_lite_approval.json", lite_approval),
+        ("10_lite_target_run.json", lite_run),
+        ("11_lite_metrics.json", lite_metrics),
     ]
 
     _vlog(verbose, "[write] output files")
@@ -460,8 +460,8 @@ def main() -> None:
         spl_res,
         mcp_status,
         *(
-            (forge_source, forge_compile, forge_approval, forge_run)
-            if args.forge_source_record_id is not None
+            (lite_source, lite_compile, lite_approval, lite_run)
+            if args.lite_source_record_id is not None
             else ()
         ),
     )

@@ -100,7 +100,7 @@ _reset_tsoc_docker_stack() {
     _tsoc_stop_app_services_for_docker_reset
 
     if [[ -f "$compose_file" ]] && [[ ${#TSOC_COMPOSE_CMD[@]} -gt 0 ]]; then
-        info "Removing ThinkingSOC stack via compose down -v (project ${TSOC_COMPOSE_PROJECT_NAME}) …"
+        info "Removing ThinkingSOC Lite stack via compose down -v (project ${TSOC_COMPOSE_PROJECT_NAME}) …"
         _tsoc_compose_in_backend down -v --remove-orphans \
             || warn "compose down returned non-zero (continuing cleanup)"
     fi
@@ -124,17 +124,17 @@ _reset_tsoc_docker_stack() {
         docker volume rm -f "$vol" 2>/dev/null || true
     done < <(_tsoc_enumerate_stack_volumes | sort -u)
 
-    ok "ThinkingSOC Docker containers and data volumes removed (images kept)"
+    ok "ThinkingSOC Lite Docker containers and data volumes removed (images kept)"
 }
 
 prompt_and_reset_tsoc_docker_stack() {
     if ! _tsoc_docker_stack_detected; then
-        info "No prior ThinkingSOC Docker stack detected — creating fresh containers and volumes."
+        info "No prior ThinkingSOC Lite Docker stack detected — creating fresh containers and volumes."
         return 0
     fi
 
     echo ""
-    warn "An existing ThinkingSOC Docker stack was detected on this machine."
+    warn "An existing ThinkingSOC Lite Docker stack was detected on this machine."
     echo ""
     echo "  The installer can remove it so demo data and schema load cleanly."
     echo "  This will STOP and DELETE:"
@@ -162,7 +162,7 @@ prompt_and_reset_tsoc_docker_stack() {
             ;;
     esac
 
-    if ! prompt_yn "Remove existing ThinkingSOC containers and volumes now?" "n"; then
+    if ! prompt_yn "Remove existing ThinkingSOC Lite containers and volumes now?" "n"; then
         err "Install stopped — remove the stack manually or answer Yes to continue with a clean Docker reset."
         return 1
     fi
@@ -221,12 +221,12 @@ start_tsoc_docker_stack() {
         fi
     done
     if [[ "$running" -eq "${#TSOC_STACK_CONTAINERS[@]}" ]]; then
-        ok "ThinkingSOC Docker stack already running"
+        ok "ThinkingSOC Lite Docker stack already running"
         _wait_tsoc_stack_ready || return 1
         return 0
     fi
 
-    info "Starting ThinkingSOC Docker stack (project ${TSOC_COMPOSE_PROJECT_NAME}: postgres + qdrant + neo4j) from local images …"
+    info "Starting ThinkingSOC Lite Docker stack (project ${TSOC_COMPOSE_PROJECT_NAME}: postgres + qdrant + neo4j) from local images …"
     if ! _tsoc_compose_in_backend up -d; then
         err "docker compose up failed"
         return 1

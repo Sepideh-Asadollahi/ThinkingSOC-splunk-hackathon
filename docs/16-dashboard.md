@@ -1,6 +1,6 @@
 # Dashboard — analyst overview
 
-The **Dashboard** is the default landing page in the analyst UI. It provides a live, at-a-glance view of platform health, pipeline activity, triage distribution, the complete Forge/Runbook lifecycle, Autopilot and Chat adoption, inventory size, and backend host resources.
+The **Dashboard** is the default landing page in the analyst UI. It provides a live, at-a-glance view of platform health, pipeline activity, triage distribution, the complete ThinkingSOC Lite/Runbook lifecycle, Autopilot and Chat adoption, inventory size, and backend host resources.
 
 **Related:** [08-triage-priority-layer.md](./08-triage-priority-layer.md) (triage queue) · [12-correlation-graph-service.md](./12-correlation-graph-service.md) (correlation / Neo4j) · [14-inventory-service.md](./14-inventory-service.md) (inventory) · [20-investigation-workflow.md](./20-investigation-workflow.md) (investigation detail) · [11-environment-configuration.md](./11-environment-configuration.md) (env)
 
@@ -13,7 +13,7 @@ flowchart TB
   subgraph frontend ["Next.js Frontend"]
     Page["/dashboard page\n→ DashboardContent"]
     KPI["DashboardKpiGrid\n6 metric cards"]
-    RunbookOps["DashboardRunbookOperations\nForge lifecycle + guarded outcomes"]
+    RunbookOps["DashboardRunbookOperations\nThinkingSOC Lite lifecycle + guarded outcomes"]
     Activity["DashboardActivityChart\n30-day stacked area"]
     Health["DashboardHealthGauge\nhealth score + 4 integration chips"]
     SysRes["DashboardSystemResources\nCPU + memory bars"]
@@ -87,7 +87,7 @@ flowchart TB
 | `triage_by_priority` | `CountByPriority[]` | Priority distribution from triage sample |
 | `track_split` | `TrackSplit` | Security vs observability counts from triage sample (API only — not rendered in the dashboard UI) |
 | `integrations` | `DashboardIntegrations` | `postgres`, `llm`, `mcp`, `neo4j` booleans |
-| `runbook_ops` | `DashboardRunbookOps` | Forge lifecycle, guarded execution outcomes, Evidence, saved time, Autopilot, response previews, and Chat counts |
+| `runbook_ops` | `DashboardRunbookOps` | ThinkingSOC Lite lifecycle, guarded execution outcomes, Evidence, saved time, Autopilot, response previews, and Chat counts |
 | `health_score` | `int` | 0–100 integration readiness score |
 | `top_priority` | `TopPriorityItem[]` | Top 5 triage items by score |
 
@@ -126,7 +126,7 @@ Triage-derived KPIs and charts use a **sample of up to 50** items from `build_tr
 
 The **Runbook operations** panel is a live PostgreSQL rollup, not a static product-tour card. It uses the latest revision per Runbook source and the latest approval for that exact source/Runbook pair.
 
-### Forge lifecycle
+### ThinkingSOC Lite lifecycle
 
 Four rectangular stages make review readiness visible:
 
@@ -148,7 +148,7 @@ Four rectangular stages make review readiness visible:
 | **Evidence rows** | Sum of `total_evidence_rows` across guarded executions |
 | **Time saved** | Sum of `estimated_minutes_saved`; an estimate, not a billing measurement |
 
-The panel also shows Shadow Runs, safe-response previews, total/completed Autopilot sessions, and persisted SOC Chat conversations/messages. Quick actions open **Runbook Library**, **Forge & Policies**, and **SOC Chat**. Runbook execution remains exact-Alert-Name, parser-validated, read-only, human-gated, and MCP-first with Splunk REST fallback.
+The panel also shows Shadow Runs, safe-response previews, total/completed Autopilot sessions, and persisted SOC Chat conversations/messages. Quick actions open **Runbook Library**, **ThinkingSOC Lite**, and **SOC Chat**. Runbook execution remains exact-Alert-Name, parser-validated, read-only, human-gated, and MCP-first with Splunk REST fallback.
 
 ---
 

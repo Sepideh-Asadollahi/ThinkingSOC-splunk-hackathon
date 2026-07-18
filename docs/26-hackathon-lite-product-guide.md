@@ -1,16 +1,16 @@
-# ThinkingSOC Forge — hackathon product and demo guide
+# ThinkingSOC Lite — hackathon product and demo guide
 
-ThinkingSOC Forge is the hackathon addition to the existing ThinkingSOC repository. It turns one analyst-accepted security investigation into a short, executable, evidence-linked procedure that can accelerate a later alert from the same detection family.
+ThinkingSOC Lite is the hackathon addition to the existing ThinkingSOC Lite repository. It turns one analyst-accepted security investigation into a short, executable, evidence-linked procedure that can accelerate a later alert from the same detection family.
 
 The product promise is intentionally narrow:
 
 > Convert accepted investigation work into a reusable, read-only runbook while keeping verification deterministic and approval human-controlled.
 
-This document explains the public product story, the runtime role of GPT-5.6, the frontend/backend workflow, demo evidence, and the boundary between the implemented hackathon scope and future product work. Technical API and persistence details live in [25-verified-runbook-forge.md](./25-verified-runbook-forge.md); the economic model lives in [27-forge-us-soc-economic-impact.md](./27-forge-us-soc-economic-impact.md).
+This document explains the public product story, the runtime role of GPT-5.6, the frontend/backend workflow, demo evidence, and the boundary between the implemented hackathon scope and future product work. Technical API and persistence details live in [25-verified-runbook-lite.md](./25-verified-runbook-lite.md); the economic model lives in [27-lite-us-soc-economic-impact.md](./27-lite-us-soc-economic-impact.md).
 
 ## 1. Problem
 
-The existing product can ingest a Splunk alert, load full job results, enrich entities, generate Defender/Hunter/Judge analysis, propose investigation questions, generate and validate SPL, and present evidence to an analyst. Before Forge, the accepted reasoning from that investigation was not converted into a reusable operational procedure.
+The existing product can ingest a Splunk alert, load full job results, enrich entities, generate Defender/Hunter/Judge analysis, propose investigation questions, generate and validate SPL, and present evidence to an analyst. Before ThinkingSOC Lite, the accepted reasoning from that investigation was not converted into a reusable operational procedure.
 
 The consequence is repeated work:
 
@@ -20,22 +20,22 @@ The consequence is repeated work:
 4. the same detection fires again;
 5. another analyst reconstructs much of the same procedure.
 
-Forge makes the first accepted investigation improve the next one.
+ThinkingSOC Lite makes the first accepted investigation improve the next one.
 
 ## 2. Hackathon product delta
 
-| Existing capability | Forge delta built for the hackathon |
+| Existing capability | ThinkingSOC Lite delta built for the hackathon |
 |---|---|
 | Stored `soc_analysis` evidence | Eligibility gate and minimized compiler snapshot |
 | Analyst acknowledge/escalate | Acknowledgment becomes the compilation gate |
 | LiteLLM integration | One strict GPT-5.6 incident-to-runbook compilation call |
 | Investigation-question SPL pipeline | Fresh SPL generation, sanitization, parser validation, execution, refinement, and result analysis for every runbook step |
 | PostgreSQL `tsoc_records` | Append-only draft, approval, and reuse artifacts without a migration |
-| Investigation Overview | Forge panel with statuses, step evidence, approval, compatible-target selection, and time-saved metrics |
-| Integration settings | Dedicated **Runbooks → Forge & Policies** Sidebar surface |
+| Investigation Overview | ThinkingSOC Lite panel with statuses, step evidence, approval, compatible-target selection, and time-saved metrics |
+| Integration settings | Dedicated **Runbooks → ThinkingSOC Lite** Sidebar surface |
 | Evidence generator | Live compile, approval, target-run, and metrics artifacts |
 
-Forge does not replace the baseline router or analysis pipeline. It creates a compounding knowledge loop on top of them.
+ThinkingSOC Lite does not replace the baseline router or analysis pipeline. It creates a compounding knowledge loop on top of them.
 
 ## 3. End-to-end workflow
 
@@ -108,7 +108,7 @@ The LLM cannot assign these statuses and cannot approve itself. `SOURCE_VERIFIED
 
 ### Investigation Overview
 
-The **ThinkingSOC Forge** panel provides:
+The **ThinkingSOC Lite** panel provides:
 
 - acknowledgment and runtime readiness gates;
 - build/rebuild loading and error states;
@@ -125,7 +125,7 @@ The graph stacks vertically on narrow and medium screens. On wide screens it bec
 
 ### Sidebar settings
 
-**Runbooks → Forge & Policies** exposes:
+**Runbooks → ThinkingSOC Lite** exposes:
 
 - enable/disable for new compile, approval, and reuse operations;
 - compiler step cap (`1..3`);
@@ -159,7 +159,7 @@ No service, queue, worker, table, or migration is introduced for the hackathon i
 
 | Time | Screen and proof |
 |---:|---|
-| `0:00–0:20` | Explain the repeat-investigation problem and distinguish baseline ThinkingSOC from Forge. |
+| `0:00–0:20` | Explain the repeat-investigation problem and distinguish baseline ThinkingSOC Lite from ThinkingSOC Lite. |
 | `0:20–0:45` | Open a stored source investigation; show verdict, evidence, questions, and acknowledgment. |
 | `0:45–1:20` | Build; show GPT-5.6 metadata, generated steps, SPL parser results, execution rows, and `SOURCE_VERIFIED`. |
 | `1:20–1:40` | Approve; explain that model output cannot approve or set verification status. |
@@ -174,20 +174,20 @@ The submission generator writes live, unedited artifacts:
 
 ```bash
 python submission/generate_evidence_pack.py \
-  --forge-source-record-id 582 \
-  --forge-target-record-id 583 \
-  --forge-manual-minutes 25
+  --lite-source-record-id 582 \
+  --lite-target-record-id 583 \
+  --lite-manual-minutes 25
 ```
 
-Required Forge outputs:
+Required ThinkingSOC Lite outputs:
 
 | Artifact | Proof |
 |---|---|
-| `07_forge_source_record.json` | Real stored source shape and eligibility context |
-| `08_forge_compile.json` | Model metadata, strict draft, SPL/parser/execution evidence, and source status |
-| `09_forge_approval.json` | Separate human decision |
-| `10_forge_target_run.json` | Target-specific execution and outcome |
-| `11_forge_metrics.json` | Step success, runtime, manual baseline, and time saved |
+| `07_lite_source_record.json` | Real stored source shape and eligibility context |
+| `08_lite_compile.json` | Model metadata, strict draft, SPL/parser/execution evidence, and source status |
+| `09_lite_approval.json` | Separate human decision |
+| `10_lite_target_run.json` | Target-specific execution and outcome |
+| `11_lite_metrics.json` | Step success, runtime, manual baseline, and time saved |
 
 Passing evidence must never be hand-edited. If Splunk, GPT-5.6, PostgreSQL, compatibility, or execution fails, the artifact must preserve the failure.
 
@@ -195,7 +195,7 @@ Passing evidence must never be hand-edited. If Splunk, GPT-5.6, PostgreSQL, comp
 
 Supported claims:
 
-- Forge converts accepted investigation evidence into reusable structured intent.
+- ThinkingSOC Lite converts accepted investigation evidence into reusable structured intent.
 - Verification status comes from parser and execution evidence, not model confidence.
 - Reuse regenerates and revalidates SPL for the target alert.
 - Human approval and exact detection matching remain mandatory.
@@ -216,8 +216,8 @@ The repository-specific hackathon plan still defers statistical precision/recall
 
 ## 13. Related documents
 
-- [Technical implementation and API](./25-verified-runbook-forge.md)
-- [U.S. SOC capacity and economic impact](./27-forge-us-soc-economic-impact.md)
+- [Technical implementation and API](./25-verified-runbook-lite.md)
+- [U.S. SOC capacity and economic impact](./27-lite-us-soc-economic-impact.md)
 - [Investigation workflow](./20-investigation-workflow.md)
 - [Investigation SPL pipeline](./13-cim-investigation-spl-mcp.md)
 - [Storage and persistence](./19-storage-persistence.md)

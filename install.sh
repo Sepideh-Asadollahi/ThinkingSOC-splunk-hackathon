@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────────────────────────────────────
-# ThinkingSOC — Installer Entrypoint
+# ThinkingSOC Lite — Installer Entrypoint
 # ──────────────────────────────────────────────────────────────────────────────
 #
 # RUN:  cd /opt/thinking-soc-splunk-hackathon && sudo bash install.sh
@@ -255,7 +255,7 @@ main() {
     run_install_step docker-images "Docker images" "Docker Hub registry" true \
         _step_docker_images
 
-    run_install_step docker-stack "Docker stack" "ThinkingSOC containers + volumes" true \
+    run_install_step docker-stack "Docker stack" "ThinkingSOC Lite containers + volumes" true \
         _step_prepare_tsoc_docker_stack
 
     run_install_step project-setup "Project Setup" "Docker stack / database / seed" true \

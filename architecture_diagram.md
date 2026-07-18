@@ -1,6 +1,6 @@
 # Architecture diagram
 
-High-level integration and data flow for the **ThinkingSOC Agentic Ops Router**.
+High-level integration and data flow for the **ThinkingSOC Lite Agentic Ops Router**.
 
 ```mermaid
 flowchart LR

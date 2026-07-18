@@ -236,7 +236,7 @@ def _llm_runtime_configured(settings: Settings) -> bool:
 def _ensure_feature_enabled(settings: Settings) -> None:
     if not settings.tsoc_runbook_enabled:
         raise VerifiedRunbookError(
-            "ThinkingSOC Forge is disabled in Runbook settings.",
+            "ThinkingSOC Lite is disabled in Runbook settings.",
             status_code=503,
         )
 

@@ -99,7 +99,7 @@ export function DashboardRunbookOperations({ ops }: { ops: DashboardRunbookOps }
         accent="teal"
         icon={<WorkflowIcon className="size-4" />}
         title="Runbook operations"
-        description="ThinkingSOC Forge lifecycle, guarded execution, Autopilot, and analyst Chat"
+        description="ThinkingSOC Lite lifecycle, guarded execution, Autopilot, and analyst Chat"
         actions={
           <span className="rounded-full border border-teal-500/20 bg-teal-500/[0.07] px-2.5 py-1 text-[11px] font-medium text-teal-200">
             Human gated
@@ -186,7 +186,7 @@ export function DashboardRunbookOperations({ ops }: { ops: DashboardRunbookOps }
               Runbook Library
             </Link>
             <Link href="/runbooks" className="rounded-lg border border-white/10 bg-white/[0.025] px-3 py-2 text-xs text-slate-300 transition-colors hover:border-teal-500/30 hover:text-white">
-              Forge & Policies
+              ThinkingSOC Lite
             </Link>
             <Link href="/soc-chat" className="rounded-lg border border-teal-500/20 bg-teal-500/[0.07] px-3 py-2 text-xs text-teal-200 transition-colors hover:bg-teal-500/[0.12]">
               Ask in Chat

@@ -91,7 +91,7 @@ run_post_install_configure() {
     _pc_ensure_mcp_token || true
 
     echo ""
-    step "Reload ThinkingSOC services"
+    step "Reload ThinkingSOC Lite services"
     info "Restarting backend and frontend (required so .env / .env.local — e.g. TSOC_INGEST_TOKEN — load in the UI proxy) …"
     if ! _pc_restart_tsoc_services_for_env; then
         warn "Automatic restart did not complete successfully"

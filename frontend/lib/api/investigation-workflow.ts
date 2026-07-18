@@ -400,7 +400,7 @@ export type InvestigationWorkflowExport = {
   fetch_errors: string[]
 }
 
-/** Load timeline, analyst gate, and Forge state for a best-effort JSON export. */
+/** Load timeline, analyst gate, and ThinkingSOC Lite state for a best-effort JSON export. */
 export async function fetchInvestigationWorkflowForExport(
   recordId: string | number
 ): Promise<InvestigationWorkflowExport> {
