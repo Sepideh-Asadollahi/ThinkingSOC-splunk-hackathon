@@ -38,7 +38,7 @@ command -v docker >/dev/null 2>&1 || fail "Docker is required"
 docker exec tsoc-postgres pg_isready -U tsoc -d tsoc >/dev/null 2>&1 \
     || fail "tsoc-postgres is not ready"
 
-info "Validating committed JSON snapshot, previous scenarios, Runbook, Autopilot, Chat/RAG, and SPL self-repair"
+info "Validating committed JSON snapshot, SOC runner pipeline, previous scenarios, Runbook, Autopilot, Chat/RAG, and SPL self-repair"
 PYTHONPATH="$BACKEND" "$VENV_PYTHON" "$CONTRACT_SCRIPT" --snapshot-dir "$SNAPSHOT_DIR"
 pass "Committed JSON snapshot contract"
 
@@ -134,6 +134,30 @@ assert s["automatic_execution_performed"] is False
 PY
     pass "Live Runbook Autopilot API"
 
+    runner_sid='scheduler__admin__search__t8372_c2_at_1727841780.1'
+    http="$(api_get "http://127.0.0.1:9876/api/v1/storage/events?sid=${runner_sid}&limit=100")"
+    [[ "$http" == "200" ]] || fail "SOC runner storage API returned HTTP ${http}"
+    "$VENV_PYTHON" - "$tmp" <<'PY'
+import json, sys
+
+required = {
+    "soc_analysis", "soc_analysis_audit", "soc_investigation_raw_alert",
+    "soc_investigation_alert_fields", "soc_investigation_defender",
+    "soc_investigation_hunter", "soc_investigation_judge",
+    "soc_investigation_questions", "soc_investigation_framework",
+    "soc_investigation_enrichment", "soc_investigation_risk",
+    "soc_investigation_threat_intel", "soc_investigation_summary",
+    "soc_investigation_evidence_chain",
+}
+d = json.load(open(sys.argv[1], encoding="utf-8"))
+rows = d["results"]
+types = {row["tsoc_record_type"] for row in rows}
+assert required <= types, sorted(required - types)
+assert all(row["search_name"] == "PaloAlto: Outbound Connection to Known C2 (t8372)" for row in rows)
+assert any(row["tsoc_record_type"] == "soc_analysis" for row in rows)
+PY
+    pass "Live SOC runner API serves all 14 persisted pipeline record types"
+
     http="$(api_get "http://127.0.0.1:9876/api/v1/soc/chat/conversations/demo-runbook-judge-tour-v1")"
     [[ "$http" == "200" ]] || fail "Chat demo API returned HTTP ${http}"
     "$VENV_PYTHON" - "$tmp" <<'PY'
@@ -171,8 +195,18 @@ import json, sys
 d = json.load(open(sys.argv[1], encoding="utf-8"))
 assert d["groups"][0]["runbooks"][0]["draft"]["status"] == "SOURCE_VERIFIED"
 PY
+        proxy_http="$(curl -sS --noproxy '*' --max-time 20 -b "$cookie_jar" \
+            -o "$tmp" -w '%{http_code}' \
+            'http://127.0.0.1:3000/api/backend/storage/events?sid=scheduler__admin__search__t8372_c2_at_1727841780.1&limit=100')"
+        [[ "$proxy_http" == "200" ]] || fail "Frontend SOC runner API proxy returned HTTP ${proxy_http}"
+        "$VENV_PYTHON" - "$tmp" <<'PY'
+import json, sys
+d = json.load(open(sys.argv[1], encoding="utf-8"))
+types = {row["tsoc_record_type"] for row in d["results"]}
+assert {"soc_analysis", "soc_analysis_audit", "soc_investigation_defender", "soc_investigation_hunter", "soc_investigation_judge"} <= types
+PY
         rm -f "$tmp" "$cookie_jar"
-        pass "Authenticated UI page and frontend Runbook proxy"
+        pass "Authenticated UI page and frontend Runbook + SOC runner proxies"
     else
         info "Frontend is stopped; authenticated UI checks skipped"
     fi

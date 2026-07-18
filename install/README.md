@@ -66,7 +66,7 @@ sudo bash /opt/thinking-soc-splunk-hackathon/scripts/reload-demo-snapshot.sh
 
 During `install.sh`, demo load + service restart run automatically when you choose **Load demo data**.
 
-The install Smoke Test also performs a non-destructive restore of both the SQL dump and JSON fallback into temporary databases. It verifies that previous demo scenarios remain available and that the Runbook judge tour includes same-name/different-SID reuse, three parser-valid evidence steps, human approval, Shadow Run, five-agent Autopilot trace, safe response preview, Chat/RAG content, and SPL syntax self-repair. The temporary databases are always removed afterward. Run this check again at any time:
+The install Smoke Test also performs a non-destructive restore of both the SQL dump and JSON fallback into temporary databases. It verifies all 14 persisted SOC runner pipeline record types, confirms they are available through the authenticated frontend proxy, preserves previous demo scenarios, and checks that the Runbook judge tour includes same-name/different-SID reuse, three parser-valid evidence steps, human approval, Shadow Run, five-agent Autopilot trace, safe response preview, Chat/RAG content, and SPL syntax self-repair. The temporary databases are always removed afterward. Run this check again at any time:
 
 ```bash
 sudo bash install/smoke-demo-data.sh

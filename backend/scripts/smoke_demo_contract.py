@@ -19,6 +19,24 @@ SEARCH_NAME = "Judge Demo: Suspicious OAuth Token Replay"
 SOURCE_SID = "demo-runbook-source-20260716"
 TARGET_SID = "demo-runbook-target-20260716"
 CHAT_ID = "demo-runbook-judge-tour-v1"
+RUNNER_SID = "scheduler__admin__search__t8372_c2_at_1727841780.1"
+RUNNER_SEARCH_NAME = "PaloAlto: Outbound Connection to Known C2 (t8372)"
+RUNNER_REQUIRED_TYPES = {
+    "soc_analysis",
+    "soc_analysis_audit",
+    "soc_investigation_raw_alert",
+    "soc_investigation_alert_fields",
+    "soc_investigation_defender",
+    "soc_investigation_hunter",
+    "soc_investigation_judge",
+    "soc_investigation_questions",
+    "soc_investigation_framework",
+    "soc_investigation_enrichment",
+    "soc_investigation_risk",
+    "soc_investigation_threat_intel",
+    "soc_investigation_summary",
+    "soc_investigation_evidence_chain",
+}
 REQUIRED_TYPES = {
     "soc_analysis",
     "investigation_analyst_action",
@@ -123,6 +141,28 @@ def validate_contract(
     _require(counts.get("tsoc_assets", 0) >= 7, "baseline demo assets are incomplete")
     _require(counts.get("tsoc_relationships", 0) >= 8, "baseline demo relationships are incomplete")
 
+    runner_rows = [row for row in records if str(row.get("sid") or "") == RUNNER_SID]
+    runner_types = {str(row.get("tsoc_record_type") or "") for row in runner_rows}
+    _require(RUNNER_REQUIRED_TYPES <= runner_types, "SOC runner pipeline records are incomplete")
+    _require(
+        all(str(row.get("search_name") or "") == RUNNER_SEARCH_NAME for row in runner_rows),
+        "SOC runner records do not retain the source Alert Name",
+    )
+    _require(
+        all(int(row.get("row_index") or 0) == 0 for row in runner_rows),
+        "SOC runner demo records do not retain row_index=0",
+    )
+    for record_type in RUNNER_REQUIRED_TYPES:
+        matching = [row for row in runner_rows if row.get("tsoc_record_type") == record_type]
+        _require(matching, f"SOC runner record missing: {record_type}")
+        payloads = [_payload(row) for row in matching]
+        if record_type == "soc_analysis":
+            _require(any(isinstance(p.get("analysis"), dict) for p in payloads), "runner analysis payload missing")
+        elif record_type == "soc_analysis_audit":
+            _require(any(isinstance(p.get("analysis_output"), dict) for p in payloads), "runner audit output missing")
+        else:
+            _require(any(p.get("content") is not None and p.get("phase") for p in payloads), f"runner phase payload empty: {record_type}")
+
     from config import Settings
     from services.investigation.spl_tstats_sanitize import sanitize_spl_draft
 
@@ -143,6 +183,8 @@ def validate_contract(
         "judge_chat_messages": len(judge_messages),
         "autopilot_agents": len(autopilot.get("agents") or []),
         "autopilot_trace_events": len(autopilot.get("trace") or []),
+        "runner_pipeline_types": len(RUNNER_REQUIRED_TYPES),
+        "runner_records": len(runner_rows),
         "spl_auto_repair": True,
         "spl_refine_attempts": settings.tsoc_spl_execute_refine_max_attempts,
     }

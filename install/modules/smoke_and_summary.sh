@@ -56,7 +56,7 @@ run_smoke_test() {
 
     if [[ "$LOAD_DEMO_DATA" == true ]]; then
         if bash "$INSTALL_DIR/install/smoke-demo-data.sh"; then
-            smoke_ok "Both demo restore paths + Runbook/Autopilot/Chat/SPL contracts"
+            smoke_ok "Both demo restore paths + runner/Runbook/Autopilot/Chat/SPL contracts"
         else
             smoke_fail "Demo restore/feature contract smoke failed"
         fi
